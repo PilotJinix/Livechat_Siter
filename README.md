@@ -2,7 +2,7 @@
 
 Tema yg dipilih : Live Chat 
 
-## Kelompok G SDGs 8
+## Kelompok 3
 __Anggota Kelompok:__
 1 182410103005  Dewangga Putra Kuswanto
 2	182410103031	Dyah Ayuningtyas
