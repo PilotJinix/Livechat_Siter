@@ -1,6 +1,10 @@
-#Livechat_Siter
+# Livechat_Siter
 
 Tema yg dipilih : Live Chat 
+
+# Deskripsi
+
+Aplikasi Live Chat, Aplikasi yang kami kembangkan ialah aplikasi berbasis web yang mana basic dari aplikasi kami dibuat menggunakan PHP Native dan ajax. Aplikasi kami dapat memberikan fitur chating kepada antar user secara realtime. Ajax diganti menggunakan web-socket.
 
 ## Kelompok 3
 __Anggota Kelompok:__
