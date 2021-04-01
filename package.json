@@ -1,0 +1,22 @@
+{
+  "name": "livechat_siter",
+  "version": "1.0.0",
+  "description": "livechat_siter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PilotJinix/Livechat_Siter.git"
+  },
+  "keywords": [
+    "livechat_siter"
+  ],
+  "author": "livechat_siter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PilotJinix/Livechat_Siter/issues"
+  },
+  "homepage": "https://github.com/PilotJinix/Livechat_Siter#readme"
+}
