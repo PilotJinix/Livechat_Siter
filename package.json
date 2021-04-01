@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/PilotJinix/Livechat_Siter/issues"
   },
-  "homepage": "https://github.com/PilotJinix/Livechat_Siter#readme"
+  "homepage": "https://github.com/PilotJinix/Livechat_Siter#readme",
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  }
 }
