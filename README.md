@@ -1,6 +1,6 @@
-# Livechat_Siter
+<!-- # Livechat_Siter
 
-Tema yg dipilih : Live Chat 
+Tema yg dipilih : Live Chat
 
 # Deskripsi
 
@@ -19,4 +19,11 @@ __Anggota Kelompok:__
 * 182410103090	Ferdy Dwi Kurniawan
 * 182410103077	M. Nur Ridho Taufikurrahman
 
+ -->
 
+## RUN
+
+Open folder ./build
+
+withServer = absolute assets path
+withoutServer = relative assets path
