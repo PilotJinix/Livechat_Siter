@@ -6,7 +6,7 @@
 
 [AdonisJs](https://preview.adonisjs.com/) membutuhkan [NodeJs](https://nodejs.org/en/) >= 12.0.0, dan dengan npm >= 6.0.0
 
-```po
+```bash
 // clone project
 git clone --branch Backend https://github.com/PilotJinix/Livechat_Siter.git
 
@@ -56,3 +56,5 @@ Sudah di install socket.io juga, untuk route eventnya ada di ```start/socket.ts`
 Di folder ./vscode ada settings untuk load SDK typescript di workspace jika menggunakan Text Editor VSCode. kalo yang lain bisa menyesuaikan. jadi untuk root foldernya di folder backend.
 
 Saran pakai extension formater di Text Editornya. Contoh extension [Prettier](https://prettier.io/).
+
+Jangan lupa setup buat DB nya di mysql. bisa pakai XAMPP
