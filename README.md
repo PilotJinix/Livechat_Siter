@@ -27,24 +27,24 @@ node ace serve --watch
 ## **Resource**
 
 - Dokumentasi Resmi
-  - [AdonisJs](https://preview.adonisjs.com/guides/quick-start){:target="_blank"}
-  - [SocketIO](https://socket.io/docs/v4){:target="_blank"}
-  - [Typescript](https://www.typescriptlang.org/docs/){:target="_blank"}
-  - [NodeJs](https://nodejs.org/en/docs/){:target="_blank"}
+  - [AdonisJs](https://preview.adonisjs.com/guides/quick-start)
+  - [SocketIO](https://socket.io/docs/v4)
+  - [Typescript](https://www.typescriptlang.org/docs/)
+  - [NodeJs](https://nodejs.org/en/docs/)
 - Blog
-  - [Membuat Realtime Chart dengan Express, ChartJs, MongoDB dan Socket IO](https://www.codepolitan.com/membuat-realtime-chart-dengan-express-chartjs-mongodb-dan-socket-io-57ce7902a5b95-5){:target="_blank"}
-  - [Tutorial Cara Menggunakan Socket.IO dan Express](https://billnode.blogspot.com/2017/01/tutorial-cara-menggunakan-socket-io-dan-express-node-js.html){:target="_blank"}
-  - [Membuat chat dengan Socket.io dan ExpressJS](https://sekolahkoding.com/forum/membuat-chat-dengan-socketio-dan-expressjs){:target="_blank"}
+  - [Membuat Realtime Chart dengan Express, ChartJs, MongoDB dan Socket IO](https://www.codepolitan.com/membuat-realtime-chart-dengan-express-chartjs-mongodb-dan-socket-io-57ce7902a5b95-5)
+  - [Tutorial Cara Menggunakan Socket.IO dan Express](https://billnode.blogspot.com/2017/01/tutorial-cara-menggunakan-socket-io-dan-express-node-js.html)
+  - [Membuat chat dengan Socket.io dan ExpressJS](https://sekolahkoding.com/forum/membuat-chat-dengan-socketio-dan-expressjs)
 - Youtube
   - Play List
-    - [Belajar NodeJS](https://www.youtube.com/playlist?list=PLFIM0718LjIW-XBdVOerYgKegBtD6rSfD){:target="_blank"}
-    - [Tutorial Dasar Adonisjs](https://www.youtube.com/playlist?list=PL9At9z2rvOC_CkMnCV73E0qXK88l2rzIF){:target="_blank"}
-    - [Node.js framework tutorial CRUD dengan Adonis.js bahasa indonesia](https://www.youtube.com/playlist?list=PLaPc1Bch98J2aFFn8SocnEcoUfL24OBVS){:target="_blank"}
-    - [AdonisJS 5 From Scratch](https://www.youtube.com/playlist?list=PL9gT3zlT0C1Ngrii-NCPpuRvUO1mIGzwf){:target="_blank"}
-    - [Tutorial Typescript](https://www.youtube.com/watch?v=CJ4cWe-jXBg&list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ){:target="_blank"}
-    - [Bicara Typescript](https://www.youtube.com/playlist?list=PLwvMCa_o2Latn_BAqFBMbj2IwlqgfgnG8){:target="_blank"}
+    - [Belajar NodeJS](https://www.youtube.com/playlist?list=PLFIM0718LjIW-XBdVOerYgKegBtD6rSfD)
+    - [Tutorial Dasar Adonisjs](https://www.youtube.com/playlist?list=PL9At9z2rvOC_CkMnCV73E0qXK88l2rzIF)
+    - [Node.js framework tutorial CRUD dengan Adonis.js bahasa indonesia](https://www.youtube.com/playlist?list=PLaPc1Bch98J2aFFn8SocnEcoUfL24OBVS)
+    - [AdonisJS 5 From Scratch](https://www.youtube.com/playlist?list=PL9gT3zlT0C1Ngrii-NCPpuRvUO1mIGzwf)
+    - [Tutorial Typescript](https://www.youtube.com/watch?v=CJ4cWe-jXBg&list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ)
+    - [Bicara Typescript](https://www.youtube.com/playlist?list=PLwvMCa_o2Latn_BAqFBMbj2IwlqgfgnG8)
   - Single Video
-    - [Realtime Chat With Users & Rooms - Socket.io, Node & Express](https://www.youtube.com/watch?v=jD7FnbI76Hg){:target="_blank"}
+    - [Realtime Chat With Users & Rooms - Socket.io, Node & Express](https://www.youtube.com/watch?v=jD7FnbI76Hg)
 
 
 
