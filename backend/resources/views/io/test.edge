@@ -1,0 +1,35 @@
+@layout('layouts/app')
+
+@section('body')
+  <div>
+    <h2>Hello, AdonisJS & SocketIO Test</h2>
+    <div id="output">
+
+    </div>
+  </div>
+@endsection
+
+@section('script')
+  <script>
+    var output = document.getElementById('output')
+
+    function renderLOG(...args) {
+      var text = document.createElement('div')
+      text.innerHTML = args.join(' ')
+      output.appendChild(text)
+    }
+
+    var socket = io()
+
+    socket.on('connect', function () {
+      renderLOG('successfully connected')
+    })
+
+    socket.on('hello', function(args) {
+      console.log();
+      renderLOG('hello', args)
+
+      socket.emit('hi', 'from client')
+    })
+  </script>
+@endsection
