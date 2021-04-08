@@ -183,7 +183,7 @@ export const logger: LoggerConfig = {
   // prettyPrint: Env.get("NODE_ENV") === "development",
   prettyPrint: {
     colorize: false,
-    translateTime: "SYS:HH:MM:ss|dd-mmm-yyyy",
+    translateTime: "SYS: dd-mmm-yyyy | HH:MM:ss ",
     ignore: "pid,hostname,name",
   },
 };

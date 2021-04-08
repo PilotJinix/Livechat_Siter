@@ -20,20 +20,7 @@
 
 import Route from "@ioc:Adonis/Core/Route";
 
-import HealthCheck from "@ioc:Adonis/Core/HealthCheck";
-
-Route.get("/", async ({ response }) => {
-  response.redirect("/io/test");
-});
-
-Route.get("io/test", async ({ view }) => {
-  return view.render("io/test");
-});
-
-Route.get("users", "UsersController.index");
-
-Route.get("health", async ({ response }) => {
-  const report = await HealthCheck.getReport();
-
-  return report.healthy ? response.ok(report) : response.badRequest(report);
+// History Api Fallback for BrowserRouter - react-router-dom
+Route.get("*", async ({ view }) => {
+  return view.render("react/index");
 });
