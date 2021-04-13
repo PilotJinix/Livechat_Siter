@@ -1,5 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
+
 export default class DeletedConversations extends BaseSchema {
   protected tableName = 'deleted_conversations'
 
