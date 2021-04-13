@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Done Seeder" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="Backend" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Backend" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1qKkJykus3EKy7Q4RUxXVzuf9LA" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="C:\xampp\htdocs\PJCT\Livecaht_Siter\backend\node_modules\typescript\lib" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="" />
+      <created>1616835601096</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616835601096</updated>
+      <workItem from="1616835602304" duration="620000" />
+      <workItem from="1617089563878" duration="788000" />
+      <workItem from="1617230690554" duration="13000" />
+      <workItem from="1617444737918" duration="144000" />
+      <workItem from="1617445063156" duration="1066000" />
+      <workItem from="1617628938686" duration="644000" />
+      <workItem from="1617662153340" duration="76000" />
+      <workItem from="1618058158584" duration="825000" />
+      <workItem from="1618092587949" duration="6312000" />
+      <workItem from="1618213248739" duration="1851000" />
+      <workItem from="1618287619368" duration="11183000" />
+      <workItem from="1618316606593" duration="7100000" />
+      <workItem from="1618352233935" duration="1830000" />
+    </task>
+    <task id="LOCAL-00001" summary="make News Models">
+      <created>1618115371147</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1618115371147</updated>
+    </task>
+    <task id="LOCAL-00002" summary="make Models">
+      <created>1618304028995</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1618304028995</updated>
+    </task>
+    <task id="LOCAL-00003" summary="done make Models">
+      <created>1618304893115</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1618304893115</updated>
+    </task>
+    <task id="LOCAL-00004" summary="make Migration">
+      <created>1618313093081</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1618313093081</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Done Migration">
+      <created>1618318186029</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1618318186029</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Done Migration">
+      <created>1618319760751</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1618319760751</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Done Migration">
+      <created>1618320923750</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1618320923750</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Done Migration">
+      <created>1618323215061</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1618323215061</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Done Seeder">
+      <created>1618353087124</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1618353087124</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Done Seeder">
+      <created>1618353769817</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1618353769817</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="make News Models" />
+    <MESSAGE value="make Models" />
+    <MESSAGE value="done make Models" />
+    <MESSAGE value="make Migration" />
+    <MESSAGE value="Done Migration" />
+    <MESSAGE value="Done Seeder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Done Seeder" />
+  </component>
+</project>
