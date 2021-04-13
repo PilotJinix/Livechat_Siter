@@ -2,7 +2,7 @@
 
 # Deskripsi
 
-Aplikasi Live Chat, Aplikasi yang kami kembangkan ialah aplikasi berbasis web yang mana basic dari aplikasi kami dibuat menggunakan PHP Native dan ajax. Aplikasi kami dapat memberikan fitur chating kepada antar user secara realtime. Ajax diganti menggunakan web-socket.
+Aplikasi Live Chat, Aplikasi yang kami kembangkan ialah aplikasi berbasis web yang mana basic dari aplikasi kami dibuat menggunakan NodeJs. Aplikasi kami dapat memberikan fitur chating kepada antar user secara realtime. Ajax diganti menggunakan web-socket.
 
 __Anggota Kelompok:__
 * 182410103005  Dewangga Putra Kuswanto
