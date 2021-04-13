@@ -5,8 +5,14 @@ export default class News extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.timestamps(true)
+      table.increments('id');
+      table.bigInteger("authorId").unsigned();
+      table.foreign("authorId").references("id").inTable("users").onDelete("cascade").onUpdate("cascade");
+      table.string("title").notNullable();
+      table.string("thumbnail").notNullable();
+      table.string("content").notNullable();
+      table.string("slug").notNullable()
+      table.timestamps(true);
     })
   }
 
