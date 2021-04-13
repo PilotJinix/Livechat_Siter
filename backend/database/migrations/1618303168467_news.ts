@@ -5,9 +5,9 @@ export default class News extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id');
-      table.bigInteger("authorId").unsigned();
-      table.foreign("authorId").references("id").inTable("users").onDelete("cascade").onUpdate("cascade");
+      table.increments('id').primary();
+      table.integer("authorId").unsigned();
+      table.foreign("authorId").references("id").inTable("users");
       table.string("title").notNullable();
       table.string("thumbnail").notNullable();
       table.string("content").notNullable();

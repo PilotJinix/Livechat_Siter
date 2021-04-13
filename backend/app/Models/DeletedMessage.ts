@@ -7,9 +7,6 @@ export default class DeletedMessage extends BaseModel implements DeletedMessages
   public id: number
 
   @column()
-  public userId: number;
-
-  @column()
   public messageId: number;
 
   @column.dateTime({ autoCreate: true })

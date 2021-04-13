@@ -6,10 +6,8 @@ export default class DeletedConversations extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
-      table.bigInteger("id_user").unsigned();
-      table.foreign("id_user").references("id_creator").inTable("conversations").onDelete("cascade");
-      table.bigInteger("id_coversation").unsigned();
-      table.foreign("id_coversation").references("id").inTable("conversations").onDelete("cascade");
+      table.integer("id_coversation").unsigned();
+      table.foreign("id_coversation").references("id").inTable("conversations");
       table.timestamps();
     })
   }

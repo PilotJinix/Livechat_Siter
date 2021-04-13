@@ -6,10 +6,10 @@ export default class Messages extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id');
-      table.bigInteger("id_sender").unsigned();
-      table.foreign("id_sender").references("id").inTable("users").onDelete("cascade");
-      table.bigInteger("id_conversation").unsigned();
-      table.foreign("id_conversation").references("id").inTable("conversations").onDelete("cascade");
+      table.integer("id_sender").unsigned();
+      table.foreign("id_sender").references("id");
+      table.integer("id_conversation").unsigned();
+      table.foreign("id_conversation").references("id");
       table.string("message").notNullable();
       table.timestamps();
     })

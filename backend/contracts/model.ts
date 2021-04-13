@@ -43,7 +43,6 @@ declare module "@interfaces/model" {
 
   interface DeletedMessagesInterface {
     id: number;
-    userId: number;
     messageId: number;
     createdAt: DateTime;
     updatedAt: DateTime;
@@ -60,7 +59,6 @@ declare module "@interfaces/model" {
 
   interface DeletedConversationsInterface {
     id: number;
-    userId: number;
     conversationId: number;
     createdAt: DateTime;
     updatedAt: DateTime;
