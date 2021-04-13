@@ -5,8 +5,12 @@ export default class DeletedMessages extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.timestamps(true)
+      table.increments('id');
+      table.bigInteger("id_user").unsigned();
+      table.foreign("id_user").references("id_sender").inTable("messages").onDelete("cascade");
+      table.bigInteger("id_message").unsigned();
+      table.foreign("id_message").references("id").inTable("messages").onDelete("cascade");
+      table.timestamps(true);
     })
   }
 
