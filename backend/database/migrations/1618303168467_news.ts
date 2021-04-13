@@ -12,7 +12,7 @@ export default class News extends BaseSchema {
       table.string("thumbnail").notNullable();
       table.string("content").notNullable();
       table.string("slug").notNullable()
-      table.timestamps(true);
+      table.timestamps();
     })
   }
 

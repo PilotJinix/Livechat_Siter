@@ -11,7 +11,7 @@ export default class Comments extends BaseSchema {
       table.bigInteger("id_user").unsigned();
       table.foreign("id_user").references("id").inTable("news").onDelete("cascade");
       table.string("comment").notNullable();
-      table.timestamps(true);
+      table.timestamps();
     })
   }
 

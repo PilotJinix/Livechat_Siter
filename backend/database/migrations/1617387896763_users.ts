@@ -10,7 +10,7 @@ export default class Users extends BaseSchema {
       table.string("password").notNullable();
       table.enum("role", ["admin", "common"]).defaultTo("common");
       table.string("avatar").nullable();
-      table.timestamps(true);
+      table.timestamps();
     });
   }
 

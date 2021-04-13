@@ -9,7 +9,7 @@ export default class Conversations extends BaseSchema {
       table.bigInteger("id_creator").unsigned();
       table.foreign("id_creator").references("id").inTable("users").onDelete("cascade").onUpdate("cascade");
       table.string("title").notNullable();
-      table.timestamps(true)
+      table.timestamps();
     })
   }
 

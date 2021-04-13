@@ -10,7 +10,7 @@ export default class DeletedMessages extends BaseSchema {
       table.foreign("id_user").references("id_sender").inTable("messages").onDelete("cascade");
       table.bigInteger("id_message").unsigned();
       table.foreign("id_message").references("id").inTable("messages").onDelete("cascade");
-      table.timestamps(true);
+      table.timestamps();
     })
   }
 

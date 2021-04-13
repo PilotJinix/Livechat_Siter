@@ -11,7 +11,7 @@ export default class Messages extends BaseSchema {
       table.bigInteger("id_conversation").unsigned();
       table.foreign("id_conversation").references("id").inTable("conversations").onDelete("cascade");
       table.string("message").notNullable();
-      table.timestamps(true);
+      table.timestamps();
     })
   }
 

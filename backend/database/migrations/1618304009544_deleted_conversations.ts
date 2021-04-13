@@ -10,7 +10,8 @@ export default class DeletedConversations extends BaseSchema {
       table.foreign("id_user").references("id_creator").inTable("conversations").onDelete("cascade");
       table.bigInteger("id_coversation").unsigned();
       table.foreign("id_coversation").references("id").inTable("conversations").onDelete("cascade");
-      table.timestamps(true);
+      table.timestamps();
+
     })
   }
 
