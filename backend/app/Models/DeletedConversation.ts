@@ -5,6 +5,12 @@ export default class DeletedConversation extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public userId: number;
+
+  @column()
+  public conversationId: number;
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
