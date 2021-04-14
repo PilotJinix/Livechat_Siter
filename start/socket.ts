@@ -1,16 +1,9 @@
 import Logger from "@ioc:Adonis/Core/Logger";
+import Hash from "@ioc:Adonis/Core/Hash";
+
 import Ws from "App/Services/Ws";
 
-const FAKE_USER_DB: {
-  username: string;
-}[] = [
-  {
-    username: "1",
-  },
-  {
-    username: "2",
-  },
-];
+import User from "App/Models/User";
 
 // --------------------------------------------------------------------------
 // MainNamespace
@@ -22,47 +15,47 @@ Ws.start((socket) => {
   // --------------------------------------------------------------------------
   //
   Logger.info(`User connected to main namespace with socket.id = ${socket.id}`);
+  socket.on("disconnect", () => {
+    Logger.info(`User disconnect from main namespace with socket.id = ${socket.id}`);
+  });
 
   // --------------------------------------------------------------------------
   // user:register
   // --------------------------------------------------------------------------
   //
-  socket.on("user:register", (data, cb) => {
-    console.log("data = ", data);
-
-    if (FAKE_USER_DB.find((user) => user.username == data.username)) {
-      cb({
-        ok: true,
-        msg: "Register berhasil",
-      });
-    } else {
-      cb({
-        ok: false,
-        msg: "Register gagal",
-      });
-    }
-  });
+  // socket.on("user:register", async (data, cb) => {
+  //   console.log("data = ", data);
+  // });
 
   // --------------------------------------------------------------------------
   // user:login
   // --------------------------------------------------------------------------
   //
-  socket.on("user:login", (data, cb) => {
-    console.log("data = ", data);
+  socket.on("user:login", async (data, cb) => {
+    const user = await User.findBy("username", data.username);
 
-    if (FAKE_USER_DB.find((user) => user.username == data.username)) {
-      cb({
-        ok: true,
-        msg: "Login berhasil",
-      });
-
-      socket.emit("update-online-users", {
-        insert: 1,
-      });
+    if (user) {
+      if (await Hash.verify(user.password, data.password)) {
+        console.log("password match");
+        cb({
+          ok: true,
+          msg: "Login successfully",
+          data: {
+            token: "this-is-valid-token",
+          },
+        });
+      } else {
+        console.log("password not match");
+        cb({
+          ok: false,
+          msg: "Wrong password",
+        });
+      }
     } else {
+      console.log("User not found");
       cb({
         ok: false,
-        msg: "Login gagal",
+        msg: "User not found",
       });
     }
   });
@@ -74,6 +67,9 @@ Ws.otherStart((socket) => {
   // --------------------------------------------------------------------------
   //
   Logger.info(`User connected to other namespace with socket.id = ${socket.id}`);
+  socket.on("disconnect", () => {
+    Logger.info(`User disconnect from other namespace with socket.id = ${socket.id}`);
+  });
 });
 
 // CHEATSHEET

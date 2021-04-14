@@ -23,7 +23,7 @@ export default class User extends BaseModel implements UserInterface {
   public role: "admin" | "common";
 
   @column()
-  public avatar: string;
+  public avatar: string | null;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

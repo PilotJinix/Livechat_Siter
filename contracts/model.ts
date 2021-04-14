@@ -6,7 +6,7 @@ declare module "@interfaces/model" {
     username: string;
     password: string;
     role: "admin" | "common";
-    avatar: string;
+    avatar: string | null;
     createdAt: DateTime;
     updatedAt: DateTime;
   }
