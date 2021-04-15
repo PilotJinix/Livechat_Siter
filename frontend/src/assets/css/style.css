@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Sans Serif */
+  @font-face {
+    font-family: "Rubik";
+    font-style: normal;
+    font-weight: 400;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(../fonts/Rubik.ttf) format("truetype");
+  }
+
+  @font-face {
+    font-family: "Rubik";
+    font-style: italic;
+    font-weight: 400;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(../fonts/Rubik-Italic.ttf) format("truetype");
+  }
+
+  /* Serif */
+  @font-face {
+    font-family: "Roboto Slab";
+    font-style: normal;
+    font-weight: 400;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url(../fonts/RobotoSlab.ttf) format("truetype");
+  }
+
+  *,
+  *::after,
+  *::before {
+    @apply not-italic font-normal;
+  }
+
+  button:focus {
+    @apply outline-none;
+  }
+
+  body {
+    @apply bg-white;
+  }
+
+  .dark body {
+    @apply bg-black;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-lg;
+  }
+
+  h6 {
+    @apply text-base;
+  }
+
+  /* Custom Scrollbar */
+  .themed-scrollbar::-webkit-scrollbar {
+    @apply w-2.5;
+  }
+  .themed-scrollbar::-webkit-scrollbar-track,
+  .themed-scrollbar::-webkit-scrollbar-corner,
+  .themed-scrollbar::-webkit-scrollbar-button,
+  .themed-scrollbar::-webkit-scrollbar-track-piece {
+    @apply hidden;
+  }
+  /* Light Scrollbar */
+  .themed-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300;
+    @apply rounded-md;
+  }
+  .themed-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+  /* Dark Scrollbar */
+  .dark .themed-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-600;
+    @apply rounded-md;
+  }
+  .dark .themed-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
