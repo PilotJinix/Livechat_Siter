@@ -30,6 +30,9 @@ class App extends Component<Props, State> {
         this.props.newNews();
         this.props.newNews();
         this.props.newNews();
+        this.props.newNews();
+        this.props.newNews();
+        this.props.newNews();
       }, 3000);
     });
 

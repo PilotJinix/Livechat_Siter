@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "frontend\\node_modules\\typescript\\lib",
   "css.validate": false,
-  "tailwindCSS.emmetCompletions": true
+  "tailwindCSS.emmetCompletions": true,
+  "git.ignoreLimitWarning": true
 }

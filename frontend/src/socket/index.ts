@@ -12,7 +12,7 @@ export const namespace = {
   other: `${host}/other`,
 };
 
-const main: MainNamespace = io(namespace.main);
+const main: MainNamespace = io();
 
 // const other: OtherNamespace = io(namespace.other);
 

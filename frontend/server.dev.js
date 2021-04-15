@@ -20,6 +20,8 @@ server.app.use(
   })
 );
 
+server.useStatic(path.join(__dirname, "public"));
+
 // History Fallback API - from RAM
 server.app.use("*", (req, res, next) => {
   const file = path.join(compiler.outputPath, "index.html");

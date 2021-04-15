@@ -154,8 +154,8 @@ class Home extends Component<Props, State> {
             <aside className="flex-grow-0 flex-shrink-0 hidden w-20 h-full py-4 pl-4 md:w-52 md:block themed-scrollbar">
               <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                 <ThemeTogglerButton />
-                <button onClick={this.handleNewNews}>New</button>
-                <button onClick={this.handleLoadNews}>Load</button>
+                <button onClick={this.handleNewNews}>New News</button>
+                {/* <button onClick={this.handleLoadNews}>Load</button> */}
               </div>
             </aside>
             {/*
@@ -166,7 +166,7 @@ class Home extends Component<Props, State> {
                 <div className="w-full h-14">
                   <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                     <div className="flex items-center justify-between h-full px-4">
-                      <div className="bg-primary-500">Search ? </div>
+                      <div className="p-2 bg-gray-200 rounded-lg dark:bg-gray-700">Search ? </div>
                       <div className="flex items-center">
                         {loggenIn ? (
                           <>
@@ -214,7 +214,7 @@ class Home extends Component<Props, State> {
                               >
                                 <div className="flex w-full h-full text-dark dark:text-light">
                                   <div className="flex-grow-0 flex-shrink-0 h-full mr-3 overflow-hidden rounded-l-lg sm:rounded-lg w-36 bg-light">
-                                    <img className="object-cover w-full h-full shadow-sm" src="/favicon.ico" alt="" />
+                                    <img className="object-cover w-full h-full shadow-sm" src={v.thumbnail} alt="" />
                                   </div>
                                   <div className="flex flex-col flex-grow py-2 pr-3 lg:py-0 sm:pr-1">
                                     <div className="flex">
@@ -321,7 +321,7 @@ class Home extends Component<Props, State> {
                               <label htmlFor="password" className="block text-base text-gray-800 dark:text-gray-100">
                                 Password
                               </label>
-                              <a href="#" className="text-xs text-gray-600 dark:text-gray-300 hover:underline">
+                              <a href="#" tabIndex={-1} className="text-xs text-gray-600 dark:text-gray-300 hover:underline">
                                 Forget Password ?
                               </a>
                             </div>

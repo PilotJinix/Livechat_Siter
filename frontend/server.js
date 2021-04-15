@@ -6,6 +6,10 @@ class Server {
     this.port = props.port;
   }
 
+  useStatic(path) {
+    this.app.use(express.static(path));
+  }
+
   start() {
     this.app.listen(this.port, () => {
       console.log(`React server running at port ${this.port}`);
