@@ -1,8 +1,12 @@
 import { DateTime } from "luxon";
-import { BaseModel, column, beforeSave } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, beforeSave, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
 import Hash from "@ioc:Adonis/Core/Hash";
 
+// Interfaces
 import { UserInterface } from "@interfaces/model";
+
+// Models
+import News from "App/Models/News";
 
 export default class User extends BaseModel implements UserInterface {
   @column({ isPrimary: true })
@@ -30,4 +34,9 @@ export default class User extends BaseModel implements UserInterface {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
+  @hasMany(() => News, {
+    foreignKey: "authorId",
+  })
+  public news: HasMany<typeof News>;
 }

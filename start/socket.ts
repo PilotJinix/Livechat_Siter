@@ -32,30 +32,37 @@ Ws.start((socket) => {
   // --------------------------------------------------------------------------
   //
   socket.on("user:login", async (data, cb) => {
-    const user = await User.findBy("username", data.username);
+    try {
+      const user = await User.findBy("username", data.username);
 
-    if (user) {
-      if (await Hash.verify(user.password, data.password)) {
-        console.log("password match");
-        cb({
-          ok: true,
-          msg: "Login successfully",
-          data: {
-            token: "this-is-valid-token",
-          },
-        });
+      if (user) {
+        if (await Hash.verify(user.password, data.password)) {
+          console.log("password match");
+          cb({
+            ok: true,
+            msg: "Login successfully",
+            data: {
+              token: "this-is-valid-token",
+            },
+          });
+        } else {
+          console.log("password not match");
+          cb({
+            ok: false,
+            msg: "Wrong password",
+          });
+        }
       } else {
-        console.log("password not match");
+        console.log("User not found");
         cb({
           ok: false,
-          msg: "Wrong password",
+          msg: "User not found",
         });
       }
-    } else {
-      console.log("User not found");
+    } catch (error) {
       cb({
         ok: false,
-        msg: "User not found",
+        msg: "Internal Service Error",
       });
     }
   });

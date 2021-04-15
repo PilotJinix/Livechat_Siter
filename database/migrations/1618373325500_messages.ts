@@ -12,6 +12,7 @@ export default class Messages extends BaseSchema {
       table.foreign("conversation_id").references("id").inTable("conversations");
       table.string("message").notNullable();
       table.timestamps();
+      table.timestamp("deleted_at").nullable();
     });
   }
 

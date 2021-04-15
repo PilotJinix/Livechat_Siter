@@ -3,24 +3,38 @@
 | Routes
 |--------------------------------------------------------------------------
 |
-| This file is dedicated for defining HTTP routes. A single file is enough
-| for majority of projects, however you can define routes in different
-| files and just make sure to import them inside this file. For example
-|
-| Define routes in following two files
-| ├── start/routes/cart.ts
-| ├── start/routes/customer.ts
-|
-| and then import them inside `start/routes/index.ts` as follows
-|
-| import './cart'
-| import './customer'
-|
 */
 
 import Route from "@ioc:Adonis/Core/Route";
 
-// History Api Fallback for BrowserRouter - react-router-dom
+/*
+|--------------------------------------------------------------------------
+| Test Query Database
+|--------------------------------------------------------------------------
+|
+*/
+import { user, news, conversation, message } from "./Test";
+// USERS
+Route.get("api/users", user.index);
+Route.get("api/admins", user.adminOnly);
+Route.get("api/commons", user.commonOnly);
+// NEWS
+Route.get("api/news", news.index);
+// CONVERSATIONS
+Route.get("api/conversations", conversation.index);
+Route.get("api/conversations/:id", conversation.show);
+Route.get("api/conversations-soft-delete/:id", conversation.softDelete);
+// MESSAGE
+Route.get("api/messages", message.index);
+Route.get("api/messages/:id", message.show);
+Route.get("api/messages-soft-delete/:id", message.softDelete);
+
+/*
+|--------------------------------------------------------------------------
+| History Api Fallback for BrowserRouter - react-router-dom
+|--------------------------------------------------------------------------
+|
+*/
 Route.get("*", async ({ view }) => {
   return view.render("react/index");
 });

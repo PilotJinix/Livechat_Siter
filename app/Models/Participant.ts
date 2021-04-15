@@ -2,23 +2,20 @@ import { DateTime } from "luxon";
 import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
 
 // Interfaces
-import { CommentsInterface } from "@interfaces/model";
+import { ParticipantsInterface } from "@interfaces/model";
 
 // Models
 import User from "App/Models/User";
 
-export default class Comment extends BaseModel implements CommentsInterface {
+export default class Participant extends BaseModel implements ParticipantsInterface {
   @column({ isPrimary: true })
   public id: number;
-
-  @column()
-  public newsId: number;
 
   @column()
   public userId: number;
 
   @column()
-  public comment: string;
+  public conversationId: number;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

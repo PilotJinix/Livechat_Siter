@@ -10,6 +10,7 @@ export default class Conversations extends BaseSchema {
       table.foreign("creator_id").references("id").inTable("users");
       table.string("title").notNullable();
       table.timestamps();
+      table.timestamp("deleted_at").nullable();
     });
   }
 

@@ -1,6 +1,12 @@
 import { DateTime } from "luxon";
-import { BaseModel, column, beforeSave } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, beforeSave, belongsTo, BelongsTo, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
+
+// Interfaces
 import { NewsInterface } from "@interfaces/model";
+
+// Models
+import User from "App/Models/User";
+import Comment from "App/Models/Comment";
 
 export default class News extends BaseModel implements NewsInterface {
   @column({ isPrimary: true })
@@ -20,7 +26,7 @@ export default class News extends BaseModel implements NewsInterface {
 
   @beforeSave()
   public static async generateSlug(news: News) {
-    news.slug = news.title.replace(" ", "-");
+    news.slug = news.title.replace(/\s/g, "-");
   }
 
   @column()
@@ -31,4 +37,10 @@ export default class News extends BaseModel implements NewsInterface {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
+  @belongsTo(() => User)
+  public author: BelongsTo<typeof User>;
+
+  @hasMany(() => Comment)
+  public comments: HasMany<typeof Comment>;
 }

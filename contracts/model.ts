@@ -1,5 +1,13 @@
 declare module "@interfaces/model" {
   import { DateTime } from "luxon";
+  import { HasMany, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
+
+  import Comment from "App/Models/Comment";
+  import Conversation from "App/Models/Conversation";
+  import Message from "App/Models/Message";
+  import News from "App/Models/News";
+  import Participant from "App/Models/Participant";
+  import User from "App/Models/User";
 
   interface UserInterface {
     id: number;
@@ -9,6 +17,9 @@ declare module "@interfaces/model" {
     avatar: string | null;
     createdAt: DateTime;
     updatedAt: DateTime;
+
+    // hasMany
+    news: HasMany<typeof News>;
   }
 
   interface NewsInterface {
@@ -20,6 +31,11 @@ declare module "@interfaces/model" {
     thumbnail: string;
     createdAt: DateTime;
     updatedAt: DateTime;
+
+    // belongsTo
+    author: BelongsTo<typeof User>;
+    // hasMany
+    comments: HasMany<typeof Comment>;
   }
 
   interface CommentsInterface {
@@ -29,6 +45,36 @@ declare module "@interfaces/model" {
     comment: string;
     createdAt: DateTime;
     updatedAt: DateTime;
+
+    // belongsTo
+    user: BelongsTo<typeof User>;
+  }
+
+  interface ConversationsInterface {
+    id: number;
+    creatorId: number;
+    title: string;
+    // type?: 'personal' | 'channel'
+    createdAt: DateTime;
+    updatedAt: DateTime;
+    deletedAt: DateTime;
+
+    // belongsTo
+    creator: BelongsTo<typeof User>;
+    // hasMany
+    participants: HasMany<typeof Participant>;
+    messages: HasMany<typeof Message>;
+  }
+
+  interface ParticipantsInterface {
+    id: number;
+    userId: number;
+    conversationId: number;
+    createdAt: DateTime;
+    updatedAt: DateTime;
+
+    // belongsTo
+    user: BelongsTo<typeof User>;
   }
 
   interface MessagesInterface {
@@ -39,28 +85,8 @@ declare module "@interfaces/model" {
     createdAt: DateTime;
     updatedAt: DateTime;
     deletedAt: DateTime;
-  }
 
-  interface DeletedMessagesInterface {
-    id: number;
-    messageId: number;
-    createdAt: DateTime;
-    updatedAt: DateTime;
-  }
-
-  interface ConversationsInterface {
-    id: number;
-    creatorId: number;
-    title: string;
-    createdAt: DateTime;
-    updatedAt: DateTime;
-    deletedAt: DateTime;
-  }
-
-  interface DeletedConversationsInterface {
-    id: number;
-    conversationId: number;
-    createdAt: DateTime;
-    updatedAt: DateTime;
+    // belongsTo
+    sender: BelongsTo<typeof User>;
   }
 }
