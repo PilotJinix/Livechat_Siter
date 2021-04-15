@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "css.validate": false,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "tailwindCSS.emmetCompletions": true
+}

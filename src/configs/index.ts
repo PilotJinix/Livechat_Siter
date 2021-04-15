@@ -1,0 +1,2 @@
+// LOCAL STORAGE
+export const THEME_KEY = "APP_THEME";
