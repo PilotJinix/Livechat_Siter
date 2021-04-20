@@ -48,7 +48,9 @@ export default class Conversation extends BaseModel implements ConversationsInte
     query.whereNull("deleted_at");
   }
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: "authorId",
+  })
   public creator: BelongsTo<typeof User>;
 
   @hasMany(() => Participant)
