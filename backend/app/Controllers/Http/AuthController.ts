@@ -4,6 +4,7 @@ import { schema, rules, validator } from "@ioc:Adonis/Core/Validator";
 import User from "App/Models/User";
 
 export default class AuthController {
+  // @ts-ignore
   public async register({ request, auth }: HttpContextContract) {
     const UserSchema = schema.create({
       username: schema.string({ trim: true }, [
@@ -42,6 +43,7 @@ export default class AuthController {
     }
   }
 
+  // @ts-ignore
   public async login({ request, auth }: HttpContextContract) {
     try {
       const token = await auth
@@ -54,6 +56,7 @@ export default class AuthController {
         auth: token.toJSON(),
       };
     } catch (error) {
+      console.log(error)
       return {
         msg: "errors catched",
         error,
@@ -61,6 +64,7 @@ export default class AuthController {
     }
   }
 
+  // @ts-ignore
   public async authenticate({ auth }: HttpContextContract) {
     try {
       await auth.authenticate();
@@ -76,6 +80,7 @@ export default class AuthController {
     }
   }
 
+  // @ts-ignore
   public async logout({ auth }: HttpContextContract) {
     try {
       await auth.use("api").logout();
