@@ -212,25 +212,6 @@ class Home extends Component<Props, State> {
                 {/* Main */}
                 <div className="w-full h-full pt-3 overflow-hidden md:pt-5">
                   <div className="flex flex-row w-full h-full">
-                    <div
-                      ref={this.newListContainerRef}
-                      className="flex-grow h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
-                    >
-                      <AnimatePresence>
-                        {news ? (
-                          <NewsList>
-                            {news.data.map((v, i, { length }) => (
-                              <NewsItem key={v.id} news={v} />
-                            ))}
-                          </NewsList>
-                        ) : (
-                          <>
-                            <NewsSkeleton />
-                            <NewsSkeleton />
-                          </>
-                        )}
-                      </AnimatePresence>
-                    </div>
                     <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
                       <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
                     </div>
