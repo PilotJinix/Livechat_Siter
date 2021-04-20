@@ -10,12 +10,14 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "^3.1.1",
+    "@socket.io/admin-ui": "0.0.1",
     "adonis-preset-ts": "^2.1.0",
     "typescript": "^4.1.5",
     "youch": "^2.2.1",
     "youch-terminal": "^1.1.0"
   },
   "dependencies": {
+    "@adonisjs/auth": "^5.1.1",
     "@adonisjs/core": "^5.0.4-preview-rc-2.1",
     "@adonisjs/lucid": "^10.0.0",
     "@adonisjs/repl": "^1.1.6",

@@ -35,6 +35,15 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
+  // first-load-content
+  // -----------------------------
+  //
+  interface responseFirstLoadContent {
+    news: any;
+  }
+  type FirstLoadContentEmiter = Emiter<any, responseFirstLoadContent>;
+
+  // -----------------------------
   // user:login
   // -----------------------------
   //
@@ -66,6 +75,8 @@ declare module "@interfaces/socket/main" {
   // -----------------------------
   //
   interface EmitEvents {
+    "first-load-content": FirstLoadContentEmiter;
+
     "user:login": UserLoginEmiter;
     "user:register": UserRegisterEmiter;
   }

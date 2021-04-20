@@ -10,6 +10,15 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
+  // first-load-content
+  // -----------------------------
+  //
+  interface responseFirstLoadContent {
+    news: any;
+  }
+  type FirstLoadContentListener = Listener<any, responseFirstLoadContent>;
+
+  // -----------------------------
   // user:login
   // -----------------------------
   //
@@ -41,6 +50,8 @@ declare module "@interfaces/socket/main" {
   // -----------------------------
   //
   interface ListenEvents {
+    "first-load-content": FirstLoadContentListener;
+
     "user:login": UserLoginListener;
     "user:register": UserRegisterListener;
   }

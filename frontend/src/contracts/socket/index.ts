@@ -9,9 +9,10 @@ declare module "@interfaces/socket" {
   type Callback<R = any> = (response: Response<R>) => void;
   type CallbackAsync<R = any> = (response: Response<R>) => Promise<void>;
 
-  type Listener<D = any, R = any> = (data: D, callback: Callback<R>) => void;
-  type ListenerAsync<D = any, R = any> = (data: D, callback: Callback<R>) => Promise<void>;
+  type Listener<D = any, R = any> = (data: D, callback?: Callback<R>) => void;
+  type ListenerAsync<D = any, R = any> = (data: D, callback?: Callback<R>) => Promise<void>;
 
-  type Emiter<D = any, R = any> = (data: D, callback?: Callback<R>) => void;
-  type EmiterAsync<D = any, R = any> = (data: D, callback?: Callback<R>) => Promise<void>;
+  type Emiter<D = any, R = any> = (data: D, Callback: Callback<R>) => void;
+  type EmiterOne<R = any> = (Callback: Callback<R>) => void;
+  type EmiterAsync<D = any, R = any> = (data: D, Callback: Callback<R>) => Promise<void>;
 }

@@ -69,6 +69,18 @@ module.exports = {
       serif: ['"Roboto Slab"', "ui-serif", "serif"],
       sans: ["Rubik", "ui-sans-serif", "sans-serif"],
     },
+    borderWidth: {
+      DEFAULT: "1px",
+      0: "0px",
+      1: "1px",
+      2: "2px",
+      3: "3px",
+      4: "4px",
+      5: "5px",
+      6: "6px",
+      7: "7px",
+      8: "8px",
+    },
     extend: {
       spacing: {
         112: "28rem",
@@ -77,6 +89,11 @@ module.exports = {
         160: "40rem",
         176: "44rem",
         192: "48rem",
+      },
+      animation: {
+        "bounce-step-1": "bounce-flat 1s infinite",
+        "bounce-step-2": "bounce-flat 1s infinite .25s",
+        "bounce-step-3": "bounce-flat 1s infinite .50s",
       },
     },
   },

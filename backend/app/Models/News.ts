@@ -38,7 +38,9 @@ export default class News extends BaseModel implements NewsInterface {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  @belongsTo(() => User)
+  @belongsTo(() => User, {
+    foreignKey: "authorId",
+  })
   public author: BelongsTo<typeof User>;
 
   @hasMany(() => Comment)

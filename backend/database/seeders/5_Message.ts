@@ -7,7 +7,7 @@ export default class MessageSeeder extends BaseSeeder {
   public async run() {
     await Message.createMany([
       {
-        senderId: 2,
+        senderId: 1,
         conversationId: 1,
         message: "Hai",
       },
@@ -17,7 +17,7 @@ export default class MessageSeeder extends BaseSeeder {
         message: "Halo",
       },
       {
-        senderId: 2,
+        senderId: 1,
         conversationId: 1,
         message: "Apa kabar ?",
       },
@@ -30,6 +30,11 @@ export default class MessageSeeder extends BaseSeeder {
         senderId: 5,
         conversationId: 2,
         message: "Hi",
+      },
+      {
+        senderId: 6,
+        conversationId: 2,
+        message: "Hii",
       },
       {
         senderId: 4,

@@ -1,23 +1,37 @@
 // NODE_MODULES
-import { StrictMode } from "react";
+import { StrictMode, lazy, Suspense } from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 // LOCAL
 import store from "__src/store";
-import { theme } from "__src/store/app/actions";
+import { theme, auth } from "__src/store/app/actions";
 import { loadFirstTheme } from "__src/theme";
+import { loadFirstAuth } from "__src/auth";
 import "__src/assets/css/style.css";
 // COMPONENTS
-import App from "__src/App";
+const App = lazy(() => import("__src/App"));
+// const App = lazy(() => import("__src/components/examples"));
+
+// dayjs plugin
+dayjs.locale("id");
+dayjs.extend(localizedFormat);
+dayjs.extend(updateLocale);
+dayjs.extend(relativeTime);
 
 /*
 |---------------------------------------------------------------
-| load theme from localStorage
+| dispatch first from localStorage
 |---------------------------------------------------------------
 |
 */
 store.dispatch(theme(loadFirstTheme()));
+store.dispatch(auth(loadFirstAuth()));
 
 /*
 |---------------------------------------------------------------
@@ -38,7 +52,9 @@ render(
         {/*
         /// App with Routes
         */}
-        <App />
+        <Suspense fallback={null}>
+          <App />
+        </Suspense>
       </Router>
     </Provider>
   </StrictMode>,

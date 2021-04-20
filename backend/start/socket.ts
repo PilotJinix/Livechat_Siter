@@ -1,9 +1,11 @@
 import Logger from "@ioc:Adonis/Core/Logger";
 import Hash from "@ioc:Adonis/Core/Hash";
+// import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
 import Ws from "App/Services/Ws";
 
 import User from "App/Models/User";
+import News from "App/Models/News";
 
 // --------------------------------------------------------------------------
 // MainNamespace
@@ -17,6 +19,27 @@ Ws.start((socket) => {
   Logger.info(`User connected to main namespace with socket.id = ${socket.id}`);
   socket.on("disconnect", () => {
     Logger.info(`User disconnect from main namespace with socket.id = ${socket.id}`);
+  });
+
+  // --------------------------------------------------------------------------
+  // first-load-content
+  // --------------------------------------------------------------------------
+  //
+  socket.on("first-load-content", async (data, cb) => {
+    try {
+      const news = await News.query().preload("comments");
+      cb({
+        ok: true,
+        data: {
+          news: news,
+        },
+      });
+    } catch (error) {
+      cb({
+        ok: false,
+        msg: "Internal Service Error",
+      });
+    }
   });
 
   // --------------------------------------------------------------------------
@@ -66,18 +89,24 @@ Ws.start((socket) => {
       });
     }
   });
-});
 
-Ws.otherStart((socket) => {
   // --------------------------------------------------------------------------
-  // LOGGER
+  // user:new-message
   // --------------------------------------------------------------------------
   //
-  Logger.info(`User connected to other namespace with socket.id = ${socket.id}`);
-  socket.on("disconnect", () => {
-    Logger.info(`User disconnect from other namespace with socket.id = ${socket.id}`);
-  });
+  // socket.on('user:new-message')
 });
+
+// Ws.otherStart((socket) => {
+//   // --------------------------------------------------------------------------
+//   // LOGGER
+//   // --------------------------------------------------------------------------
+//   //
+//   Logger.info(`User connected to other namespace with socket.id = ${socket.id}`);
+//   socket.on("disconnect", () => {
+//     Logger.info(`User disconnect from other namespace with socket.id = ${socket.id}`);
+//   });
+// });
 
 // CHEATSHEET
 // sending to the client

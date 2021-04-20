@@ -1,25 +1,37 @@
 import BaseSeeder from "@ioc:Adonis/Lucid/Seeder";
+import { DateTime } from "luxon";
 
 // MODEL
 import User from "App/Models/User";
 
 export default class UserSeeder extends BaseSeeder {
   public async run() {
-    const __ = (key: string, admin: boolean = false) => {
-      let user: {
-        username: string;
-        password: string;
-        role?: "admin";
-      } = {
-        username: key,
-        password: key,
-      };
-      if (admin) user.role = "admin";
+    type props = {
+      key: string;
+      admin?: boolean;
+      createdAt?: DateTime;
+    };
+
+    const __ = (props: props) => {
+      let user: Partial<User> = { username: props.key, password: props.key, createdAt: props.createdAt };
+      if (props.admin) user.role = "admin";
       return user;
     };
-    const admin = (key: string, admin: boolean = false) => __(`@18/${key}`, admin);
-    const mhs18 = (nim: string, admin: boolean = false) => __(`18--${nim}`, admin);
-    const mhs19 = (nim: string, admin: boolean = false) => __(`19--${nim}`, admin);
+    const admin = (props: props) =>
+      __({
+        ...props,
+        key: `@my/${props.key}`,
+      });
+    const mhs18 = (props: props) =>
+      __({
+        ...props,
+        key: `18--${props.key}`,
+      });
+    const mhs19 = (props: props) =>
+      __({
+        ...props,
+        key: `19--${props.key}`,
+      });
 
     const listAdmin = ["3012", "flamrdevs"];
     const list18 = [
@@ -81,6 +93,34 @@ export default class UserSeeder extends BaseSeeder {
       "3076",
     ];
 
-    await User.createMany([...listAdmin.map((v) => admin(v)), ...list18.map((v) => mhs18(v)), ...list19.map((v) => mhs19(v))]);
+    const sixmonthago = DateTime.now().minus({ months: 6 });
+
+    let day = 0;
+    const listAdminNext = listAdmin.map((key) => {
+      day += 1;
+      return admin({
+        key,
+        admin: true,
+        createdAt: sixmonthago.plus({ days: day }),
+      });
+    });
+    day -= 1;
+    const list18Next = list18.map((key) => {
+      day += 1;
+      return mhs18({
+        key,
+        createdAt: sixmonthago.plus({ days: day }),
+      });
+    });
+    day -= 1;
+    const list19Next = list19.map((key) => {
+      day += 1;
+      return mhs19({
+        key,
+        createdAt: sixmonthago.plus({ days: day }),
+      });
+    });
+
+    await User.createMany([...listAdminNext, ...list18Next, ...list19Next]);
   }
 }

@@ -1,57 +1,52 @@
 // NODE_MODULES
-import { Component } from "react";
+import { Component, createRef } from "react";
+import { NavLink } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
-import { motion, AnimatePresence } from "framer-motion";
-import { Formik, Form, Field, FormikHelpers } from "formik";
-import * as yup from "yup";
+import { AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faComment, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
-import dayjs from "dayjs";
+import { faBars, faTimes, faThLarge, faComment, faUsers, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 // STORE
 import { RootState } from "__src/store";
-import { login, register } from "__src/store/app/actions";
-import { loadNewsAsync, newNewsAsync } from "__src/store/home/actions";
+import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
 // SOCKET
-import { main } from "__src/socket";
+// import { main } from "__src/socket";
 // COMPONENTS
 import ThemeTogglerButton from "__src/components/atoms/ThemeTogglerButton";
 import Modal from "__src/components/advanceds/Portal";
+import AuthCard from "./AuthCard";
+import ModalOverlay from "./ModalOverlay";
+import RegisterForm, { OnRegisterFormSubmit } from "./RegisterForm";
+import LoginForm, { OnLoginFormSubmit } from "./LoginForm";
 
-interface LoginFormProps {
-  username: string;
-  password: string;
-}
+import NewsSkeleton from "./NewsSkeleton";
+import NewsList from "./NewsList";
+import NewsItem from "./NewsItem";
 
-const initialLoginFormValues: LoginFormProps = {
-  username: "",
-  password: "",
-};
-
-const loginSchema = yup.object().shape({
-  username: yup.string().min(2, "Too Short!").max(64, "Too long!").required("Required"),
-  password: yup.string().min(8, "Too Short!").max(16, "Too long!").required("Required"),
-});
-
-interface RegisterFormProps {
-  username: string;
-  password: string;
-  retypePassword: string;
-}
-
-const initialRegisterFormValues: RegisterFormProps = {
-  username: "",
-  password: "",
-  retypePassword: "",
-};
-
-const registerSchema = yup.object().shape({
-  username: yup.string().min(2, "Too Short!").max(64, "Too long!").required("Required"),
-  password: yup.string().min(8, "Too Short!").max(16, "Too long!").required("Required"),
-  retypePassword: yup
-    .string()
-    .oneOf([yup.ref("password"), null], "Password don't match!")
-    .required("Required"),
-});
+const navs: {
+  title: string;
+  path: string;
+  icon: IconDefinition;
+  exact?: boolean;
+  auth?: boolean;
+}[] = [
+  {
+    title: "Home",
+    path: "/",
+    icon: faThLarge,
+    exact: true,
+  },
+  {
+    title: "Conversations",
+    path: "/conversations",
+    icon: faComment,
+    auth: true,
+  },
+  {
+    title: "Users",
+    path: "/users",
+    icon: faUsers,
+  },
+];
 
 type Props = {} & ConnectorProps;
 
@@ -72,105 +67,124 @@ class Home extends Component<Props, State> {
     };
   }
 
-  handleOpenNavbars = () => {
-    this.setState((state) => ({ openNavbars: !state.openNavbars }));
-  };
+  newListContainerRef = createRef<HTMLDivElement>();
 
-  handleLoginForm: (values: LoginFormProps, actions: FormikHelpers<LoginFormProps>) => void | Promise<any> = (
-    values,
-    actions
-  ) => {
-    if (this.props.app.connected) {
-      main.emit(
-        "user:login",
-        {
-          username: values.username,
-          password: values.password,
-        },
-        (res) => {
-          if (res.ok) {
-            // Redux Action
-            this.props.login({
-              username: values.username,
-              token: res.data?.token,
-            });
-            this.handleCloseLoginModal();
-          } else {
-            alert(res.msg);
-          }
-        }
-      );
-    } else {
-      alert("not connected to the server");
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevProps.home.news?.data) {
+      if (prevProps.home.news.data.length !== this.props.home.news?.data.length) {
+        this.newListContainerRef.current?.scrollBy({
+          top: 200,
+          behavior: "smooth",
+        });
+      }
     }
-    actions.setSubmitting(false);
-  };
+  }
 
-  handleNewNews = () => {
-    this.props.newNewsAsync();
+  // Navbars Handlers
+  handleOpenNavbars = () => {
+    this.setState({ openNavbars: true });
   };
-
-  handleLoadNews = () => {
-    this.props.loadNewsAsync();
+  handleCloseNavbars = () => {
+    this.setState({ openNavbars: false });
   };
-
+  // Login Modal Handlers
   handleOpenLoginModal = () => {
     this.setState({ openLoginModal: true });
   };
-
-  handleCloseLoginModal = () => {
-    this.setState({ openLoginModal: false });
-  };
-
   handleOpenRegisterModal = () => {
     this.setState({ openRegisterModal: true });
   };
-
+  // Register Modal Handlers
+  handleCloseLoginModal = () => {
+    this.setState({ openLoginModal: false });
+  };
   handleCloseRegisterModal = () => {
     this.setState({ openRegisterModal: false });
   };
-
-  handleSwitchLogin = () => {
-    this.setState({ openLoginModal: true, openRegisterModal: false });
+  // Handle Switch Login or Register
+  handleToggleSwitchAuthType = () => {
+    this.setState((state) => ({ openLoginModal: !state.openLoginModal, openRegisterModal: !state.openRegisterModal }));
   };
 
-  handleSwitchRegister = () => {
-    this.setState({ openLoginModal: false, openRegisterModal: true });
+  // Handle Register Form Submit
+  handleOnRegisterFormSubmit: OnRegisterFormSubmit = async (values, actions) => {
+    const ok = await this.props.registerAsync(values);
+    if (ok) this.handleCloseRegisterModal();
+    actions.setSubmitting(false);
+  };
+  // Handle Login Form Submit
+  handleOnLoginFormSubmit: OnLoginFormSubmit = async (values, actions) => {
+    const ok = await this.props.loginAsync(values);
+    if (ok) this.handleCloseLoginModal();
+    actions.setSubmitting(false);
+  };
+  // Hand;e Logout Form Submit
+  handleOnLogoutFormSubmit = async () => {
+    const ok = await this.props.logoutAsync();
+    if (ok) window.location.reload();
   };
 
   render() {
     const { openNavbars, openLoginModal, openRegisterModal } = this.state;
     const {
-      app: { loggenIn },
+      app: { user, loggenIn },
       home: { news },
     } = this.props;
     return (
       <>
-        <div className="relative w-full h-screen overflow-hidden bg-gray-200 max-w-screen-2xl dark:bg-dark">
+        <div className="relative w-full h-screen m-auto overflow-hidden bg-gray-200 max-w-screen-2xl dark:bg-dark">
           <div className="flex items-start justify-between h-full">
             {/*
           /// Aside
           */}
-            <aside className="flex-grow-0 flex-shrink-0 hidden w-20 h-full py-4 pl-4 md:w-52 md:block themed-scrollbar">
-              <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
-                <ThemeTogglerButton />
-                <button onClick={this.handleNewNews}>New News</button>
-                {/* <button onClick={this.handleLoadNews}>Load</button> */}
+            <aside className="flex-grow-0 flex-shrink-0 hidden w-20 h-full py-3 pl-3 lg:w-52 md:block themed-scrollbar">
+              <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
+                <div className="w-full h-20"></div>
+                <div className="flex-grow w-full h-auto my-3">
+                  <nav className="w-full">
+                    <ul>
+                      {navs.map((nav) => {
+                        if (nav.auth && !loggenIn) {
+                          return null;
+                        }
+                        return (
+                          <li className="p-2">
+                            <NavLink
+                              className="flex items-center justify-center px-3 py-2 text-gray-500 rounded-lg lg:justify-start dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600"
+                              activeClassName="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                              to={nav.path}
+                              exact={nav.exact}
+                            >
+                              <FontAwesomeIcon className="w-5 h-5 mx-1" icon={nav.icon} />
+                              <span className="hidden ml-1 lg:block">{nav.title}</span>
+                            </NavLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
+                </div>
+                <div className="w-full h-20">
+                  <div className="flex items-center justify-center w-full h-full">
+                    <ThemeTogglerButton />
+                  </div>
+                </div>
               </div>
             </aside>
             {/*
           /// Main
           */}
-            <main className="flex-grow block h-full py-4 pl-4 pr-4 md:pl-6 themed-scrollbar">
+            <main className="flex-grow block h-full py-3 pl-3 pr-3 md:pl-6 themed-scrollbar">
               <div className="flex flex-col items-center justify-start w-full h-full">
+                {/* Header */}
                 <div className="w-full h-14">
                   <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                     <div className="flex items-center justify-between h-full px-4">
-                      <div className="p-2 bg-gray-200 rounded-lg dark:bg-gray-700">Search ? </div>
+                      <div className=""></div>
                       <div className="flex items-center">
                         {loggenIn ? (
                           <>
-                            <button>Profile</button>
+                            <button onClick={this.handleOnLogoutFormSubmit}>{user && user.username}</button>
                           </>
                         ) : (
                           <>
@@ -195,62 +209,25 @@ class Home extends Component<Props, State> {
                     </div>
                   </div>
                 </div>
-                <div className="w-full h-full pt-6 overflow-hidden">
+                {/* Main */}
+                <div className="w-full h-full pt-3 overflow-hidden md:pt-5">
                   <div className="flex flex-row w-full h-full">
-                    <div className="flex-grow h-full pr-3 overflow-x-hidden overflow-y-auto themed-scrollbar">
-                      <AnimatePresence initial={false}>
+                    <div
+                      ref={this.newListContainerRef}
+                      className="flex-grow h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
+                    >
+                      <AnimatePresence>
                         {news ? (
-                          news.map((v, i, { length }) => {
-                            return (
-                              <motion.div
-                                layout
-                                initial={{ scale: 0.9, opacity: 0.3 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                exit={{ scale: 0.9, opacity: 0.3 }}
-                                key={v.id}
-                                className={`w-full h-40 sm:h-48 ${
-                                  length == i + 1 ? "" : "mb-4"
-                                } rounded-lg shadow-sm p-0 sm:p-2 lg:p-4 bg-light dark:bg-gray-700 hover:shadow-md transition-shadow`}
-                              >
-                                <div className="flex w-full h-full text-dark dark:text-light">
-                                  <div className="flex-grow-0 flex-shrink-0 h-full mr-3 overflow-hidden rounded-l-lg sm:rounded-lg w-36 bg-light">
-                                    <img className="object-cover w-full h-full shadow-sm" src={v.thumbnail} alt="" />
-                                  </div>
-                                  <div className="flex flex-col flex-grow py-2 pr-3 lg:py-0 sm:pr-1">
-                                    <div className="flex">
-                                      <div className="pt-1 pr-3">
-                                        <div className="w-10 h-10 rounded-full shadow-sm">
-                                          <img className="object-cover w-full h-full" src="/favicon.ico" alt="" />
-                                        </div>
-                                      </div>
-                                      <div className="flex-grow">
-                                        <h5 className="font-bold">{v.title}</h5>
-                                        <p className="text-sm tracking-wide">{dayjs(v.createdAt).format("HH:mm:ss")}</p>
-                                      </div>
-                                    </div>
-                                    <div className="flex-grow my-2 ml-1 overflow-hidden">
-                                      <p className="leading-5 text-gray-600 break-words whitespace-pre-line dark:text-gray-300">
-                                        {v.content}
-                                      </p>
-                                    </div>
-                                    <div className="flex">
-                                      <div className="flex items-center justify-between h-10 ml-2 text-gray-400 dark:text-gray-500">
-                                        <span className="mr-1 text-xl">{v.comments?.length || 0}</span>
-                                        <FontAwesomeIcon className="w-6 h-6" icon={faComment} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            );
-                          })
+                          <NewsList>
+                            {news.data.map((v, i, { length }) => (
+                              <NewsItem key={v.id} news={v} />
+                            ))}
+                          </NewsList>
                         ) : (
-                          <div className="flex items-center justify-center w-full">
-                            <FontAwesomeIcon
-                              className="w-6 h-6 text-gray-400 animate-spin dark:text-gray-500"
-                              icon={faSpinner}
-                            />
-                          </div>
+                          <>
+                            <NewsSkeleton />
+                            <NewsSkeleton />
+                          </>
                         )}
                       </AnimatePresence>
                     </div>
@@ -267,25 +244,8 @@ class Home extends Component<Props, State> {
         <AnimatePresence>
           {openLoginModal && (
             <Modal>
-              <motion.div
-                layout
-                key="login-modal"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { delay: 0.2 } }}
-                transition={{ duration: 0.3 }}
-                className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-gray-700 bg-opacity-60 dark:bg-opacity-80"
-                onClick={(e) => {
-                  e.target == e.currentTarget && this.handleCloseLoginModal();
-                }}
-              >
-                <motion.div
-                  layout
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1, transition: { delay: 0.2 } }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  className="relative w-full p-6 m-2 rounded-lg shadow-lg sm:h-auto bg-light sm:m-0 sm:w-96 dark:bg-dark"
-                >
+              <ModalOverlay key="login-modal" onOverlayClick={this.handleCloseLoginModal}>
+                <AuthCard>
                   <h1 className="mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100">Login</h1>
                   <button className="absolute top-3 right-3" onClick={this.handleCloseLoginModal}>
                     <FontAwesomeIcon
@@ -294,94 +254,25 @@ class Home extends Component<Props, State> {
                     />
                   </button>
                   <div className="mt-6">
-                    <Formik
-                      initialValues={initialLoginFormValues}
-                      validationSchema={loginSchema}
-                      onSubmit={this.handleLoginForm}
-                    >
-                      {({ errors, touched }) => (
-                        <Form>
-                          <div>
-                            <label htmlFor="username" className="block text-base text-gray-800 dark:text-gray-100">
-                              Username
-                            </label>
-                            <Field
-                              type="text"
-                              id="username"
-                              name="username"
-                              className="block w-full mt-2 border border-gray-300 rounded-lg dark:border-gray-600 text-dark dark:text-light bg-light dark:bg-dark"
-                            />
-                            {errors.username && touched.username && (
-                              <div className="mt-1 text-sm font-normal text-dark dark:text-light">{errors.username}</div>
-                            )}
-                          </div>
-
-                          <div className="mt-4">
-                            <div className="flex items-center justify-between">
-                              <label htmlFor="password" className="block text-base text-gray-800 dark:text-gray-100">
-                                Password
-                              </label>
-                              <a href="#" tabIndex={-1} className="text-xs text-gray-600 dark:text-gray-300 hover:underline">
-                                Forget Password ?
-                              </a>
-                            </div>
-                            <Field
-                              type="text"
-                              id="password"
-                              name="password"
-                              className="block w-full mt-2 border border-gray-300 rounded-lg dark:border-gray-600 text-dark dark:text-light bg-light dark:bg-dark"
-                            />
-                            {errors.password && touched.password && (
-                              <div className="mt-1 text-sm font-normal text-dark dark:text-light">{errors.password}</div>
-                            )}
-                          </div>
-
-                          <div className="mt-6">
-                            <button
-                              type="submit"
-                              className="w-full px-4 py-2 tracking-wide transition-colors duration-200 rounded-lg bg-primary-500 text-light hover:bg-primary-400"
-                            >
-                              Login
-                            </button>
-                          </div>
-                        </Form>
-                      )}
-                    </Formik>
+                    <LoginForm onSubmit={this.handleOnLoginFormSubmit} />
                   </div>
                   <p className="mt-8 text-sm font-light text-center text-gray-400">
                     Don't have an account ?{" "}
                     <button
                       className="font-medium text-gray-700 dark:text-gray-200 hover:underline"
-                      onClick={this.handleSwitchRegister}
+                      onClick={this.handleToggleSwitchAuthType}
                     >
                       Create One
                     </button>
                   </p>
-                </motion.div>
-              </motion.div>
+                </AuthCard>
+              </ModalOverlay>
             </Modal>
           )}
           {openRegisterModal && (
             <Modal>
-              <motion.div
-                layout
-                key="register-modal"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { delay: 0.2 } }}
-                transition={{ duration: 0.3 }}
-                className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-gray-700 bg-opacity-60 dark:bg-opacity-80"
-                onClick={(e) => {
-                  e.target == e.currentTarget && this.handleCloseRegisterModal();
-                }}
-              >
-                <motion.div
-                  layout
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1, transition: { delay: 0.2 } }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  className="relative w-full p-6 m-2 rounded-lg shadow-lg sm:h-auto bg-light sm:m-0 sm:w-96 dark:bg-dark"
-                >
+              <ModalOverlay key="register-modal" onOverlayClick={this.handleCloseRegisterModal}>
+                <AuthCard>
                   <h1 className="mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100">Register</h1>
                   <button className="absolute top-3 right-3" onClick={this.handleCloseRegisterModal}>
                     <FontAwesomeIcon
@@ -390,84 +281,19 @@ class Home extends Component<Props, State> {
                     />
                   </button>
                   <div className="mt-6">
-                    <Formik
-                      initialValues={initialRegisterFormValues}
-                      validationSchema={registerSchema}
-                      onSubmit={(values, actions) => {
-                        alert(JSON.stringify(values, null, 2));
-                        actions.setSubmitting(false);
-                      }}
-                    >
-                      {({ errors, touched }) => (
-                        <Form>
-                          <div>
-                            <label htmlFor="username" className="block text-base text-gray-800 dark:text-gray-100">
-                              Username
-                            </label>
-                            <Field
-                              type="text"
-                              id="username"
-                              name="username"
-                              className="block w-full mt-2 border border-gray-300 rounded-lg dark:border-gray-600 text-dark dark:text-light bg-light dark:bg-dark"
-                            />
-                            {errors.username && touched.username && (
-                              <div className="mt-1 text-sm font-normal text-dark dark:text-light">{errors.username}</div>
-                            )}
-                          </div>
-
-                          <div className="mt-4">
-                            <label htmlFor="password" className="block text-base text-gray-800 dark:text-gray-100">
-                              Password
-                            </label>
-                            <Field
-                              type="text"
-                              id="password"
-                              name="password"
-                              className="block w-full mt-2 border border-gray-300 rounded-lg dark:border-gray-600 text-dark dark:text-light bg-light dark:bg-dark"
-                            />
-                            {errors.password && touched.password && (
-                              <div className="mt-1 text-sm font-normal text-dark dark:text-light">{errors.password}</div>
-                            )}
-                          </div>
-
-                          <div className="mt-4">
-                            <label htmlFor="retypePassword" className="block text-base text-gray-800 dark:text-gray-100">
-                              Retype Password
-                            </label>
-                            <Field
-                              type="text"
-                              id="retypePassword"
-                              name="retypePassword"
-                              className="block w-full mt-2 border border-gray-300 rounded-lg dark:border-gray-600 text-dark dark:text-light bg-light dark:bg-dark"
-                            />
-                            {errors.retypePassword && touched.retypePassword && (
-                              <div className="mt-1 text-sm font-normal text-dark dark:text-light">{errors.retypePassword}</div>
-                            )}
-                          </div>
-
-                          <div className="mt-6">
-                            <button
-                              type="submit"
-                              className="w-full px-4 py-2 tracking-wide transition-colors duration-200 rounded-lg bg-primary-500 text-light hover:bg-primary-400"
-                            >
-                              Register
-                            </button>
-                          </div>
-                        </Form>
-                      )}
-                    </Formik>
+                    <RegisterForm onSubmit={this.handleOnRegisterFormSubmit} />
                   </div>
                   <p className="mt-8 text-sm font-light text-center text-gray-400">
                     Already have an account ?{" "}
                     <button
                       className="font-medium text-gray-700 dark:text-gray-200 hover:underline"
-                      onClick={this.handleSwitchLogin}
+                      onClick={this.handleToggleSwitchAuthType}
                     >
                       Login Now
                     </button>
                   </p>
-                </motion.div>
-              </motion.div>
+                </AuthCard>
+              </ModalOverlay>
             </Modal>
           )}
         </AnimatePresence>
@@ -482,31 +308,12 @@ const connector = connect(
     home: state.home,
   }),
   {
-    login,
-    register,
-    newNewsAsync,
-    loadNewsAsync,
+    loginAsync,
+    registerAsync,
+    logoutAsync,
   }
 );
 
 type ConnectorProps = ConnectedProps<typeof connector>;
 
 export default connector(Home);
-
-// const Index = () => (
-// <div className="flex items-center justify-center px-4 py-8">
-//   <div className="p-6 bg-white rounded shadow-lg md:w-80 dark:bg-gray-800">
-//     <h1 className="text-lg font-bold text-gray-800 dark:text-gray-100">Permission required</h1>
-//     <p className="py-4 text-base font-medium text-gray-800 dark:text-gray-100">Oops! you dont have access!</p>
-//     <p className="text-sm font-medium text-gray-600 dark:text-gray-100">Request access for the file</p>
-//     <div className="items-center justify-between pt-6 sm:flex">
-//       <button className="py-3.5 w-full  dark:text-gray-100 text-gray-600 leading-3 focus:outline-none hover:opacity-90 text-sm font-semibold border-gray-600 rounded  border">
-//         Dismiss
-//       </button>
-//       <button className="py-3.5 w-full sm:mt-0 mt-2 sm:ml-2 leading-3 text-white focus:outline-none hover:opacity-90 text-sm font-semibold border rounded border-indigo-700 bg-indigo-700">
-//         Request Access
-//       </button>
-//     </div>
-//   </div>
-// </div>
-// );

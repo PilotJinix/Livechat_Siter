@@ -1,12 +1,10 @@
 import Server from "@ioc:Adonis/Core/Server";
 
 import SocketIO from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
 
 import { ServerMainNamespace, MainNamespace } from "@interfaces/socket/main";
-import {
-  NamespaceOtherNamespace,
-  OtherNamespace,
-} from "@interfaces/socket/other";
+import { NamespaceOtherNamespace, OtherNamespace } from "@interfaces/socket/other";
 
 type Callback<C> = (socket: C) => void;
 
@@ -23,6 +21,19 @@ class Ws {
         origin: "*",
       },
     });
+
+    // Admin-UI
+    instrument(this.io, {
+      auth: false,
+    });
+
+    // Middleware
+    // this.io.use((socket, next) => {
+    //   const { token } = socket.handshake.auth;
+
+    //   next();
+    // });
+
     this.io.on("connection", callback);
     this.isReady = true;
 

@@ -8,11 +8,29 @@
 export const REGISTER = "REGISTER";
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
-export const TOKEN = "TOKEN";
+
+export const AUTHENTICATE = "AUTHENTICATE";
+export const AUTH = "AUTH";
+
 export const CONNECTED = "CONNECTED";
 export const THEME = "THEME";
 
 export type ThemeType = "light" | "dark";
+
+export type User = {
+  id: number;
+  username: string;
+  role: "admin" | "common";
+  avatar: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Auth = {
+  type: "bearer";
+  token: string;
+  expires_at: string;
+};
 
 /*
 |---------------------------------------------------------------
@@ -22,11 +40,9 @@ export type ThemeType = "light" | "dark";
 */
 
 export interface AppState {
-  user: {
-    username?: string;
-  };
-  token?: string;
-  loggenIn: boolean;
+  user?: User;
+  auth?: Auth;
+  loggenIn?: boolean;
   connected: boolean;
   theme: ThemeType;
 }
@@ -41,16 +57,16 @@ export interface AppState {
 export interface RegisterAction {
   type: typeof REGISTER;
   payload: {
-    username: string;
-    password: string;
+    user?: User;
+    auth?: Auth;
   };
 }
 
 export interface LoginAction {
   type: typeof LOGIN;
   payload: {
-    username: string;
-    token?: string;
+    user?: User;
+    auth?: Auth;
   };
 }
 
@@ -58,10 +74,18 @@ export interface LogoutAction {
   type: typeof LOGOUT;
 }
 
-export interface TokenAction {
-  type: typeof TOKEN;
+export interface AuthenticateAction {
+  type: typeof AUTHENTICATE;
   payload: {
-    token: string;
+    user?: User;
+    auth?: Auth;
+  };
+}
+
+export interface AuthAction {
+  type: typeof AUTH;
+  payload: {
+    auth?: Auth;
   };
 }
 
@@ -86,4 +110,11 @@ export interface ThemeAction {
 |
 */
 
-export type AppActionTypes = RegisterAction | LoginAction | LogoutAction | TokenAction | ConnectedAction | ThemeAction;
+export type AppActionTypes =
+  | RegisterAction
+  | LoginAction
+  | LogoutAction
+  | AuthenticateAction
+  | AuthAction
+  | ConnectedAction
+  | ThemeAction;

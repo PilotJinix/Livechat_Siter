@@ -7,9 +7,9 @@ export default class CommentSeeder extends BaseSeeder {
   public async run() {
     await Comment.createMany([
       {
-        userId: 2,
+        userId: 5,
         newsId: 1,
-        comment: "comment for news_id 1 & from user_id 2",
+        comment: "comment for news_id 1 & from user_id 5",
       },
       {
         userId: 3,
@@ -17,9 +17,9 @@ export default class CommentSeeder extends BaseSeeder {
         comment: "comment for news_id 1 & from user_id 3",
       },
       {
-        userId: 2,
+        userId: 5,
         newsId: 2,
-        comment: "comment for news_id 2 & from user_id 2",
+        comment: "comment for news_id 2 & from user_id 5",
       },
       {
         userId: 3,

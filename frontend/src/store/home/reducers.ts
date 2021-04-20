@@ -1,4 +1,4 @@
-import { HomeState, HomeActionTypes, NEW_NEWS, LOAD_NEWS, News } from "./types";
+import { HomeState, HomeActionTypes, NEW_NEWS, LOAD_NEWS, LOAD_USER } from "./types";
 
 /*
 |---------------------------------------------------------------
@@ -16,36 +16,43 @@ const initialState: HomeState = {};
 |
 */
 
-let newsCount = 0;
-
 export const homeReducer = (state: HomeState = initialState, action: HomeActionTypes): HomeState => {
   switch (action.type) {
+    //
+    //
+    // Menambahkan berita baru kedalam listview
+    //
     case NEW_NEWS:
-      newsCount++;
-      return {
-        ...state,
-        news: [
-          {
-            id: newsCount,
-            authorId: 1,
-            title: `new news ${newsCount}`,
-            content:
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nibh arcu, consequat vitae mi in, cursus semper magna. In pulvinar condimentum arcu eu faucibus. Phasellus maximus nibh vel consectetur congue. Pellentesque semper vel mauris vitae pharetra. Fusce eros nisi, accumsan vel convallis in, accumsan ut nisi. Proin sollicitudin eros leo, ut semper felis aliquam bibendum. Vestibulum quis nunc porttitor, pulvinar risus at, ultricies neque. Fusce in ullamcorper augue. In ut mi orci. Aenean ut mi maximus lacus vulputate sagittis. Nullam justo dolor, vehicula ac massa eget, ullamcorper laoreet lacus. Nunc at mi sed dolor sollicitudin consequat. Etiam porta elit quis purus pretium, in pharetra turpis ullamcorper. Fusce pellentesque metus quis nunc maximus tristique. Duis hendrerit metus ut viverra porta.",
-            thumbnail: "/thumbnail.jpg",
-            slug: "new-news",
-            createdAt: new Date().getTime(),
-            updatedAt: new Date().getTime(),
-          },
-          ...(state.news ? state.news : []),
-        ],
-      };
-
+      return state;
+    //
+    //
+    // Memuat data berita dengan pemanggilan per halaman dan menampilkan ke listview
+    //
     case LOAD_NEWS:
       return {
         ...state,
-        news: state.news,
+        news: {
+          ...state.news,
+          meta: action.payload.news.meta,
+          data: [...(state.news?.data || []), ...action.payload.news.data],
+        },
       };
-
+    //
+    //
+    // Memuat data user
+    //
+    case LOAD_USER:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          data: [...(state.users?.data || []), ...action.payload.user.data],
+        },
+      };
+    //
+    //
+    // Handle Invalid Type
+    //
     default:
       return state;
   }

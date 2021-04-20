@@ -20,6 +20,7 @@ declare module "@interfaces/model" {
 
     // hasMany
     news: HasMany<typeof News>;
+    conversations: HasMany<typeof Conversation>;
   }
 
   interface NewsInterface {

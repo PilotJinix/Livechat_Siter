@@ -4,8 +4,8 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 // STORE
 import { RootState } from "__src/store";
-import { connected } from "__src/store/app/actions";
-import { newNews } from "__src/store/home/actions";
+import { connected, authenticateAsync } from "__src/store/app/actions";
+import { loadNewsAsync, loadUserAsync } from "__src/store/home/actions";
 // LOCAL
 import { main } from "__src/socket";
 // COMPONENTS
@@ -20,45 +20,47 @@ type Props = {} & ConnectorProps;
 type State = {};
 
 class App extends Component<Props, State> {
-  componentDidMount() {
+  componentDidMount = async () => {
+    const { connected, loadNewsAsync, loadUserAsync, authenticateAsync } = this.props;
+
+    const ok = await authenticateAsync();
+
     main.on("connect", () => {
       console.log("main namespace connected successfully");
-      this.props.connected(true);
-
-      setTimeout(() => {
-        this.props.newNews();
-        this.props.newNews();
-        this.props.newNews();
-        this.props.newNews();
-        this.props.newNews();
-        this.props.newNews();
-        this.props.newNews();
-      }, 3000);
+      connected();
     });
 
     main.on("disconnect", () => {
-      this.props.connected(false);
+      connected(false);
     });
-  }
+
+    setTimeout(() => {
+      loadNewsAsync();
+    }, 5000);
+
+    loadUserAsync();
+  };
 
   componentWillUnmount() {
     main.disconnect();
   }
 
   render() {
+    if (typeof this.props.app.loggenIn === "undefined") {
+      return (
+        <div className="flex items-center justify-center w-full h-screen bg-light dark:bg-dark">
+          <div className="w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-1"></div>
+          <div className="w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-2"></div>
+          <div className="w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-3"></div>
+        </div>
+      );
+    }
+
     return (
       <Suspense fallback={null}>
         <Switch>
           <Route exact path="/">
             <Home />
-          </Route>
-
-          <Route path="/login">
-            <div>Login Page</div>
-          </Route>
-
-          <Route path="/register">
-            <div>Register Page</div>
           </Route>
 
           <Route path="/about">
@@ -81,10 +83,13 @@ class App extends Component<Props, State> {
 const connector = connect(
   (state: RootState) => ({
     app: state.app,
+    home: state.home,
   }),
   {
     connected,
-    newNews,
+    loadNewsAsync,
+    loadUserAsync,
+    authenticateAsync,
   }
 );
 

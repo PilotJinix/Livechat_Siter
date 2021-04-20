@@ -12,7 +12,11 @@ export default class ConversationSeeder extends BaseSeeder {
       },
       {
         creatorId: 2,
-        title: "Personal",
+        title: "Group",
+      },
+      {
+        creatorId: 2,
+        title: "Group",
       },
     ]);
   }

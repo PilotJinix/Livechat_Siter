@@ -7,6 +7,7 @@ import { UserInterface } from "@interfaces/model";
 
 // Models
 import News from "App/Models/News";
+import Conversation from "App/Models/Conversation";
 
 export default class User extends BaseModel implements UserInterface {
   @column({ isPrimary: true })
@@ -15,7 +16,7 @@ export default class User extends BaseModel implements UserInterface {
   @column()
   public username: string;
 
-  @column()
+  @column({ serializeAs: null })
   public password: string;
 
   @beforeSave()
@@ -39,4 +40,9 @@ export default class User extends BaseModel implements UserInterface {
     foreignKey: "authorId",
   })
   public news: HasMany<typeof News>;
+
+  @hasMany(() => Conversation, {
+    foreignKey: "creatorId",
+  })
+  public conversations: HasMany<typeof Conversation>;
 }

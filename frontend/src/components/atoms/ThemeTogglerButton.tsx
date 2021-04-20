@@ -20,7 +20,7 @@ class ThemeTogglerButton extends Component<Props, State> {
 
   render() {
     return (
-      <button className="bg-light dark:bg-dark" onClick={this.handleToggle}>
+      <button className="px-3 py-1 bg-gray-100 rounded-lg dark:bg-gray-800" onClick={this.handleToggle}>
         <FontAwesomeIcon icon={this.props.app.theme == "dark" ? faMoon : faSun} />
       </button>
     );

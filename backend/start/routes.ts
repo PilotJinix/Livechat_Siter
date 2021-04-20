@@ -6,6 +6,9 @@
 */
 
 import Route from "@ioc:Adonis/Core/Route";
+import AuthController from "App/Controllers/Http/AuthController";
+import UsersController from "App/Controllers/Http/UsersController";
+import NewsController from "App/Controllers/Http/NewsController";
 
 /*
 |--------------------------------------------------------------------------
@@ -13,21 +16,40 @@ import Route from "@ioc:Adonis/Core/Route";
 |--------------------------------------------------------------------------
 |
 */
-import { user, news, conversation, message } from "./Test";
+// import { user, news, conversation, message } from "./Test";
 // USERS
-Route.get("api/users", user.index);
-Route.get("api/admins", user.adminOnly);
-Route.get("api/commons", user.commonOnly);
+// Route.get("api/users", user.index);
+// Route.get("api/admins", user.adminOnly);
+// Route.get("api/commons", user.commonOnly);
 // NEWS
-Route.get("api/news", news.index);
+// Route.get("api/news", news.index);
 // CONVERSATIONS
-Route.get("api/conversations", conversation.index);
-Route.get("api/conversations/:id", conversation.show);
-Route.get("api/conversations-soft-delete/:id", conversation.softDelete);
+// Route.get("api/conversations", conversation.index);
+// Route.get("api/conversations/:id", conversation.show);
+// Route.get("api/conversations-soft-delete/:id", conversation.softDelete);
 // MESSAGE
-Route.get("api/messages", message.index);
-Route.get("api/messages/:id", message.show);
-Route.get("api/messages-soft-delete/:id", message.softDelete);
+// Route.get("api/messages", message.index);
+// Route.get("api/messages/:id", message.show);
+// Route.get("api/messages-soft-delete/:id", message.softDelete);
+
+// Test Auth
+const authController = new AuthController();
+// Handle Register Form
+Route.post("api/register", authController.register);
+// Handle Login Form
+Route.post("api/login", authController.login);
+// Handle first load application
+Route.post("api/authenticate", authController.authenticate);
+// Handle Logout Form
+Route.post("api/logout", authController.logout);
+
+// Test News
+const newsController = new NewsController();
+Route.get("api/news", newsController.index);
+
+// Test User
+const usersController = new UsersController();
+Route.get("api/users", usersController.index);
 
 /*
 |--------------------------------------------------------------------------

@@ -7,7 +7,7 @@ export default class ParticipantSeeder extends BaseSeeder {
   public async run() {
     await Participant.createMany([
       {
-        userId: 2,
+        userId: 1,
         conversationId: 1,
       },
       {
@@ -20,6 +20,10 @@ export default class ParticipantSeeder extends BaseSeeder {
       },
       {
         userId: 5,
+        conversationId: 2,
+      },
+      {
+        userId: 6,
         conversationId: 2,
       },
     ]);

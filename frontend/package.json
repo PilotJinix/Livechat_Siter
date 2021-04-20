@@ -54,6 +54,8 @@
     "@fortawesome/free-brands-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@headlessui/react": "^1.0.0",
+    "axios": "^0.21.1",
     "dayjs": "^1.10.4",
     "formik": "^2.2.6",
     "framer-motion": "^4.1.0",

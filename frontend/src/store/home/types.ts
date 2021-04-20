@@ -7,34 +7,70 @@
 
 export const NEW_CONVERSATION = "NEW_CONVERSATION";
 export const LOAD_CONVERSATION = "LOAD_CONVERSATION";
+
 export const NEW_MESSAGE = "NEW_MESSAGE";
 export const LOAD_MESSAGE = "LOAD_MESSAGE";
+
 export const NEW_NEWS = "NEW_NEWS";
 export const LOAD_NEWS = "LOAD_NEWS";
+
+export const LOAD_USER = "LOAD_USER";
+
 export const NEW_COMMENT = "NEW_COMMENT";
 export const LOAD_COMMENT = "LOAD_COMMENT";
 
 export type ThemeType = "light" | "dark";
 
+export type User = {
+  id: number;
+  username: string;
+  role: "admin" | "common";
+  avatar: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Comment = {
   id: number;
-  newsId: number;
-  userId: number;
+  news_id: number;
+  user_id: number;
   comment: string;
-  createdAt: number;
-  updatedAt: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewsMeta = {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  first_page: number;
+  first_page_url: string | null;
+  last_page_url: string | null;
+  next_page_url: string | null;
+  previous_page_url: string | null;
 };
 
 export type News = {
   id: number;
-  authorId: number;
+  author_id: number;
   title: string;
   content: string;
   slug: string;
   thumbnail: string;
+  created_at: string;
+  updated_at: string;
+  comments?: Comment[];
+  author?: User;
+};
+
+export type Participant = {
+  id: number;
+  user_id: number;
+  conversation_id: number;
   createdAt: number;
   updatedAt: number;
-  comments?: Comment[];
+  user?: User;
 };
 
 export type Message = {
@@ -45,7 +81,10 @@ export type Message = {
   createdAt: number;
   updatedAt: number;
   deletedAt: number;
+  sender?: User;
 };
+
+export type ConversationMeta = {};
 
 export type Conversation = {
   id: number;
@@ -55,6 +94,23 @@ export type Conversation = {
   updatedAt: number;
   deletedAt: number;
   messages?: Message[];
+  participant?: Participant[];
+};
+
+export type UserState = {
+  data: User[];
+};
+
+export type NewsState = {
+  meta: NewsMeta;
+  data: News[];
+  selectedId?: number;
+};
+
+export type ConversationState = {
+  meta: ConversationMeta;
+  data: Conversation[];
+  selectedId?: number;
 };
 
 /*
@@ -65,10 +121,9 @@ export type Conversation = {
 */
 
 export interface HomeState {
-  news?: News[];
-  conversations?: Conversation[];
-  latesNewsDate?: number;
-  selectedConversation?: number;
+  news?: NewsState;
+  conversations?: ConversationState;
+  users?: UserState;
 }
 
 /*
@@ -86,12 +141,22 @@ export interface LoadConversationAction {
   type: typeof LOAD_CONVERSATION;
 }
 
-export interface NewNews {
+export interface NewNewsAction {
   type: typeof NEW_NEWS;
 }
 
-export interface LoadNews {
+export interface LoadNewsAction {
   type: typeof LOAD_NEWS;
+  payload: {
+    news: NewsState;
+  };
+}
+
+export interface LoadUserAction {
+  type: typeof LOAD_USER;
+  payload: {
+    user: UserState;
+  };
 }
 
 /*
@@ -101,4 +166,4 @@ export interface LoadNews {
 |
 */
 
-export type HomeActionTypes = NewConversationAction | LoadConversationAction | NewNews | LoadNews;
+export type HomeActionTypes = NewConversationAction | LoadConversationAction | NewNewsAction | LoadNewsAction | LoadUserAction;
