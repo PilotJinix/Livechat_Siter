@@ -1,11 +1,10 @@
 import Logger from "@ioc:Adonis/Core/Logger";
-import Hash from "@ioc:Adonis/Core/Hash";
-// import { schema, rules } from '@ioc:Adonis/Core/Validator'
+// import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 
 import Ws from "App/Services/Ws";
 
-import User from "App/Models/User";
-import News from "App/Models/News";
+// import User from "App/Models/User";
+// import News from "App/Models/News";
 
 // --------------------------------------------------------------------------
 // MainNamespace
@@ -20,81 +19,6 @@ Ws.start((socket) => {
   socket.on("disconnect", () => {
     Logger.info(`User disconnect from main namespace with socket.id = ${socket.id}`);
   });
-
-  // --------------------------------------------------------------------------
-  // first-load-content
-  // --------------------------------------------------------------------------
-  //
-  socket.on("first-load-content", async (data, cb) => {
-    try {
-      const news = await News.query().preload("comments");
-      cb({
-        ok: true,
-        data: {
-          news: news,
-        },
-      });
-    } catch (error) {
-      cb({
-        ok: false,
-        msg: "Internal Service Error",
-      });
-    }
-  });
-
-  // --------------------------------------------------------------------------
-  // user:register
-  // --------------------------------------------------------------------------
-  //
-  // socket.on("user:register", async (data, cb) => {
-  //   console.log("data = ", data);
-  // });
-
-  // --------------------------------------------------------------------------
-  // user:login
-  // --------------------------------------------------------------------------
-  //
-  socket.on("user:login", async (data, cb) => {
-    try {
-      const user = await User.findBy("username", data.username);
-
-      if (user) {
-        if (await Hash.verify(user.password, data.password)) {
-          console.log("password match");
-          cb({
-            ok: true,
-            msg: "Login successfully",
-            data: {
-              token: "this-is-valid-token",
-            },
-          });
-        } else {
-          console.log("password not match");
-          cb({
-            ok: false,
-            msg: "Wrong password",
-          });
-        }
-      } else {
-        console.log("User not found");
-        cb({
-          ok: false,
-          msg: "User not found",
-        });
-      }
-    } catch (error) {
-      cb({
-        ok: false,
-        msg: "Internal Service Error",
-      });
-    }
-  });
-
-  // --------------------------------------------------------------------------
-  // user:new-message
-  // --------------------------------------------------------------------------
-  //
-  // socket.on('user:new-message')
 });
 
 // Ws.otherStart((socket) => {

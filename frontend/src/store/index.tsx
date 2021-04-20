@@ -36,8 +36,8 @@ export type ThunkResult<R = void> = ThunkAction<R, RootState, unknown, RootActio
 
 const store = createStore(
   rootReducer,
-  compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>), loadReduxDevTools())
-  // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
+  // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>), loadReduxDevTools())
+  compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
 );
 
 export default store;
