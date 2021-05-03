@@ -35,6 +35,17 @@ npm install
 // run
 // kalo di Laravel 'php artisan serve'
 node ace serve --watch
+
+// Migrasi file Database
+npm run ace:migration
+
+// run backend
+// kalo di Laravel 'php artisan serve'
+npm run dev
+
+// run frontend
+// kalo di Laravel 'php artisan serve'
+npm run start:dev
 ```
 
 

@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update">
+    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update data DB">
+      <change afterPath="$PROJECT_DIR$/backend/public/news 1_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 1_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 1_3.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_1.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_3.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_4.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_5.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 3_6.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 6_1.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news 6_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/news_6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_3.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_1.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_3.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_4.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_5.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_6.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_1.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_2.JPG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_6.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.adonisrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.adonisrc.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/ace-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/ace-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Controllers/Http/AuthController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Controllers/Http/AuthController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/contracts/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/contracts/auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/migrations/1618303168466_api_tokens.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/migrations/1618303168466_api_tokens.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/seeders/1_User.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/1_User.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/pages/home/Main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/pages/home/Main.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/configs/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/configs/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,7 +99,11 @@
       <workItem from="1618352233935" duration="2130000" />
       <workItem from="1618879224585" duration="1369000" />
       <workItem from="1618883176500" duration="4090000" />
-      <workItem from="1618887483168" duration="6340000" />
+      <workItem from="1618887483168" duration="8077000" />
+      <workItem from="1619498450708" duration="1949000" />
+      <workItem from="1619941619162" duration="1642000" />
+      <workItem from="1619949195649" duration="4324000" />
+      <workItem from="1620004172555" duration="7955000" />
     </task>
     <task id="LOCAL-00001" summary="make News Models">
       <created>1618115371147</created>
@@ -168,7 +196,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618801870750</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Update data DB">
+      <created>1618896920688</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1618896920688</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +230,7 @@
     <MESSAGE value="Done Migration" />
     <MESSAGE value="Done Seeder" />
     <MESSAGE value="Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update" />
+    <MESSAGE value="Update data DB" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update data DB" />
   </component>
 </project>
