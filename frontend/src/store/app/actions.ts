@@ -71,8 +71,8 @@ export const registerAsync = (data: RegisterDataProps): ThunkResult<Promise<bool
           setAuth(response.data.auth);
           resolve(true);
         } else {
-          console.log(response);
-          console.error("register failed");
+          // console.log(response);
+          // console.error("register failed");
           resolve(false);
         }
       })
@@ -123,8 +123,8 @@ export const loginAsync = (data: LoginDataProps): ThunkResult<Promise<boolean>> 
           setAuth(response.data.auth);
           resolve(true);
         } else {
-          console.log(response);
-          console.error("login failed");
+          // console.log(response);
+          // console.error("login failed");
           resolve(false);
         }
       })
@@ -168,8 +168,8 @@ export const logoutAsync = (): ThunkResult<Promise<boolean>> => (dispatch, getSt
           setAuth();
           resolve(true);
         } else {
-          console.log(response);
-          console.error("logout failed");
+          // console.log(response);
+          // console.error("logout failed");
           resolve(false);
         }
       })
@@ -234,8 +234,8 @@ export const authenticateAsync = (): ThunkResult<Promise<boolean>> => (dispatch,
           dispatch(login({ user: response.data.auth?.guards.api.user, auth: app.auth }));
           resolve(true);
         } else {
-          console.log(response);
-          console.error("current auth is not authenticated then dispatch logout");
+          // console.log(response);
+          // console.error("current auth is not authenticated then dispatch logout");
           dispatch(logout());
           resolve(false);
         }

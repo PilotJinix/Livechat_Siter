@@ -25,7 +25,7 @@ export const appReducer = (state: AppState = initialState, action: AppActionType
       return {
         ...state,
         user: action.payload.user,
-        loggenIn: true,
+        loggedIn: true,
       };
 
     case LOGIN:
@@ -36,7 +36,7 @@ export const appReducer = (state: AppState = initialState, action: AppActionType
         ...state,
         user: action.payload.user,
         auth: action.payload.auth,
-        loggenIn: true,
+        loggedIn: true,
       };
 
     case LOGOUT:
@@ -44,7 +44,7 @@ export const appReducer = (state: AppState = initialState, action: AppActionType
         ...state,
         user: undefined,
         auth: undefined,
-        loggenIn: false,
+        loggedIn: false,
       };
 
     case AUTHENTICATE:

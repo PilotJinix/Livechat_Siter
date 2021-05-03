@@ -1,6 +1,7 @@
 // NODE_MODULES
 import { Component } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import dayjs from "dayjs";
@@ -34,7 +35,9 @@ class NewsItem extends Component<Props> {
                 </div>
               </div>
               <div className="flex-grow">
-                <h6 className="font-bold leading-4 md:text-xl">{news.title}</h6>
+                <h6 className="font-bold leading-4 md:text-xl">
+                  <Link to={`/news/${news.slug}`}>{news.title}</Link>
+                </h6>
                 <p className="text-sm tracking-wide text-gray-600 dark:text-gray-300">{dayjs(news.created_at).fromNow()}</p>
               </div>
             </div>

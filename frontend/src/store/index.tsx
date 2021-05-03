@@ -7,7 +7,7 @@ import { appReducer } from "./app/reducers";
 import { HomeActionTypes } from "./home/types";
 import { homeReducer } from "./home/reducers";
 // Devtools
-import { loadReduxDevTools } from "__src/devtools";
+import { composeWithReduxDevtools } from "__src/devtools";
 
 /*
 |---------------------------------------------------------------
@@ -37,7 +37,8 @@ export type ThunkResult<R = void> = ThunkAction<R, RootState, unknown, RootActio
 const store = createStore(
   rootReducer,
   // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>), loadReduxDevTools())
-  compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
+  // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>)),
+  composeWithReduxDevtools(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
 );
 
 export default store;

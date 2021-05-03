@@ -1,10 +1,11 @@
 // NODE_MODULES
-import { Component, createRef } from "react";
-import { NavLink } from "react-router-dom";
+import { Fragment, Component, createRef } from "react";
+import { Switch, Route, Redirect, Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
-import { AnimatePresence } from "framer-motion";
+import { Menu, Transition } from "@headlessui/react";
+import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes, faThLarge, faComment, faUsers, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faThLarge, faComment, faUsers, faCog, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 // STORE
 import { RootState } from "__src/store";
 import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
@@ -18,17 +19,14 @@ import ModalOverlay from "./ModalOverlay";
 import RegisterForm, { OnRegisterFormSubmit } from "./RegisterForm";
 import LoginForm, { OnLoginFormSubmit } from "./LoginForm";
 
+import NavLinkList from "./NavLinkList";
+import NavLinkItem, { Nav } from "./NavLinkItem";
+
 import NewsSkeleton from "./NewsSkeleton";
 import NewsList from "./NewsList";
 import NewsItem from "./NewsItem";
 
-const navs: {
-  title: string;
-  path: string;
-  icon: IconDefinition;
-  exact?: boolean;
-  auth?: boolean;
-}[] = [
+const navs: Nav[] = [
   {
     title: "Home",
     path: "/",
@@ -45,6 +43,12 @@ const navs: {
     title: "Users",
     path: "/users",
     icon: faUsers,
+  },
+  {
+    title: "Settings",
+    path: "/settings",
+    icon: faCog,
+    auth: true,
   },
 ];
 
@@ -121,13 +125,14 @@ class Home extends Component<Props, State> {
   // Hand;e Logout Form Submit
   handleOnLogoutFormSubmit = async () => {
     const ok = await this.props.logoutAsync();
-    if (ok) window.location.reload();
+    // if ok then reset conversations data
+    // if (ok) window.location.reload();
   };
 
   render() {
     const { openNavbars, openLoginModal, openRegisterModal } = this.state;
     const {
-      app: { user, loggenIn },
+      app: { user, loggedIn },
       home: { news },
     } = this.props;
     return (
@@ -141,28 +146,14 @@ class Home extends Component<Props, State> {
               <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                 <div className="w-full h-20"></div>
                 <div className="flex-grow w-full h-auto my-3">
-                  <nav className="w-full">
-                    <ul>
-                      {navs.map((nav) => {
-                        if (nav.auth && !loggenIn) {
-                          return null;
-                        }
-                        return (
-                          <li className="p-2">
-                            <NavLink
-                              className="flex items-center justify-center px-3 py-2 text-gray-500 rounded-lg lg:justify-start dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600"
-                              activeClassName="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
-                              to={nav.path}
-                              exact={nav.exact}
-                            >
-                              <FontAwesomeIcon className="w-5 h-5 mx-1" icon={nav.icon} />
-                              <span className="hidden ml-1 lg:block">{nav.title}</span>
-                            </NavLink>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </nav>
+                  <NavLinkList>
+                    {navs.map((nav) => {
+                      if (nav.auth && !loggedIn) {
+                        return null;
+                      }
+                      return <NavLinkItem key={nav.path} nav={nav} />;
+                    })}
+                  </NavLinkList>
                 </div>
                 <div className="w-full h-20">
                   <div className="flex items-center justify-center w-full h-full">
@@ -180,11 +171,68 @@ class Home extends Component<Props, State> {
                 <div className="w-full h-14">
                   <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                     <div className="flex items-center justify-between h-full px-4">
-                      <div className=""></div>
+                      <div className="">Search</div>
                       <div className="flex items-center">
-                        {loggenIn ? (
+                        {loggedIn ? (
                           <>
-                            <button onClick={this.handleOnLogoutFormSubmit}>{user && user.username}</button>
+                            <Menu as="div" className="relative inline-block text-left">
+                              {({ open }) => (
+                                <>
+                                  <div>
+                                    <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                                      {user && user.username}
+                                      <FontAwesomeIcon
+                                        className="-mr-1 ml-2 h-5 w-5 text-gray-300"
+                                        aria-hidden="true"
+                                        icon={faChevronDown}
+                                      />
+                                    </Menu.Button>
+                                  </div>
+
+                                  <Transition
+                                    show={open}
+                                    as={Fragment}
+                                    enter="transition ease-out duration-100"
+                                    enterFrom="transform opacity-0 scale-95"
+                                    enterTo="transform opacity-100 scale-100"
+                                    leave="transition ease-in duration-75"
+                                    leaveFrom="transform opacity-100 scale-100"
+                                    leaveTo="transform opacity-0 scale-95"
+                                  >
+                                    <Menu.Items
+                                      static
+                                      className="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                                    >
+                                      <div className="py-1">
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <Link
+                                              to="/settings/account"
+                                              className={`${
+                                                active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                                              } block px-4 py-2 text-sm`}
+                                            >
+                                              Account settings
+                                            </Link>
+                                          )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                          {({ active }) => (
+                                            <button
+                                              onClick={this.handleOnLogoutFormSubmit}
+                                              className={`${active ? "bg-gray-100 text-gray-900" : "text-gray-700"}
+                        block w-full text-left px-4 py-2 text-sm`}
+                                            >
+                                              Logout
+                                            </button>
+                                          )}
+                                        </Menu.Item>
+                                      </div>
+                                    </Menu.Items>
+                                  </Transition>
+                                </>
+                              )}
+                            </Menu>
                           </>
                         ) : (
                           <>
@@ -202,8 +250,8 @@ class Home extends Component<Props, State> {
                             </button>
                           </>
                         )}
-                        <button className="flex items-center justify-center ml-4 md:hidden">
-                          <FontAwesomeIcon className="w-6 h-6" icon={faBars} />
+                        <button className="flex items-center justify-center ml-4 sm:hidden">
+                          <FontAwesomeIcon className="w-6 h-6 text-gray-400 dark:text-gray-500" icon={faBars} />
                         </button>
                       </div>
                     </div>
@@ -211,30 +259,116 @@ class Home extends Component<Props, State> {
                 </div>
                 {/* Main */}
                 <div className="w-full h-full pt-3 overflow-hidden md:pt-5">
-                  <div className="flex flex-row w-full h-full">
-                    <div
-                      ref={this.newListContainerRef}
-                      className="flex-grow h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
-                    >
-                      <AnimatePresence>
-                        {news ? (
-                          <NewsList>
-                            {news.data.map((v, i, { length }) => (
-                              <NewsItem key={v.id} news={v} />
-                            ))}
-                          </NewsList>
-                        ) : (
-                          <>
-                            <NewsSkeleton />
-                            <NewsSkeleton />
-                          </>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                    <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
-                      <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
-                    </div>
-                  </div>
+                  <AnimateSharedLayout type="crossfade">
+                    <Switch>
+                      <Route
+                        exact
+                        path={["/news/:slug", "/"]}
+                        render={({ history, match }) => {
+                          const { slug } = match.params as any;
+                          const selectedNews = news && news.data.find((n) => n.slug === slug);
+                          return (
+                            <div className="flex-grow flex flex-row w-full h-full">
+                              <div className="flex-grow h-full relative">
+                                <div
+                                  ref={this.newListContainerRef}
+                                  className="w-full h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
+                                >
+                                  {news ? (
+                                    news.data.map((n) => {
+                                      return (
+                                        <div className="h-10">
+                                          <Link to={`/news/${n.slug}`}>{n.title}</Link>
+                                        </div>
+                                      );
+                                    })
+                                  ) : (
+                                    <div>Loading News Skeleton</div>
+                                  )}
+                                  {/* // <AnimatePresence>
+                              //   {news ? (
+                              //     <NewsList>
+                              //       {news.data.map((_news) => (
+                              //         <NewsItem key={_news.id} news={_news} />
+                              //       ))}
+                              //     </NewsList>
+                              //   ) : (
+                              //     <>
+                              //       <NewsSkeleton />
+                              //       <NewsSkeleton />
+                              //       <NewsSkeleton />
+                              //     </>
+                              //   )}
+                              // </AnimatePresence> */}
+                                </div>
+                                <AnimatePresence>
+                                  {slug && (
+                                    <>
+                                      {selectedNews ? (
+                                        <div
+                                          key="item"
+                                          className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50"
+                                          onClick={() => {
+                                            history.goBack();
+                                          }}
+                                        >
+                                          <div className="text-light">{selectedNews.title}</div>
+                                          <div className="h-20 bg-secondary">Test</div>
+                                        </div>
+                                      ) : (
+                                        <div className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50">
+                                          <div>Loading With Slug Spinner</div>
+                                        </div>
+                                      )}
+                                    </>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                              <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
+                                <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
+                              </div>
+                            </div>
+                          );
+                        }}
+                      ></Route>
+
+                      <Route path="/users">
+                        <div className="flex flex-row w-full h-full">
+                          <h1>Users</h1>
+                        </div>
+                      </Route>
+
+                      <Route
+                        path="/conversations"
+                        render={() => {
+                          return loggedIn ? (
+                            <div className="flex flex-row w-full h-full">
+                              <h1>Conversations</h1>
+                            </div>
+                          ) : (
+                            <Redirect to="/" />
+                          );
+                        }}
+                      />
+
+                      <Route
+                        path="/settings"
+                        render={() => {
+                          return loggedIn ? (
+                            <div className="flex flex-row w-full h-full">
+                              <h1>Settings</h1>
+                            </div>
+                          ) : (
+                            <Redirect to="/" />
+                          );
+                        }}
+                      />
+
+                      <Route path="*">
+                        <Redirect to="/" />
+                      </Route>
+                    </Switch>
+                  </AnimateSharedLayout>
                 </div>
               </div>
             </main>

@@ -1,6 +1,5 @@
 // NODE_MODULES
 import { Component, lazy, Suspense } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 // STORE
 import { RootState } from "__src/store";
@@ -10,10 +9,6 @@ import { loadNewsAsync, loadUserAsync } from "__src/store/home/actions";
 import { main } from "__src/socket";
 // COMPONENTS
 const Home = lazy(() => import("__src/components/pages/home"));
-// const Welcome = lazy(() => import("__src/components/pages/welcome"));
-// const Login = lazy(() => import("__src/components/pages/login"));
-// const Register = lazy(() => import("__src/components/pages/register"));
-// const Dashboard = lazy(() => import("__src/components/pages/dashboard"));
 
 type Props = {} & ConnectorProps;
 
@@ -36,7 +31,7 @@ class App extends Component<Props, State> {
 
     setTimeout(() => {
       loadNewsAsync();
-    }, 5000);
+    }, 1000);
 
     loadUserAsync();
   };
@@ -46,7 +41,7 @@ class App extends Component<Props, State> {
   }
 
   render() {
-    if (typeof this.props.app.loggenIn === "undefined") {
+    if (typeof this.props.app.loggedIn === "undefined") {
       return (
         <div className="flex items-center justify-center w-full h-screen bg-light dark:bg-dark">
           <div className="w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-1"></div>
@@ -58,23 +53,7 @@ class App extends Component<Props, State> {
 
     return (
       <Suspense fallback={null}>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-
-          <Route path="/about">
-            <div>About Page</div>
-          </Route>
-
-          <Route path="/contact">
-            <div>Contact Page</div>
-          </Route>
-
-          <Route path="*">
-            <Redirect to="/" />
-          </Route>
-        </Switch>
+        <Home />
       </Suspense>
     );
   }

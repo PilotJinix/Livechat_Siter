@@ -3,5 +3,6 @@
   "typescript.tsdk": "frontend\\node_modules\\typescript\\lib",
   "css.validate": false,
   "tailwindCSS.emmetCompletions": true,
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "editor.fontSize": 16
 }

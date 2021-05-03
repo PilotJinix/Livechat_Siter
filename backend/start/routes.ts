@@ -49,8 +49,9 @@ const newsController = new NewsController();
 Route.get("api/news", newsController.index);
 
 // test conversation
-const conversationsController = new ConversationsController (); 
+const conversationsController = new ConversationsController();
 Route.get("api/conversations", conversationsController.index);
+Route.get("api/conv", conversationsController.conv);
 
 // Test User
 const usersController = new UsersController();

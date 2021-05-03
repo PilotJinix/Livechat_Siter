@@ -1,5 +1,31 @@
 import { Variants } from "framer-motion";
 
+export const NavLinkListVariant: Variants = {
+  hidden: {
+    opacity: 0.5,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.1,
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+export const NavLinkItemVariant: Variants = {
+  hidden: {
+    scale: 0.9,
+    x: -30,
+    opacity: 0.8,
+  },
+  visible: {
+    scale: 1,
+    x: 0,
+    opacity: 1,
+  },
+};
+
 export const ModalOverlayVariant: Variants = {
   hidden: {
     opacity: 0,

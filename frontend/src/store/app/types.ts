@@ -42,7 +42,7 @@ export type Auth = {
 export interface AppState {
   user?: User;
   auth?: Auth;
-  loggenIn?: boolean;
+  loggedIn?: boolean;
   connected: boolean;
   theme: ThemeType;
 }
