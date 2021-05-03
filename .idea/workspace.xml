@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update data DB" />
+    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Konten">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -166,7 +169,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618896920688</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Konten">
+      <created>1620027825308</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1620027825308</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,6 +204,7 @@
     <MESSAGE value="Done Seeder" />
     <MESSAGE value="Update" />
     <MESSAGE value="Update data DB" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update data DB" />
+    <MESSAGE value="Konten" />
+    <option name="LAST_COMMIT_MESSAGE" value="Konten" />
   </component>
 </project>
