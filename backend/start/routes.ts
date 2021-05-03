@@ -9,6 +9,7 @@ import Route from "@ioc:Adonis/Core/Route";
 import AuthController from "App/Controllers/Http/AuthController";
 import UsersController from "App/Controllers/Http/UsersController";
 import NewsController from "App/Controllers/Http/NewsController";
+import ConversationsController from "App/Controllers/Http/ConversationsController";
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ import NewsController from "App/Controllers/Http/NewsController";
 // NEWS
 // Route.get("api/news", news.index);
 // CONVERSATIONS
-// Route.get("api/conversations", conversation.index);
+// Route.get("api/conversations", conversationController.index);
 // Route.get("api/conversations/:id", conversation.show);
 // Route.get("api/conversations-soft-delete/:id", conversation.softDelete);
 // MESSAGE
@@ -46,6 +47,10 @@ Route.post("api/logout", authController.logout);
 // Test News
 const newsController = new NewsController();
 Route.get("api/news", newsController.index);
+
+// test conversation
+const conversationsController = new ConversationsController (); 
+Route.get("api/conversations", conversationsController.index);
 
 // Test User
 const usersController = new UsersController();

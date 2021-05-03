@@ -50,13 +50,15 @@ export default class AuthController {
         .use("api")
         .attempt(request.input("username"), request.input("password"), { expiresIn: "2 days" });
 
+        // console.log(auth.user?.id)
+
       return {
         ok: true,
         user: token.user,
         auth: token.toJSON(),
       };
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       return {
         msg: "errors catched",
         error,
@@ -68,6 +70,7 @@ export default class AuthController {
   public async authenticate({ auth }: HttpContextContract) {
     try {
       await auth.authenticate();
+     
       return {
         ok: true,
         auth: auth.toJSON(),

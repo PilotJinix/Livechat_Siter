@@ -4,15 +4,34 @@ import Conversation from "App/Models/Conversation";
 export default class ConversationsController {
     public async index({}: HttpContextContract){
         try{
+            // const User_id=  auth.toJSON
+            // console.log( auth.user?.id)
+            //bagaimana ngambil userID?
             return await Conversation.query()
-                .preload('creator')
-                .preload('participants')
+                .where('creator_id',1)
+                .preload('messages')
+                .preload('participants',(query) => {
+                    query.where('user_id', 1)})
                 .orderBy('created_at','desc')
         }
         catch(error){
             console.log(error)
         }
     }
+    // public async index({}: HttpContextContract){
+    //     // console.log(auth.user?.id)
+    //     try{
+    //         // const User_id=  auth.user?.id
+    //         return await Conversation.query()
+    //         .preload('creator')
+    //         .preload('messages')
+    //         .preload('participants')
+    //         .orderBy('created_at','desc')
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //     }
+    // }
 
     // public async show({}:HttpContextContract){
     //     try{

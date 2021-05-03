@@ -5,6 +5,7 @@ import News from "App/Models/News";
 export default class NewsController {
   public async index({ request }: HttpContextContract) {
     try {
+     
       const page = request.input("page", 1);
       const limit = 22;
       return await News.query()
