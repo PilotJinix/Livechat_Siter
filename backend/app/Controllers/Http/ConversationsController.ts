@@ -10,8 +10,7 @@ export default class ConversationsController {
             return await Conversation.query()
                 .where('creator_id',1)
                 .preload('messages')
-                .preload('participants',(query) => {
-                    query.where('user_id', 1)})
+                .preload('participants')
                 .orderBy('created_at','desc')
         }
         catch(error){
