@@ -1,44 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update data DB">
-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_3.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_1.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_3.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_4.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_5.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_6.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 6_1.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news 6_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/public/news_6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_3.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_1.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_3.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_4.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_5.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_6.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_1.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_2.JPG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/news_6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" afterDir="false" />
-    </list>
+    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update data DB" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Backend" />
+        <entry key="$PROJECT_DIR$" value="old-state" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

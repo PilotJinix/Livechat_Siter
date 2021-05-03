@@ -1,0 +1,929 @@
+Index: backend/start/routes.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\n|--------------------------------------------------------------------------\r\n| Routes\r\n|--------------------------------------------------------------------------\r\n|\r\n*/\r\n\r\nimport Route from \"@ioc:Adonis/Core/Route\";\r\nimport AuthController from \"App/Controllers/Http/AuthController\";\r\nimport UsersController from \"App/Controllers/Http/UsersController\";\r\nimport NewsController from \"App/Controllers/Http/NewsController\";\r\nimport ConversationsController from \"App/Controllers/Http/ConversationsController\";\r\n\r\n/*\r\n|--------------------------------------------------------------------------\r\n| Test Query Database\r\n|--------------------------------------------------------------------------\r\n|\r\n*/\r\n// import { user, news, conversation, message } from \"./Test\";\r\n// USERS\r\n// Route.get(\"api/users\", user.index);\r\n// Route.get(\"api/admins\", user.adminOnly);\r\n// Route.get(\"api/commons\", user.commonOnly);\r\n// NEWS\r\n// Route.get(\"api/news\", news.index);\r\n// CONVERSATIONS\r\n// Route.get(\"api/conversations\", conversationController.index);\r\n// Route.get(\"api/conversations/:id\", conversation.show);\r\n// Route.get(\"api/conversations-soft-delete/:id\", conversation.softDelete);\r\n// MESSAGE\r\n// Route.get(\"api/messages\", message.index);\r\n// Route.get(\"api/messages/:id\", message.show);\r\n// Route.get(\"api/messages-soft-delete/:id\", message.softDelete);\r\n\r\n// Test Auth\r\nconst authController = new AuthController();\r\n// Handle Register Form\r\nRoute.post(\"api/register\", authController.register);\r\n// Handle Login Form\r\nRoute.post(\"api/login\", authController.login);\r\n// Handle first load application\r\nRoute.post(\"api/authenticate\", authController.authenticate);\r\n// Handle Logout Form\r\nRoute.post(\"api/logout\", authController.logout);\r\n\r\n// Test News\r\nconst newsController = new NewsController();\r\nRoute.get(\"api/news\", newsController.index);\r\n\r\n// test conversation\r\nconst conversationsController = new ConversationsController (); \r\nRoute.get(\"api/conversations\", conversationsController.index);\r\n\r\n// Test User\r\nconst usersController = new UsersController();\r\nRoute.get(\"api/users\", usersController.index);\r\n\r\n/*\r\n|--------------------------------------------------------------------------\r\n| History Api Fallback for BrowserRouter - react-router-dom\r\n|--------------------------------------------------------------------------\r\n|\r\n*/\r\nRoute.get(\"*\", async ({ view }) => {\r\n  return view.render(\"react/index\");\r\n});\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/start/routes.ts b/backend/start/routes.ts
+--- a/backend/start/routes.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/backend/start/routes.ts	(date 1620027459862)
+@@ -49,8 +49,9 @@
+ Route.get("api/news", newsController.index);
+ 
+ // test conversation
+-const conversationsController = new ConversationsController (); 
++const conversationsController = new ConversationsController();
+ Route.get("api/conversations", conversationsController.index);
++Route.get("api/conv", conversationsController.conv);
+ 
+ // Test User
+ const usersController = new UsersController();
+Index: backend/app/Controllers/Http/ConversationsController.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'\r\nimport Conversation from \"App/Models/Conversation\";\r\n\r\nexport default class ConversationsController {\r\n    public async index({}: HttpContextContract){\r\n        try{\r\n            // const User_id=  auth.toJSON\r\n            // console.log( auth.user?.id)\r\n            //bagaimana ngambil userID?\r\n            return await Conversation.query()\r\n                .where('creator_id',1)\r\n                .preload('messages')\r\n                .preload('participants')\r\n                .orderBy('created_at','desc')\r\n        }\r\n        catch(error){\r\n            console.log(error)\r\n        }\r\n    }\r\n    // public async index({}: HttpContextContract){\r\n    //     // console.log(auth.user?.id)\r\n    //     try{\r\n    //         // const User_id=  auth.user?.id\r\n    //         return await Conversation.query()\r\n    //         .preload('creator')\r\n    //         .preload('messages')\r\n    //         .preload('participants')\r\n    //         .orderBy('created_at','desc')\r\n    //     }\r\n    //     catch(error){\r\n    //         console.log(error)\r\n    //     }\r\n    // }\r\n\r\n    // public async show({}:HttpContextContract){\r\n    //     try{\r\n\r\n    //     }\r\n    //     catch(error){\r\n    //         console.log(error)\r\n    //     }\r\n    // }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/app/Controllers/Http/ConversationsController.ts b/backend/app/Controllers/Http/ConversationsController.ts
+--- a/backend/app/Controllers/Http/ConversationsController.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/backend/app/Controllers/Http/ConversationsController.ts	(date 1620027459861)
+@@ -1,43 +1,57 @@
+-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
++import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+ import Conversation from "App/Models/Conversation";
+ 
+ export default class ConversationsController {
+-    public async index({}: HttpContextContract){
+-        try{
+-            // const User_id=  auth.toJSON
+-            // console.log( auth.user?.id)
+-            //bagaimana ngambil userID?
+-            return await Conversation.query()
+-                .where('creator_id',1)
+-                .preload('messages')
+-                .preload('participants')
+-                .orderBy('created_at','desc')
+-        }
+-        catch(error){
+-            console.log(error)
+-        }
++  public async index({}: HttpContextContract) {
++    try {
++      // const User_id=  auth.toJSON
++      // console.log( auth.user?.id)
++      //bagaimana ngambil userID?
++      return await Conversation.query()
++        .where("creator_id", 1)
++        .preload("messages")
++        .preload("participants")
++        .orderBy("created_at", "desc");
++    } catch (error) {
++      console.log(error);
++    }
++  }
++
++  public async conv({ auth }: HttpContextContract) {
++    try {
++      const user = await auth.authenticate();
++
++      console.log(`user.id = ${user.id}`);
++
++      return (await Conversation.query().preload("messages").preload("participants")).filter((conv) =>
++        conv.participants.find((part) => (part.userId = user.id))
++      );
++    } catch (error) {
++      console.log(error);
+     }
+-    // public async index({}: HttpContextContract){
+-    //     // console.log(auth.user?.id)
+-    //     try{
+-    //         // const User_id=  auth.user?.id
+-    //         return await Conversation.query()
+-    //         .preload('creator')
+-    //         .preload('messages')
+-    //         .preload('participants')
+-    //         .orderBy('created_at','desc')
+-    //     }
+-    //     catch(error){
+-    //         console.log(error)
+-    //     }
+-    // }
++  }
++
++  // public async index({}: HttpContextContract){
++  //     // console.log(auth.user?.id)
++  //     try{
++  //         // const User_id=  auth.user?.id
++  //         return await Conversation.query()
++  //         .preload('creator')
++  //         .preload('messages')
++  //         .preload('participants')
++  //         .orderBy('created_at','desc')
++  //     }
++  //     catch(error){
++  //         console.log(error)
++  //     }
++  // }
+ 
+-    // public async show({}:HttpContextContract){
+-    //     try{
++  // public async show({}:HttpContextContract){
++  //     try{
+ 
+-    //     }
+-    //     catch(error){
+-    //         console.log(error)
+-    //     }
+-    // }
++  //     }
++  //     catch(error){
++  //         console.log(error)
++  //     }
++  // }
+ }
+Index: frontend/src/components/pages/home/index.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// NODE_MODULES\r\nimport { Component, createRef } from \"react\";\r\nimport { NavLink } from \"react-router-dom\";\r\nimport { connect, ConnectedProps } from \"react-redux\";\r\nimport { AnimatePresence } from \"framer-motion\";\r\nimport { FontAwesomeIcon } from \"@fortawesome/react-fontawesome\";\r\nimport { faBars, faTimes, faThLarge, faComment, faUsers, IconDefinition } from \"@fortawesome/free-solid-svg-icons\";\r\n// STORE\r\nimport { RootState } from \"__src/store\";\r\nimport { loginAsync, registerAsync, logoutAsync } from \"__src/store/app/actions\";\r\n// SOCKET\r\n// import { main } from \"__src/socket\";\r\n// COMPONENTS\r\nimport ThemeTogglerButton from \"__src/components/atoms/ThemeTogglerButton\";\r\nimport Modal from \"__src/components/advanceds/Portal\";\r\nimport AuthCard from \"./AuthCard\";\r\nimport ModalOverlay from \"./ModalOverlay\";\r\nimport RegisterForm, { OnRegisterFormSubmit } from \"./RegisterForm\";\r\nimport LoginForm, { OnLoginFormSubmit } from \"./LoginForm\";\r\n\r\nimport NewsSkeleton from \"./NewsSkeleton\";\r\nimport NewsList from \"./NewsList\";\r\nimport NewsItem from \"./NewsItem\";\r\n\r\nconst navs: {\r\n  title: string;\r\n  path: string;\r\n  icon: IconDefinition;\r\n  exact?: boolean;\r\n  auth?: boolean;\r\n}[] = [\r\n  {\r\n    title: \"Home\",\r\n    path: \"/\",\r\n    icon: faThLarge,\r\n    exact: true,\r\n  },\r\n  {\r\n    title: \"Conversations\",\r\n    path: \"/conversations\",\r\n    icon: faComment,\r\n    auth: true,\r\n  },\r\n  {\r\n    title: \"Users\",\r\n    path: \"/users\",\r\n    icon: faUsers,\r\n  },\r\n];\r\n\r\ntype Props = {} & ConnectorProps;\r\n\r\ntype State = {\r\n  openNavbars: boolean;\r\n  openLoginModal: boolean;\r\n  openRegisterModal: boolean;\r\n};\r\n\r\nclass Home extends Component<Props, State> {\r\n  constructor(props: Props) {\r\n    super(props);\r\n\r\n    this.state = {\r\n      openNavbars: false,\r\n      openLoginModal: false,\r\n      openRegisterModal: false,\r\n    };\r\n  }\r\n\r\n  newListContainerRef = createRef<HTMLDivElement>();\r\n\r\n  componentDidUpdate(prevProps: Props, prevState: State) {\r\n    if (prevProps.home.news?.data) {\r\n      if (prevProps.home.news.data.length !== this.props.home.news?.data.length) {\r\n        this.newListContainerRef.current?.scrollBy({\r\n          top: 200,\r\n          behavior: \"smooth\",\r\n        });\r\n      }\r\n    }\r\n  }\r\n\r\n  // Navbars Handlers\r\n  handleOpenNavbars = () => {\r\n    this.setState({ openNavbars: true });\r\n  };\r\n  handleCloseNavbars = () => {\r\n    this.setState({ openNavbars: false });\r\n  };\r\n  // Login Modal Handlers\r\n  handleOpenLoginModal = () => {\r\n    this.setState({ openLoginModal: true });\r\n  };\r\n  handleOpenRegisterModal = () => {\r\n    this.setState({ openRegisterModal: true });\r\n  };\r\n  // Register Modal Handlers\r\n  handleCloseLoginModal = () => {\r\n    this.setState({ openLoginModal: false });\r\n  };\r\n  handleCloseRegisterModal = () => {\r\n    this.setState({ openRegisterModal: false });\r\n  };\r\n  // Handle Switch Login or Register\r\n  handleToggleSwitchAuthType = () => {\r\n    this.setState((state) => ({ openLoginModal: !state.openLoginModal, openRegisterModal: !state.openRegisterModal }));\r\n  };\r\n\r\n  // Handle Register Form Submit\r\n  handleOnRegisterFormSubmit: OnRegisterFormSubmit = async (values, actions) => {\r\n    const ok = await this.props.registerAsync(values);\r\n    if (ok) this.handleCloseRegisterModal();\r\n    actions.setSubmitting(false);\r\n  };\r\n  // Handle Login Form Submit\r\n  handleOnLoginFormSubmit: OnLoginFormSubmit = async (values, actions) => {\r\n    const ok = await this.props.loginAsync(values);\r\n    if (ok) this.handleCloseLoginModal();\r\n    actions.setSubmitting(false);\r\n  };\r\n  // Hand;e Logout Form Submit\r\n  handleOnLogoutFormSubmit = async () => {\r\n    const ok = await this.props.logoutAsync();\r\n    if (ok) window.location.reload();\r\n  };\r\n\r\n  render() {\r\n    const { openNavbars, openLoginModal, openRegisterModal } = this.state;\r\n    const {\r\n      app: { user, loggenIn },\r\n      home: { news },\r\n    } = this.props;\r\n    return (\r\n      <>\r\n        <div className=\"relative w-full h-screen m-auto overflow-hidden bg-gray-200 max-w-screen-2xl dark:bg-dark\">\r\n          <div className=\"flex items-start justify-between h-full\">\r\n            {/*\r\n          /// Aside\r\n          */}\r\n            <aside className=\"flex-grow-0 flex-shrink-0 hidden w-20 h-full py-3 pl-3 lg:w-52 md:block themed-scrollbar\">\r\n              <div className=\"flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700\">\r\n                <div className=\"w-full h-20\"></div>\r\n                <div className=\"flex-grow w-full h-auto my-3\">\r\n                  <nav className=\"w-full\">\r\n                    <ul>\r\n                      {navs.map((nav) => {\r\n                        if (nav.auth && !loggenIn) {\r\n                          return null;\r\n                        }\r\n                        return (\r\n                          <li className=\"p-2\">\r\n                            <NavLink\r\n                              className=\"flex items-center justify-center px-3 py-2 text-gray-500 rounded-lg lg:justify-start dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600\"\r\n                              activeClassName=\"bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200\"\r\n                              to={nav.path}\r\n                              exact={nav.exact}\r\n                            >\r\n                              <FontAwesomeIcon className=\"w-5 h-5 mx-1\" icon={nav.icon} />\r\n                              <span className=\"hidden ml-1 lg:block\">{nav.title}</span>\r\n                            </NavLink>\r\n                          </li>\r\n                        );\r\n                      })}\r\n                    </ul>\r\n                  </nav>\r\n                </div>\r\n                <div className=\"w-full h-20\">\r\n                  <div className=\"flex items-center justify-center w-full h-full\">\r\n                    <ThemeTogglerButton />\r\n                  </div>\r\n                </div>\r\n              </div>\r\n            </aside>\r\n            {/*\r\n          /// Main\r\n          */}\r\n            <main className=\"flex-grow block h-full py-3 pl-3 pr-3 md:pl-6 themed-scrollbar\">\r\n              <div className=\"flex flex-col items-center justify-start w-full h-full\">\r\n                {/* Header */}\r\n                <div className=\"w-full h-14\">\r\n                  <div className=\"w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700\">\r\n                    <div className=\"flex items-center justify-between h-full px-4\">\r\n                      <div className=\"\"></div>\r\n                      <div className=\"flex items-center\">\r\n                        {loggenIn ? (\r\n                          <>\r\n                            <button onClick={this.handleOnLogoutFormSubmit}>{user && user.username}</button>\r\n                          </>\r\n                        ) : (\r\n                          <>\r\n                            <button\r\n                              className=\"hidden px-4 py-2 mx-1 font-medium tracking-wide transition-colors rounded-lg sm:block text-light bg-primary hover:bg-primary-400 dark:bg-gray-800 dark:hover:bg-gray-600\"\r\n                              onClick={this.handleOpenLoginModal}\r\n                            >\r\n                              Login\r\n                            </button>\r\n                            <button\r\n                              className=\"hidden px-4 py-2 mx-1 font-medium tracking-wide transition-colors rounded-lg sm:block text-light bg-primary hover:bg-primary-400 dark:bg-gray-800 dark:hover:bg-gray-600\"\r\n                              onClick={this.handleOpenRegisterModal}\r\n                            >\r\n                              Register\r\n                            </button>\r\n                          </>\r\n                        )}\r\n                        <button className=\"flex items-center justify-center ml-4 md:hidden\">\r\n                          <FontAwesomeIcon className=\"w-6 h-6\" icon={faBars} />\r\n                        </button>\r\n                      </div>\r\n                    </div>\r\n                  </div>\r\n                </div>\r\n                {/* Main */}\r\n                <div className=\"w-full h-full pt-3 overflow-hidden md:pt-5\">\r\n                  <div className=\"flex flex-row w-full h-full\">\r\n                    <div\r\n                      ref={this.newListContainerRef}\r\n                      className=\"flex-grow h-full overflow-x-hidden overflow-y-auto themed-scrollbar\"\r\n                    >\r\n                      <AnimatePresence>\r\n                        {news ? (\r\n                          <NewsList>\r\n                            {news.data.map((v, i, { length }) => (\r\n                              <NewsItem key={v.id} news={v} />\r\n                            ))}\r\n                          </NewsList>\r\n                        ) : (\r\n                          <>\r\n                            <NewsSkeleton />\r\n                            <NewsSkeleton />\r\n                          </>\r\n                        )}\r\n                      </AnimatePresence>\r\n                    </div>\r\n                    <div className=\"flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44\">\r\n                      <div className=\"w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700\">Users</div>\r\n                    </div>\r\n                  </div>\r\n                </div>\r\n              </div>\r\n            </main>\r\n          </div>\r\n        </div>\r\n        {/* MODAL */}\r\n        <AnimatePresence>\r\n          {openLoginModal && (\r\n            <Modal>\r\n              <ModalOverlay key=\"login-modal\" onOverlayClick={this.handleCloseLoginModal}>\r\n                <AuthCard>\r\n                  <h1 className=\"mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100\">Login</h1>\r\n                  <button className=\"absolute top-3 right-3\" onClick={this.handleCloseLoginModal}>\r\n                    <FontAwesomeIcon\r\n                      className=\"w-5 h-5 text-dark hover:text-gray-700 dark:text-light dark:hover:text-gray-200\"\r\n                      icon={faTimes}\r\n                    />\r\n                  </button>\r\n                  <div className=\"mt-6\">\r\n                    <LoginForm onSubmit={this.handleOnLoginFormSubmit} />\r\n                  </div>\r\n                  <p className=\"mt-8 text-sm font-light text-center text-gray-400\">\r\n                    Don't have an account ?{\" \"}\r\n                    <button\r\n                      className=\"font-medium text-gray-700 dark:text-gray-200 hover:underline\"\r\n                      onClick={this.handleToggleSwitchAuthType}\r\n                    >\r\n                      Create One\r\n                    </button>\r\n                  </p>\r\n                </AuthCard>\r\n              </ModalOverlay>\r\n            </Modal>\r\n          )}\r\n          {openRegisterModal && (\r\n            <Modal>\r\n              <ModalOverlay key=\"register-modal\" onOverlayClick={this.handleCloseRegisterModal}>\r\n                <AuthCard>\r\n                  <h1 className=\"mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100\">Register</h1>\r\n                  <button className=\"absolute top-3 right-3\" onClick={this.handleCloseRegisterModal}>\r\n                    <FontAwesomeIcon\r\n                      className=\"w-5 h-5 text-dark hover:text-gray-700 dark:text-light dark:hover:text-gray-200\"\r\n                      icon={faTimes}\r\n                    />\r\n                  </button>\r\n                  <div className=\"mt-6\">\r\n                    <RegisterForm onSubmit={this.handleOnRegisterFormSubmit} />\r\n                  </div>\r\n                  <p className=\"mt-8 text-sm font-light text-center text-gray-400\">\r\n                    Already have an account ?{\" \"}\r\n                    <button\r\n                      className=\"font-medium text-gray-700 dark:text-gray-200 hover:underline\"\r\n                      onClick={this.handleToggleSwitchAuthType}\r\n                    >\r\n                      Login Now\r\n                    </button>\r\n                  </p>\r\n                </AuthCard>\r\n              </ModalOverlay>\r\n            </Modal>\r\n          )}\r\n        </AnimatePresence>\r\n      </>\r\n    );\r\n  }\r\n}\r\n\r\nconst connector = connect(\r\n  (state: RootState) => ({\r\n    app: state.app,\r\n    home: state.home,\r\n  }),\r\n  {\r\n    loginAsync,\r\n    registerAsync,\r\n    logoutAsync,\r\n  }\r\n);\r\n\r\ntype ConnectorProps = ConnectedProps<typeof connector>;\r\n\r\nexport default connector(Home);\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/pages/home/index.tsx b/frontend/src/components/pages/home/index.tsx
+--- a/frontend/src/components/pages/home/index.tsx	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/components/pages/home/index.tsx	(date 1620027459886)
+@@ -1,10 +1,11 @@
+ // NODE_MODULES
+-import { Component, createRef } from "react";
+-import { NavLink } from "react-router-dom";
++import { Fragment, Component, createRef } from "react";
++import { Switch, Route, Redirect, Link } from "react-router-dom";
+ import { connect, ConnectedProps } from "react-redux";
+-import { AnimatePresence } from "framer-motion";
++import { Menu, Transition } from "@headlessui/react";
++import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
+ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+-import { faBars, faTimes, faThLarge, faComment, faUsers, IconDefinition } from "@fortawesome/free-solid-svg-icons";
++import { faBars, faTimes, faThLarge, faComment, faUsers, faCog, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+ // STORE
+ import { RootState } from "__src/store";
+ import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
+@@ -18,17 +19,14 @@
+ import RegisterForm, { OnRegisterFormSubmit } from "./RegisterForm";
+ import LoginForm, { OnLoginFormSubmit } from "./LoginForm";
+ 
++import NavLinkList from "./NavLinkList";
++import NavLinkItem, { Nav } from "./NavLinkItem";
++
+ import NewsSkeleton from "./NewsSkeleton";
+ import NewsList from "./NewsList";
+ import NewsItem from "./NewsItem";
+ 
+-const navs: {
+-  title: string;
+-  path: string;
+-  icon: IconDefinition;
+-  exact?: boolean;
+-  auth?: boolean;
+-}[] = [
++const navs: Nav[] = [
+   {
+     title: "Home",
+     path: "/",
+@@ -46,6 +44,12 @@
+     path: "/users",
+     icon: faUsers,
+   },
++  {
++    title: "Settings",
++    path: "/settings",
++    icon: faCog,
++    auth: true,
++  },
+ ];
+ 
+ type Props = {} & ConnectorProps;
+@@ -121,13 +125,14 @@
+   // Hand;e Logout Form Submit
+   handleOnLogoutFormSubmit = async () => {
+     const ok = await this.props.logoutAsync();
+-    if (ok) window.location.reload();
++    // if ok then reset conversations data
++    // if (ok) window.location.reload();
+   };
+ 
+   render() {
+     const { openNavbars, openLoginModal, openRegisterModal } = this.state;
+     const {
+-      app: { user, loggenIn },
++      app: { user, loggedIn },
+       home: { news },
+     } = this.props;
+     return (
+@@ -141,28 +146,14 @@
+               <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
+                 <div className="w-full h-20"></div>
+                 <div className="flex-grow w-full h-auto my-3">
+-                  <nav className="w-full">
+-                    <ul>
+-                      {navs.map((nav) => {
+-                        if (nav.auth && !loggenIn) {
+-                          return null;
+-                        }
+-                        return (
+-                          <li className="p-2">
+-                            <NavLink
+-                              className="flex items-center justify-center px-3 py-2 text-gray-500 rounded-lg lg:justify-start dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600"
+-                              activeClassName="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+-                              to={nav.path}
+-                              exact={nav.exact}
+-                            >
+-                              <FontAwesomeIcon className="w-5 h-5 mx-1" icon={nav.icon} />
+-                              <span className="hidden ml-1 lg:block">{nav.title}</span>
+-                            </NavLink>
+-                          </li>
+-                        );
+-                      })}
+-                    </ul>
+-                  </nav>
++                  <NavLinkList>
++                    {navs.map((nav) => {
++                      if (nav.auth && !loggedIn) {
++                        return null;
++                      }
++                      return <NavLinkItem key={nav.path} nav={nav} />;
++                    })}
++                  </NavLinkList>
+                 </div>
+                 <div className="w-full h-20">
+                   <div className="flex items-center justify-center w-full h-full">
+@@ -180,11 +171,68 @@
+                 <div className="w-full h-14">
+                   <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
+                     <div className="flex items-center justify-between h-full px-4">
+-                      <div className=""></div>
++                      <div className="">Search</div>
+                       <div className="flex items-center">
+-                        {loggenIn ? (
++                        {loggedIn ? (
+                           <>
+-                            <button onClick={this.handleOnLogoutFormSubmit}>{user && user.username}</button>
++                            <Menu as="div" className="relative inline-block text-left">
++                              {({ open }) => (
++                                <>
++                                  <div>
++                                    <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
++                                      {user && user.username}
++                                      <FontAwesomeIcon
++                                        className="-mr-1 ml-2 h-5 w-5 text-gray-300"
++                                        aria-hidden="true"
++                                        icon={faChevronDown}
++                                      />
++                                    </Menu.Button>
++                                  </div>
++
++                                  <Transition
++                                    show={open}
++                                    as={Fragment}
++                                    enter="transition ease-out duration-100"
++                                    enterFrom="transform opacity-0 scale-95"
++                                    enterTo="transform opacity-100 scale-100"
++                                    leave="transition ease-in duration-75"
++                                    leaveFrom="transform opacity-100 scale-100"
++                                    leaveTo="transform opacity-0 scale-95"
++                                  >
++                                    <Menu.Items
++                                      static
++                                      className="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
++                                    >
++                                      <div className="py-1">
++                                        <Menu.Item>
++                                          {({ active }) => (
++                                            <Link
++                                              to="/settings/account"
++                                              className={`${
++                                                active ? "bg-gray-100 text-gray-900" : "text-gray-700"
++                                              } block px-4 py-2 text-sm`}
++                                            >
++                                              Account settings
++                                            </Link>
++                                          )}
++                                        </Menu.Item>
++                                        <Menu.Item>
++                                          {({ active }) => (
++                                            <button
++                                              onClick={this.handleOnLogoutFormSubmit}
++                                              className={`${active ? "bg-gray-100 text-gray-900" : "text-gray-700"}
++                        block w-full text-left px-4 py-2 text-sm`}
++                                            >
++                                              Logout
++                                            </button>
++                                          )}
++                                        </Menu.Item>
++                                      </div>
++                                    </Menu.Items>
++                                  </Transition>
++                                </>
++                              )}
++                            </Menu>
+                           </>
+                         ) : (
+                           <>
+@@ -202,8 +250,8 @@
+                             </button>
+                           </>
+                         )}
+-                        <button className="flex items-center justify-center ml-4 md:hidden">
+-                          <FontAwesomeIcon className="w-6 h-6" icon={faBars} />
++                        <button className="flex items-center justify-center ml-4 sm:hidden">
++                          <FontAwesomeIcon className="w-6 h-6 text-gray-400 dark:text-gray-500" icon={faBars} />
+                         </button>
+                       </div>
+                     </div>
+@@ -211,30 +259,116 @@
+                 </div>
+                 {/* Main */}
+                 <div className="w-full h-full pt-3 overflow-hidden md:pt-5">
+-                  <div className="flex flex-row w-full h-full">
+-                    <div
+-                      ref={this.newListContainerRef}
+-                      className="flex-grow h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
+-                    >
+-                      <AnimatePresence>
+-                        {news ? (
+-                          <NewsList>
+-                            {news.data.map((v, i, { length }) => (
+-                              <NewsItem key={v.id} news={v} />
+-                            ))}
+-                          </NewsList>
+-                        ) : (
+-                          <>
+-                            <NewsSkeleton />
+-                            <NewsSkeleton />
+-                          </>
+-                        )}
+-                      </AnimatePresence>
+-                    </div>
+-                    <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
+-                      <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
+-                    </div>
+-                  </div>
++                  <AnimateSharedLayout type="crossfade">
++                    <Switch>
++                      <Route
++                        exact
++                        path={["/news/:slug", "/"]}
++                        render={({ history, match }) => {
++                          const { slug } = match.params as any;
++                          const selectedNews = news && news.data.find((n) => n.slug === slug);
++                          return (
++                            <div className="flex-grow flex flex-row w-full h-full">
++                              <div className="flex-grow h-full relative">
++                                <div
++                                  ref={this.newListContainerRef}
++                                  className="w-full h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
++                                >
++                                  {news ? (
++                                    news.data.map((n) => {
++                                      return (
++                                        <div className="h-10">
++                                          <Link to={`/news/${n.slug}`}>{n.title}</Link>
++                                        </div>
++                                      );
++                                    })
++                                  ) : (
++                                    <div>Loading News Skeleton</div>
++                                  )}
++                                  {/* // <AnimatePresence>
++                              //   {news ? (
++                              //     <NewsList>
++                              //       {news.data.map((_news) => (
++                              //         <NewsItem key={_news.id} news={_news} />
++                              //       ))}
++                              //     </NewsList>
++                              //   ) : (
++                              //     <>
++                              //       <NewsSkeleton />
++                              //       <NewsSkeleton />
++                              //       <NewsSkeleton />
++                              //     </>
++                              //   )}
++                              // </AnimatePresence> */}
++                                </div>
++                                <AnimatePresence>
++                                  {slug && (
++                                    <>
++                                      {selectedNews ? (
++                                        <div
++                                          key="item"
++                                          className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50"
++                                          onClick={() => {
++                                            history.goBack();
++                                          }}
++                                        >
++                                          <div className="text-light">{selectedNews.title}</div>
++                                          <div className="h-20 bg-secondary">Test</div>
++                                        </div>
++                                      ) : (
++                                        <div className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50">
++                                          <div>Loading With Slug Spinner</div>
++                                        </div>
++                                      )}
++                                    </>
++                                  )}
++                                </AnimatePresence>
++                              </div>
++                              <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
++                                <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
++                              </div>
++                            </div>
++                          );
++                        }}
++                      ></Route>
++
++                      <Route path="/users">
++                        <div className="flex flex-row w-full h-full">
++                          <h1>Users</h1>
++                        </div>
++                      </Route>
++
++                      <Route
++                        path="/conversations"
++                        render={() => {
++                          return loggedIn ? (
++                            <div className="flex flex-row w-full h-full">
++                              <h1>Conversations</h1>
++                            </div>
++                          ) : (
++                            <Redirect to="/" />
++                          );
++                        }}
++                      />
++
++                      <Route
++                        path="/settings"
++                        render={() => {
++                          return loggedIn ? (
++                            <div className="flex flex-row w-full h-full">
++                              <h1>Settings</h1>
++                            </div>
++                          ) : (
++                            <Redirect to="/" />
++                          );
++                        }}
++                      />
++
++                      <Route path="*">
++                        <Redirect to="/" />
++                      </Route>
++                    </Switch>
++                  </AnimateSharedLayout>
+                 </div>
+               </div>
+             </main>
+Index: .vscode/settings.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"editor.formatOnSave\": true,\r\n  \"typescript.tsdk\": \"frontend\\\\node_modules\\\\typescript\\\\lib\",\r\n  \"css.validate\": false,\r\n  \"tailwindCSS.emmetCompletions\": true,\r\n  \"git.ignoreLimitWarning\": true\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.vscode/settings.json b/.vscode/settings.json
+--- a/.vscode/settings.json	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/.vscode/settings.json	(date 1620027459859)
+@@ -3,5 +3,6 @@
+   "typescript.tsdk": "frontend\\node_modules\\typescript\\lib",
+   "css.validate": false,
+   "tailwindCSS.emmetCompletions": true,
+-  "git.ignoreLimitWarning": true
++  "git.ignoreLimitWarning": true,
++  "editor.fontSize": 16
+ }
+Index: frontend/src/store/app/actions.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { ThunkResult } from \"../index\";\r\nimport { AppActionTypes, REGISTER, LOGIN, LOGOUT, AUTHENTICATE, AUTH, CONNECTED, THEME, ThemeType, User, Auth } from \"./types\";\r\nimport { setThemeWithToggle } from \"__src/theme\";\r\nimport { setAuth } from \"__src/auth\";\r\n\r\nimport { api, AxiosResponse } from \"__src/api\";\r\n\r\ntype Response = {\r\n  ok?: boolean;\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Connected\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype ConnectedProps = boolean;\r\n\r\nexport const connected = (state: ConnectedProps = true): AppActionTypes => ({\r\n  type: CONNECTED,\r\n  payload: {\r\n    connect: state,\r\n  },\r\n});\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| User Register\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype RegisterProps = {\r\n  user?: User;\r\n  auth?: Auth;\r\n};\r\n\r\nexport const register = (props: RegisterProps): AppActionTypes => ({\r\n  type: REGISTER,\r\n  payload: {\r\n    user: props.user,\r\n    auth: props.auth,\r\n  },\r\n});\r\n\r\ntype RegisterDataProps = {\r\n  username: string;\r\n  password: string;\r\n  passwordConfirmation: string;\r\n};\r\n\r\ntype RegisterDataResponse = {\r\n  user?: User;\r\n  auth?: Auth;\r\n} & Response;\r\n\r\nexport const registerAsync = (data: RegisterDataProps): ThunkResult<Promise<boolean>> => (dispatch) => {\r\n  return new Promise((resolve) => {\r\n    api\r\n      .post<any, AxiosResponse<RegisterDataResponse>>(`/register`, data)\r\n      .then((response) => {\r\n        if (response.data.ok) {\r\n          dispatch(\r\n            register({\r\n              user: response.data.user,\r\n              auth: response.data.auth,\r\n            })\r\n          );\r\n          setAuth(response.data.auth);\r\n          resolve(true);\r\n        } else {\r\n          console.log(response);\r\n          console.error(\"register failed\");\r\n          resolve(false);\r\n        }\r\n      })\r\n      .catch((errors) => {\r\n        console.error(errors);\r\n        resolve(false);\r\n      });\r\n  });\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| User Login\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype LoginProps = {\r\n  user?: User;\r\n  auth?: Auth;\r\n};\r\n\r\nexport const login = (props: LoginProps): AppActionTypes => ({\r\n  type: LOGIN,\r\n  payload: {\r\n    user: props.user,\r\n    auth: props.auth,\r\n  },\r\n});\r\n\r\ntype LoginDataProps = {\r\n  username: string;\r\n  password: string;\r\n};\r\n\r\ntype LoginDataResponse = {\r\n  user?: User;\r\n  auth?: Auth;\r\n} & Response;\r\n\r\nexport const loginAsync = (data: LoginDataProps): ThunkResult<Promise<boolean>> => (dispatch) => {\r\n  return new Promise((resolve) => {\r\n    api\r\n      .post<any, AxiosResponse<LoginDataResponse>>(`/login`, data)\r\n      .then((response) => {\r\n        if (response.data.ok) {\r\n          dispatch(login({ user: response.data.user, auth: response.data.auth }));\r\n          setAuth(response.data.auth);\r\n          resolve(true);\r\n        } else {\r\n          console.log(response);\r\n          console.error(\"login failed\");\r\n          resolve(false);\r\n        }\r\n      })\r\n      .catch((errors) => {\r\n        console.error(errors);\r\n        resolve(false);\r\n      });\r\n  });\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| User Logout\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport const logout = (): AppActionTypes => ({\r\n  type: LOGOUT,\r\n});\r\n\r\ntype LogoutDataResponse = {} & Response;\r\n\r\nexport const logoutAsync = (): ThunkResult<Promise<boolean>> => (dispatch, getState) => {\r\n  return new Promise((resolve) => {\r\n    const app = getState().app;\r\n    const token = app.auth?.token || \"\";\r\n    api\r\n      .post<any, AxiosResponse<LogoutDataResponse>>(\r\n        `/logout`,\r\n        {},\r\n        {\r\n          headers: {\r\n            Authorization: `Bearer ${token}`,\r\n          },\r\n        }\r\n      )\r\n      .then((response) => {\r\n        if (response.data.ok) {\r\n          dispatch(logout());\r\n          setAuth();\r\n          resolve(true);\r\n        } else {\r\n          console.log(response);\r\n          console.error(\"logout failed\");\r\n          resolve(false);\r\n        }\r\n      })\r\n      .catch((errors) => {\r\n        console.error(errors);\r\n        resolve(false);\r\n      });\r\n  });\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Authenticate\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype AuthenticateProps = {\r\n  user?: User;\r\n  auth?: Auth;\r\n};\r\n\r\nexport const authenticate = (props: AuthenticateProps): AppActionTypes => ({\r\n  type: AUTHENTICATE,\r\n  payload: {\r\n    user: props.user,\r\n    auth: props.auth,\r\n  },\r\n});\r\n\r\ntype AuthenticateDataResponse = {\r\n  auth?: {\r\n    defaultGuard: string;\r\n    guards: {\r\n      api: {\r\n        isLoggedIn: boolean;\r\n        isGuest: boolean;\r\n        authenticationAttempted: boolean;\r\n        isAuthenticated: boolean;\r\n        user: User;\r\n      };\r\n    };\r\n  };\r\n} & Response;\r\n\r\nexport const authenticateAsync = (): ThunkResult<Promise<boolean>> => (dispatch, getState) => {\r\n  return new Promise((resolve) => {\r\n    const app = getState().app;\r\n    const token = app.auth?.token || \"\";\r\n    api\r\n      .post<any, AxiosResponse<AuthenticateDataResponse>>(\r\n        `/authenticate`,\r\n        {},\r\n        {\r\n          headers: {\r\n            Authorization: `Bearer ${token}`,\r\n          },\r\n        }\r\n      )\r\n      .then((response) => {\r\n        if (response.data.ok) {\r\n          dispatch(login({ user: response.data.auth?.guards.api.user, auth: app.auth }));\r\n          resolve(true);\r\n        } else {\r\n          console.log(response);\r\n          console.error(\"current auth is not authenticated then dispatch logout\");\r\n          dispatch(logout());\r\n          resolve(false);\r\n        }\r\n      })\r\n      .catch((errors) => {\r\n        dispatch(logout());\r\n        console.error(errors);\r\n        resolve(false);\r\n      });\r\n  });\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Auth\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype AuthProps = Auth;\r\n\r\nexport const auth = (auth: AuthProps): AppActionTypes => ({\r\n  type: AUTH,\r\n  payload: {\r\n    auth: auth,\r\n  },\r\n});\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Change Theme\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\ntype ThemeProps = ThemeType;\r\n\r\nexport const theme = (newTheme: ThemeProps): AppActionTypes => ({\r\n  type: THEME,\r\n  payload: {\r\n    theme: newTheme,\r\n  },\r\n});\r\n\r\nexport const themeAsync = (): ThunkResult<void> => (dispatch, getState) => {\r\n  const newTheme = getState().app.theme == \"dark\" ? \"light\" : \"dark\";\r\n  setThemeWithToggle(newTheme);\r\n  dispatch(theme(newTheme));\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/store/app/actions.ts b/frontend/src/store/app/actions.ts
+--- a/frontend/src/store/app/actions.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/store/app/actions.ts	(date 1620027459894)
+@@ -71,8 +71,8 @@
+           setAuth(response.data.auth);
+           resolve(true);
+         } else {
+-          console.log(response);
+-          console.error("register failed");
++          // console.log(response);
++          // console.error("register failed");
+           resolve(false);
+         }
+       })
+@@ -123,8 +123,8 @@
+           setAuth(response.data.auth);
+           resolve(true);
+         } else {
+-          console.log(response);
+-          console.error("login failed");
++          // console.log(response);
++          // console.error("login failed");
+           resolve(false);
+         }
+       })
+@@ -168,8 +168,8 @@
+           setAuth();
+           resolve(true);
+         } else {
+-          console.log(response);
+-          console.error("logout failed");
++          // console.log(response);
++          // console.error("logout failed");
+           resolve(false);
+         }
+       })
+@@ -234,8 +234,8 @@
+           dispatch(login({ user: response.data.auth?.guards.api.user, auth: app.auth }));
+           resolve(true);
+         } else {
+-          console.log(response);
+-          console.error("current auth is not authenticated then dispatch logout");
++          // console.log(response);
++          // console.error("current auth is not authenticated then dispatch logout");
+           dispatch(logout());
+           resolve(false);
+         }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"b1ca1a94-7341-45b8-ab6d-2f9364be2941\" name=\"Default Changelist\" comment=\"Update data DB\">\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 1_1.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 1_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 1_3.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_1.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_3.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_4.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_5.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 3_6.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 6_1.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news 6_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_1.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_2.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_3.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_4.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_5.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/public/news_6.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 1_1.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 1_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 1_3.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_1.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_3.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_4.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_5.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 3_6.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 6_1.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news 6_2.JPG\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_1.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_2.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_3.png\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_4.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_5.jpg\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/frontend/public/news_6.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/database/seeders/2_News.ts\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/database/seeders/2_News.ts\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ComposerSettings\">\r\n    <execution />\r\n  </component>\r\n  <component name=\"Git.Merge.Settings\">\r\n    <option name=\"BRANCH\" value=\"Backend\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"Backend\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1qKkJykus3EKy7Q4RUxXVzuf9LA\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\r\n    <property name=\"ts.external.directory.path\" value=\"C:\\xampp\\htdocs\\PJCT\\Livecaht_Siter\\frontend\\node_modules\\typescript\\lib\" />\r\n    <property name=\"vue.rearranger.settings.migration\" value=\"true\" />\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"b1ca1a94-7341-45b8-ab6d-2f9364be2941\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1616835601096</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1616835601096</updated>\r\n      <workItem from=\"1616835602304\" duration=\"620000\" />\r\n      <workItem from=\"1617089563878\" duration=\"788000\" />\r\n      <workItem from=\"1617230690554\" duration=\"13000\" />\r\n      <workItem from=\"1617444737918\" duration=\"144000\" />\r\n      <workItem from=\"1617445063156\" duration=\"1066000\" />\r\n      <workItem from=\"1617628938686\" duration=\"644000\" />\r\n      <workItem from=\"1617662153340\" duration=\"76000\" />\r\n      <workItem from=\"1618058158584\" duration=\"825000\" />\r\n      <workItem from=\"1618092587949\" duration=\"6312000\" />\r\n      <workItem from=\"1618213248739\" duration=\"1851000\" />\r\n      <workItem from=\"1618287619368\" duration=\"11183000\" />\r\n      <workItem from=\"1618316606593\" duration=\"7100000\" />\r\n      <workItem from=\"1618352233935\" duration=\"2130000\" />\r\n      <workItem from=\"1618879224585\" duration=\"1369000\" />\r\n      <workItem from=\"1618883176500\" duration=\"4090000\" />\r\n      <workItem from=\"1618887483168\" duration=\"8077000\" />\r\n      <workItem from=\"1619498450708\" duration=\"1949000\" />\r\n      <workItem from=\"1619941619162\" duration=\"1642000\" />\r\n      <workItem from=\"1619949195649\" duration=\"4324000\" />\r\n      <workItem from=\"1620004172555\" duration=\"7955000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"make News Models\">\r\n      <created>1618115371147</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618115371147</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"make Models\">\r\n      <created>1618304028995</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618304028995</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"done make Models\">\r\n      <created>1618304893115</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618304893115</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"make Migration\">\r\n      <created>1618313093081</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618313093081</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"Done Migration\">\r\n      <created>1618318186029</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618318186029</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"Done Migration\">\r\n      <created>1618319760751</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618319760751</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Done Migration\">\r\n      <created>1618320923750</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618320923750</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Done Migration\">\r\n      <created>1618323215061</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618323215061</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"Done Seeder\">\r\n      <created>1618353087124</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618353087124</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"Done Seeder\">\r\n      <created>1618353769817</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618353769817</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"Done Seeder\">\r\n      <created>1618354253458</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618354253458</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"Done Seeder\">\r\n      <created>1618354269333</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618354269333</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"Update\">\r\n      <created>1618801870750</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618801870750</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00014\" summary=\"Update data DB\">\r\n      <created>1618896920688</created>\r\n      <option name=\"number\" value=\"00014\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1618896920688</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"15\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n    <MESSAGE value=\"make News Models\" />\r\n    <MESSAGE value=\"make Models\" />\r\n    <MESSAGE value=\"done make Models\" />\r\n    <MESSAGE value=\"make Migration\" />\r\n    <MESSAGE value=\"Done Migration\" />\r\n    <MESSAGE value=\"Done Seeder\" />\r\n    <MESSAGE value=\"Update\" />\r\n    <MESSAGE value=\"Update data DB\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Update data DB\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/.idea/workspace.xml	(date 1620027451235)
+@@ -1,43 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Update data DB">
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_1.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 1_3.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_1.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_3.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_4.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_5.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 3_6.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 6_1.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news 6_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_1.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_2.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_3.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_4.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_5.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/public/news_6.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_1.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 1_3.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_1.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_3.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_4.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_5.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 3_6.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_1.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news 6_2.JPG" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_1.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_2.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_3.png" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_4.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_5.jpg" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/frontend/public/news_6.png" afterDir="false" />
++    <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Konten">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -103,7 +68,7 @@
+       <workItem from="1619498450708" duration="1949000" />
+       <workItem from="1619941619162" duration="1642000" />
+       <workItem from="1619949195649" duration="4324000" />
+-      <workItem from="1620004172555" duration="7955000" />
++      <workItem from="1620004172555" duration="20992000" />
+     </task>
+     <task id="LOCAL-00001" summary="make News Models">
+       <created>1618115371147</created>
+@@ -203,7 +168,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1618896920688</updated>
+     </task>
+-    <option name="localTasksCounter" value="15" />
++    <task id="LOCAL-00015" summary="Konten">
++      <created>1620013736890</created>
++      <option name="number" value="00015" />
++      <option name="presentableId" value="LOCAL-00015" />
++      <option name="project" value="LOCAL" />
++      <updated>1620013736890</updated>
++    </task>
++    <option name="localTasksCounter" value="16" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -231,6 +203,7 @@
+     <MESSAGE value="Done Seeder" />
+     <MESSAGE value="Update" />
+     <MESSAGE value="Update data DB" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Update data DB" />
++    <MESSAGE value="Konten" />
++    <option name="LAST_COMMIT_MESSAGE" value="Konten" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: frontend/src/devtools/index.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// declare global\r\ndeclare global {\r\n  interface Window {\r\n    __REDUX_DEVTOOLS_EXTENSION__: any;\r\n  }\r\n}\r\n\r\n// Redux Devtools Extension\r\nexport const loadReduxDevTools = () => {\r\n  return (\r\n    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()\r\n  );\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/devtools/index.ts b/frontend/src/devtools/index.ts
+--- a/frontend/src/devtools/index.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/devtools/index.ts	(date 1620027459889)
+@@ -1,13 +1,19 @@
++import { compose } from "redux";
++
+ // declare global
+ declare global {
+   interface Window {
+     __REDUX_DEVTOOLS_EXTENSION__: any;
++    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
+   }
+ }
+ 
+ // Redux Devtools Extension
+ export const loadReduxDevTools = () => {
+-  return (
+-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+-  );
++  return window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+ };
++
++export const composeWithReduxDevtools =
++  typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
++    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
++    : compose;
+Index: frontend/src/store/app/reducers.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { AppState, AppActionTypes, REGISTER, LOGIN, LOGOUT, AUTHENTICATE, AUTH, CONNECTED, THEME, Auth } from \"./types\";\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Initial State\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nconst initialState: AppState = {\r\n  theme: \"light\",\r\n  connected: false,\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| App Reducers\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport const appReducer = (state: AppState = initialState, action: AppActionTypes): AppState => {\r\n  switch (action.type) {\r\n    case REGISTER:\r\n      return {\r\n        ...state,\r\n        user: action.payload.user,\r\n        loggenIn: true,\r\n      };\r\n\r\n    case LOGIN:\r\n      console.log(\"action.payload.user\");\r\n      console.log(action.payload.user);\r\n\r\n      return {\r\n        ...state,\r\n        user: action.payload.user,\r\n        auth: action.payload.auth,\r\n        loggenIn: true,\r\n      };\r\n\r\n    case LOGOUT:\r\n      return {\r\n        ...state,\r\n        user: undefined,\r\n        auth: undefined,\r\n        loggenIn: false,\r\n      };\r\n\r\n    case AUTHENTICATE:\r\n      return {\r\n        ...state,\r\n        user: action.payload.user,\r\n        auth: action.payload.auth,\r\n      };\r\n\r\n    case AUTH:\r\n      return {\r\n        ...state,\r\n        auth: action.payload.auth,\r\n      };\r\n\r\n    case CONNECTED:\r\n      return {\r\n        ...state,\r\n        connected: action.payload.connect,\r\n      };\r\n\r\n    case THEME:\r\n      return {\r\n        ...state,\r\n        theme: action.payload.theme,\r\n      };\r\n\r\n    default:\r\n      return state;\r\n  }\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/store/app/reducers.ts b/frontend/src/store/app/reducers.ts
+--- a/frontend/src/store/app/reducers.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/store/app/reducers.ts	(date 1620027459901)
+@@ -25,7 +25,7 @@
+       return {
+         ...state,
+         user: action.payload.user,
+-        loggenIn: true,
++        loggedIn: true,
+       };
+ 
+     case LOGIN:
+@@ -36,7 +36,7 @@
+         ...state,
+         user: action.payload.user,
+         auth: action.payload.auth,
+-        loggenIn: true,
++        loggedIn: true,
+       };
+ 
+     case LOGOUT:
+@@ -44,7 +44,7 @@
+         ...state,
+         user: undefined,
+         auth: undefined,
+-        loggenIn: false,
++        loggedIn: false,
+       };
+ 
+     case AUTHENTICATE:
+Index: frontend/src/store/app/types.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/*\r\n|---------------------------------------------------------------\r\n| Type\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport const REGISTER = \"REGISTER\";\r\nexport const LOGIN = \"LOGIN\";\r\nexport const LOGOUT = \"LOGOUT\";\r\n\r\nexport const AUTHENTICATE = \"AUTHENTICATE\";\r\nexport const AUTH = \"AUTH\";\r\n\r\nexport const CONNECTED = \"CONNECTED\";\r\nexport const THEME = \"THEME\";\r\n\r\nexport type ThemeType = \"light\" | \"dark\";\r\n\r\nexport type User = {\r\n  id: number;\r\n  username: string;\r\n  role: \"admin\" | \"common\";\r\n  avatar: string | null;\r\n  created_at: string;\r\n  updated_at: string;\r\n};\r\n\r\nexport type Auth = {\r\n  type: \"bearer\";\r\n  token: string;\r\n  expires_at: string;\r\n};\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| App State\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport interface AppState {\r\n  user?: User;\r\n  auth?: Auth;\r\n  loggenIn?: boolean;\r\n  connected: boolean;\r\n  theme: ThemeType;\r\n}\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| In App Action\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport interface RegisterAction {\r\n  type: typeof REGISTER;\r\n  payload: {\r\n    user?: User;\r\n    auth?: Auth;\r\n  };\r\n}\r\n\r\nexport interface LoginAction {\r\n  type: typeof LOGIN;\r\n  payload: {\r\n    user?: User;\r\n    auth?: Auth;\r\n  };\r\n}\r\n\r\nexport interface LogoutAction {\r\n  type: typeof LOGOUT;\r\n}\r\n\r\nexport interface AuthenticateAction {\r\n  type: typeof AUTHENTICATE;\r\n  payload: {\r\n    user?: User;\r\n    auth?: Auth;\r\n  };\r\n}\r\n\r\nexport interface AuthAction {\r\n  type: typeof AUTH;\r\n  payload: {\r\n    auth?: Auth;\r\n  };\r\n}\r\n\r\nexport interface ConnectedAction {\r\n  type: typeof CONNECTED;\r\n  payload: {\r\n    connect: boolean;\r\n  };\r\n}\r\n\r\nexport interface ThemeAction {\r\n  type: typeof THEME;\r\n  payload: {\r\n    theme: ThemeType;\r\n  };\r\n}\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Type AppAction\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nexport type AppActionTypes =\r\n  | RegisterAction\r\n  | LoginAction\r\n  | LogoutAction\r\n  | AuthenticateAction\r\n  | AuthAction\r\n  | ConnectedAction\r\n  | ThemeAction;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/store/app/types.ts b/frontend/src/store/app/types.ts
+--- a/frontend/src/store/app/types.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/store/app/types.ts	(date 1620027459904)
+@@ -42,7 +42,7 @@
+ export interface AppState {
+   user?: User;
+   auth?: Auth;
+-  loggenIn?: boolean;
++  loggedIn?: boolean;
+   connected: boolean;
+   theme: ThemeType;
+ }
+Index: frontend/src/App.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// NODE_MODULES\r\nimport { Component, lazy, Suspense } from \"react\";\r\nimport { Switch, Route, Redirect } from \"react-router-dom\";\r\nimport { connect, ConnectedProps } from \"react-redux\";\r\n// STORE\r\nimport { RootState } from \"__src/store\";\r\nimport { connected, authenticateAsync } from \"__src/store/app/actions\";\r\nimport { loadNewsAsync, loadUserAsync } from \"__src/store/home/actions\";\r\n// LOCAL\r\nimport { main } from \"__src/socket\";\r\n// COMPONENTS\r\nconst Home = lazy(() => import(\"__src/components/pages/home\"));\r\n// const Welcome = lazy(() => import(\"__src/components/pages/welcome\"));\r\n// const Login = lazy(() => import(\"__src/components/pages/login\"));\r\n// const Register = lazy(() => import(\"__src/components/pages/register\"));\r\n// const Dashboard = lazy(() => import(\"__src/components/pages/dashboard\"));\r\n\r\ntype Props = {} & ConnectorProps;\r\n\r\ntype State = {};\r\n\r\nclass App extends Component<Props, State> {\r\n  componentDidMount = async () => {\r\n    const { connected, loadNewsAsync, loadUserAsync, authenticateAsync } = this.props;\r\n\r\n    const ok = await authenticateAsync();\r\n\r\n    main.on(\"connect\", () => {\r\n      console.log(\"main namespace connected successfully\");\r\n      connected();\r\n    });\r\n\r\n    main.on(\"disconnect\", () => {\r\n      connected(false);\r\n    });\r\n\r\n    setTimeout(() => {\r\n      loadNewsAsync();\r\n    }, 5000);\r\n\r\n    loadUserAsync();\r\n  };\r\n\r\n  componentWillUnmount() {\r\n    main.disconnect();\r\n  }\r\n\r\n  render() {\r\n    if (typeof this.props.app.loggenIn === \"undefined\") {\r\n      return (\r\n        <div className=\"flex items-center justify-center w-full h-screen bg-light dark:bg-dark\">\r\n          <div className=\"w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-1\"></div>\r\n          <div className=\"w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-2\"></div>\r\n          <div className=\"w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-3\"></div>\r\n        </div>\r\n      );\r\n    }\r\n\r\n    return (\r\n      <Suspense fallback={null}>\r\n        <Switch>\r\n          <Route exact path=\"/\">\r\n            <Home />\r\n          </Route>\r\n\r\n          <Route path=\"/about\">\r\n            <div>About Page</div>\r\n          </Route>\r\n\r\n          <Route path=\"/contact\">\r\n            <div>Contact Page</div>\r\n          </Route>\r\n\r\n          <Route path=\"*\">\r\n            <Redirect to=\"/\" />\r\n          </Route>\r\n        </Switch>\r\n      </Suspense>\r\n    );\r\n  }\r\n}\r\n\r\nconst connector = connect(\r\n  (state: RootState) => ({\r\n    app: state.app,\r\n    home: state.home,\r\n  }),\r\n  {\r\n    connected,\r\n    loadNewsAsync,\r\n    loadUserAsync,\r\n    authenticateAsync,\r\n  }\r\n);\r\n\r\ntype ConnectorProps = ConnectedProps<typeof connector>;\r\n\r\nexport default connector(App);\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/App.tsx b/frontend/src/App.tsx
+--- a/frontend/src/App.tsx	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/App.tsx	(date 1620027459866)
+@@ -1,6 +1,5 @@
+ // NODE_MODULES
+ import { Component, lazy, Suspense } from "react";
+-import { Switch, Route, Redirect } from "react-router-dom";
+ import { connect, ConnectedProps } from "react-redux";
+ // STORE
+ import { RootState } from "__src/store";
+@@ -10,10 +9,6 @@
+ import { main } from "__src/socket";
+ // COMPONENTS
+ const Home = lazy(() => import("__src/components/pages/home"));
+-// const Welcome = lazy(() => import("__src/components/pages/welcome"));
+-// const Login = lazy(() => import("__src/components/pages/login"));
+-// const Register = lazy(() => import("__src/components/pages/register"));
+-// const Dashboard = lazy(() => import("__src/components/pages/dashboard"));
+ 
+ type Props = {} & ConnectorProps;
+ 
+@@ -36,7 +31,7 @@
+ 
+     setTimeout(() => {
+       loadNewsAsync();
+-    }, 5000);
++    }, 1000);
+ 
+     loadUserAsync();
+   };
+@@ -46,7 +41,7 @@
+   }
+ 
+   render() {
+-    if (typeof this.props.app.loggenIn === "undefined") {
++    if (typeof this.props.app.loggedIn === "undefined") {
+       return (
+         <div className="flex items-center justify-center w-full h-screen bg-light dark:bg-dark">
+           <div className="w-3.5 h-3.5 mx-1 rounded-full bg-primary animate-bounce-step-1"></div>
+@@ -58,23 +53,7 @@
+ 
+     return (
+       <Suspense fallback={null}>
+-        <Switch>
+-          <Route exact path="/">
+-            <Home />
+-          </Route>
+-
+-          <Route path="/about">
+-            <div>About Page</div>
+-          </Route>
+-
+-          <Route path="/contact">
+-            <div>Contact Page</div>
+-          </Route>
+-
+-          <Route path="*">
+-            <Redirect to="/" />
+-          </Route>
+-        </Switch>
++        <Home />
+       </Suspense>
+     );
+   }
+Index: frontend/src/components/atoms/ThemeTogglerButton.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// NODE_MODULES\r\nimport { Component } from \"react\";\r\nimport { connect, ConnectedProps } from \"react-redux\";\r\nimport { FontAwesomeIcon } from \"@fortawesome/react-fontawesome\";\r\nimport { faSun, faMoon } from \"@fortawesome/free-solid-svg-icons\";\r\n// STORE\r\nimport { RootState } from \"__src/store\";\r\nimport { themeAsync } from \"__src/store/app/actions\";\r\n// LOCAL\r\nimport {} from \"__src/store\";\r\n\r\ntype Props = {} & ConnectorProps;\r\n\r\ntype State = {};\r\n\r\nclass ThemeTogglerButton extends Component<Props, State> {\r\n  handleToggle = () => {\r\n    this.props.themeAsync();\r\n  };\r\n\r\n  render() {\r\n    return (\r\n      <button className=\"px-3 py-1 bg-gray-100 rounded-lg dark:bg-gray-800\" onClick={this.handleToggle}>\r\n        <FontAwesomeIcon icon={this.props.app.theme == \"dark\" ? faMoon : faSun} />\r\n      </button>\r\n    );\r\n  }\r\n}\r\n\r\nconst connector = connect(\r\n  (state: RootState) => ({\r\n    app: state.app,\r\n  }),\r\n  {\r\n    themeAsync,\r\n  }\r\n);\r\n\r\nexport type ConnectorProps = ConnectedProps<typeof connector>;\r\n\r\nexport default connector(ThemeTogglerButton);\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/atoms/ThemeTogglerButton.tsx b/frontend/src/components/atoms/ThemeTogglerButton.tsx
+--- a/frontend/src/components/atoms/ThemeTogglerButton.tsx	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/components/atoms/ThemeTogglerButton.tsx	(date 1620027459868)
+@@ -20,7 +20,10 @@
+ 
+   render() {
+     return (
+-      <button className="px-3 py-1 bg-gray-100 rounded-lg dark:bg-gray-800" onClick={this.handleToggle}>
++      <button
++        className="px-3 py-1 bg-gray-100 text-gray-600 dark:text-gray-300 rounded-lg dark:bg-gray-800"
++        onClick={this.handleToggle}
++      >
+         <FontAwesomeIcon icon={this.props.app.theme == "dark" ? faMoon : faSun} />
+       </button>
+     );
+Index: frontend/src/components/pages/home/NewsItem.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// NODE_MODULES\r\nimport { Component } from \"react\";\r\nimport { motion } from \"framer-motion\";\r\nimport { FontAwesomeIcon } from \"@fortawesome/react-fontawesome\";\r\nimport { faComment } from \"@fortawesome/free-solid-svg-icons\";\r\nimport dayjs from \"dayjs\";\r\n// Types\r\nimport { News } from \"__src/store/home/types\";\r\n// Variants\r\nimport { NewsItemVariant } from \"./variants\";\r\n\r\ninterface Props {\r\n  news: News;\r\n}\r\n\r\nclass NewsItem extends Component<Props> {\r\n  render() {\r\n    const { news } = this.props;\r\n    return (\r\n      <motion.div\r\n        variants={NewsItemVariant}\r\n        layout\r\n        className=\"w-full p-0 mb-3 transition-shadow rounded-lg shadow-sm h-36 sm:h-40 sm:p-3 bg-light dark:bg-gray-700 hover:shadow-md\"\r\n      >\r\n        <div className=\"flex w-full h-full text-dark dark:text-light\">\r\n          <div className=\"flex-grow-0 flex-shrink-0 h-full mr-3 overflow-hidden rounded-l-lg sm:rounded-lg w-36 bg-light\">\r\n            <img className=\"object-cover w-full h-full shadow-sm\" src={news.thumbnail} alt=\"\" />\r\n          </div>\r\n          <div className=\"flex flex-col flex-grow py-2 pr-2 sm:py-0\">\r\n            <div className=\"flex\">\r\n              <div className=\"pt-1 pr-3\">\r\n                <div className=\"w-8 h-8 rounded-full shadow-sm md:w-10 md:h-10\">\r\n                  <img className=\"object-cover w-full h-full\" src=\"/favicon.ico\" alt=\"\" />\r\n                </div>\r\n              </div>\r\n              <div className=\"flex-grow\">\r\n                <h6 className=\"font-bold leading-4 md:text-xl\">{news.title}</h6>\r\n                <p className=\"text-sm tracking-wide text-gray-600 dark:text-gray-300\">{dayjs(news.created_at).fromNow()}</p>\r\n              </div>\r\n            </div>\r\n            <div className=\"flex-grow my-1 ml-1 overflow-hidden\">\r\n              <p className=\"text-sm leading-4 text-gray-600 break-words whitespace-pre-line md:leading-5 dark:text-gray-300\">\r\n                {news.content}\r\n              </p>\r\n            </div>\r\n            <div className=\"flex\">\r\n              <div className=\"flex items-center justify-between h-6 ml-2 text-gray-400 dark:text-gray-500\">\r\n                <span className=\"mr-1 text-base\">{news.comments?.length || 0}</span>\r\n                <FontAwesomeIcon className=\"w-4 h-4\" icon={faComment} />\r\n              </div>\r\n            </div>\r\n          </div>\r\n        </div>\r\n      </motion.div>\r\n    );\r\n  }\r\n}\r\n\r\nexport default NewsItem;\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/pages/home/NewsItem.tsx b/frontend/src/components/pages/home/NewsItem.tsx
+--- a/frontend/src/components/pages/home/NewsItem.tsx	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/components/pages/home/NewsItem.tsx	(date 1620027459878)
+@@ -1,6 +1,7 @@
+ // NODE_MODULES
+ import { Component } from "react";
+ import { motion } from "framer-motion";
++import { Link } from "react-router-dom";
+ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+ import { faComment } from "@fortawesome/free-solid-svg-icons";
+ import dayjs from "dayjs";
+@@ -34,7 +35,9 @@
+                 </div>
+               </div>
+               <div className="flex-grow">
+-                <h6 className="font-bold leading-4 md:text-xl">{news.title}</h6>
++                <h6 className="font-bold leading-4 md:text-xl">
++                  <Link to={`/news/${news.slug}`}>{news.title}</Link>
++                </h6>
+                 <p className="text-sm tracking-wide text-gray-600 dark:text-gray-300">{dayjs(news.created_at).fromNow()}</p>
+               </div>
+             </div>
+Index: frontend/src/store/index.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// NODE_MODULES\r\nimport { combineReducers, createStore, applyMiddleware, compose } from \"redux\";\r\nimport thunk, { ThunkMiddleware, ThunkAction } from \"redux-thunk\";\r\n// LOCAL\r\nimport { AppActionTypes } from \"./app/types\";\r\nimport { appReducer } from \"./app/reducers\";\r\nimport { HomeActionTypes } from \"./home/types\";\r\nimport { homeReducer } from \"./home/reducers\";\r\n// Devtools\r\nimport { loadReduxDevTools } from \"__src/devtools\";\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Root Reducer and Types\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nconst rootReducer = combineReducers({\r\n  app: appReducer,\r\n  home: homeReducer,\r\n});\r\n\r\nexport type RootState = ReturnType<typeof rootReducer>;\r\n\r\nexport type RootActionTypes = AppActionTypes | HomeActionTypes;\r\n\r\nexport type ThunkResult<R = void> = ThunkAction<R, RootState, unknown, RootActionTypes>;\r\n\r\n/*\r\n|---------------------------------------------------------------\r\n| Store\r\n|---------------------------------------------------------------\r\n|\r\n*/\r\n\r\nconst store = createStore(\r\n  rootReducer,\r\n  // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>), loadReduxDevTools())\r\n  compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))\r\n);\r\n\r\nexport default store;\r\n\r\n// /*\r\n// |---------------------------------------------------------------\r\n// | HOC\r\n// |---------------------------------------------------------------\r\n// |\r\n// */\r\n// const withStoreConnector = connect(\r\n//   (state: RootState) => ({\r\n//     app: state.app,\r\n//   }),\r\n//   {\r\n//     onRegisterAsync: registerAsync,\r\n//     onLoginAsync: loginAsync,\r\n//     onLogoutAsync: logoutAsync,\r\n//     onThemeAsync: themeAsync,\r\n//   }\r\n// );\r\n\r\n// export type WithStoreProps = ConnectedProps<typeof withStoreConnector>;\r\n\r\n// export const withStore = <T extends WithStoreProps>(WrappedComponent: ComponentType<T>) => {\r\n//   class HOC extends Component<WithStoreProps> {\r\n//     render() {\r\n//       const { ...props } = this.props;\r\n//       return <WrappedComponent {...(props as T)} />;\r\n//     }\r\n//   }\r\n\r\n//   return withStoreConnector(HOC);\r\n// };\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/store/index.tsx b/frontend/src/store/index.tsx
+--- a/frontend/src/store/index.tsx	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/store/index.tsx	(date 1620027459905)
+@@ -7,7 +7,7 @@
+ import { HomeActionTypes } from "./home/types";
+ import { homeReducer } from "./home/reducers";
+ // Devtools
+-import { loadReduxDevTools } from "__src/devtools";
++import { composeWithReduxDevtools } from "__src/devtools";
+ 
+ /*
+ |---------------------------------------------------------------
+@@ -37,7 +37,8 @@
+ const store = createStore(
+   rootReducer,
+   // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>), loadReduxDevTools())
+-  compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
++  // compose(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>)),
++  composeWithReduxDevtools(applyMiddleware(thunk as ThunkMiddleware<RootState, RootActionTypes>))
+ );
+ 
+ export default store;
+Index: frontend/src/configs/index.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// LOCAL STORAGE\r\nexport const THEME_KEY = \"APP_THEME\";\r\nexport const AUTH_KEY = \"APP_AUTH\";\r\n\r\n// HOST\r\n// local\r\nexport const host = \"http://127.0.0.1:3333\";\r\n// ad hoc\r\n// export const host = \"http://192.168.173.1:3333\";\r\n// samsung\r\n// export const host = \"http://192.168.43.179:3333\";\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/configs/index.ts b/frontend/src/configs/index.ts
+--- a/frontend/src/configs/index.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/configs/index.ts	(date 1620027459888)
+@@ -4,8 +4,8 @@
+ 
+ // HOST
+ // local
+-export const host = "http://127.0.0.1:3333";
++// export const host = "http://127.0.0.1:3333";
+ // ad hoc
+ // export const host = "http://192.168.173.1:3333";
+ // samsung
+-// export const host = "http://192.168.43.179:3333";
++export const host = "http://192.168.43.179:3333";
+Index: frontend/src/components/pages/home/variants.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Variants } from \"framer-motion\";\r\n\r\nexport const ModalOverlayVariant: Variants = {\r\n  hidden: {\r\n    opacity: 0,\r\n  },\r\n  visible: {\r\n    opacity: 1,\r\n  },\r\n  leave: {\r\n    opacity: 0,\r\n    transition: {\r\n      delay: 0.2,\r\n    },\r\n  },\r\n};\r\n\r\nexport const AuthCardVariant: Variants = {\r\n  hidden: {\r\n    scale: 0.7,\r\n    opacity: 0,\r\n  },\r\n  visible: {\r\n    scale: 1,\r\n    opacity: 1,\r\n    transition: {\r\n      delay: 0.2,\r\n    },\r\n  },\r\n  leave: {\r\n    scale: 0.7,\r\n    opacity: 0,\r\n  },\r\n};\r\n\r\nexport const NewsListVariant: Variants = {\r\n  hidden: {\r\n    opacity: 0.5,\r\n  },\r\n  visible: {\r\n    opacity: 1,\r\n    transition: {\r\n      delayChildren: 0.1,\r\n      staggerChildren: 0.2,\r\n    },\r\n  },\r\n};\r\n\r\nexport const NewsItemVariant: Variants = {\r\n  hidden: {\r\n    y: -40,\r\n    opacity: 0.8,\r\n  },\r\n  visible: {\r\n    y: 0,\r\n    opacity: 1,\r\n  },\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/pages/home/variants.ts b/frontend/src/components/pages/home/variants.ts
+--- a/frontend/src/components/pages/home/variants.ts	(revision 4c2578f2c1b8f5dcbaa93690fa04d50af64923dc)
++++ b/frontend/src/components/pages/home/variants.ts	(date 1620027459887)
+@@ -1,5 +1,31 @@
+ import { Variants } from "framer-motion";
+ 
++export const NavLinkListVariant: Variants = {
++  hidden: {
++    opacity: 0.5,
++  },
++  visible: {
++    opacity: 1,
++    transition: {
++      delayChildren: 0.1,
++      staggerChildren: 0.1,
++    },
++  },
++};
++
++export const NavLinkItemVariant: Variants = {
++  hidden: {
++    scale: 0.9,
++    x: -30,
++    opacity: 0.8,
++  },
++  visible: {
++    scale: 1,
++    x: 0,
++    opacity: 1,
++  },
++};
++
+ export const ModalOverlayVariant: Variants = {
+   hidden: {
+     opacity: 0,
