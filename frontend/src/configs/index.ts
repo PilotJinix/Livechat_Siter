@@ -4,8 +4,8 @@ export const AUTH_KEY = "APP_AUTH";
 
 // HOST
 // local
-// export const host = "http://127.0.0.1:3333";
+export const host = "http://127.0.0.1:3333";
 // ad hoc
 // export const host = "http://192.168.173.1:3333";
 // samsung
-export const host = "http://192.168.43.179:3333";
+// export const host = "http://192.168.43.179:3333";
