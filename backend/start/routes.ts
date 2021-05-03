@@ -10,6 +10,8 @@ import AuthController from "App/Controllers/Http/AuthController";
 import UsersController from "App/Controllers/Http/UsersController";
 import NewsController from "App/Controllers/Http/NewsController";
 import ConversationsController from "App/Controllers/Http/ConversationsController";
+import AdminsController from "App/Controllers/Http/AdminsController";
+// import AdminsController from "App/Controllers/Http/AdminsController";
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +34,13 @@ import ConversationsController from "App/Controllers/Http/ConversationsControlle
 // Route.get("api/messages", message.index);
 // Route.get("api/messages/:id", message.show);
 // Route.get("api/messages-soft-delete/:id", message.softDelete);
-
+// ADMIN NEWS
+// const  adminController = new AdminsController();
+// Route.get("api/newlist",adminController.index);
+// Route.get("api/newlist/:id",adminController.show);
+// Route.post("api/newlist/crete",AdminsController.create)
+// Route.post("api/newlist-save",adminController.save);
+// Route.get("api/newlist-soft-delete",adminController.delete);
 // Test Auth
 const authController = new AuthController();
 // Handle Register Form
