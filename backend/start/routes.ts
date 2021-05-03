@@ -11,6 +11,7 @@ import UsersController from "App/Controllers/Http/UsersController";
 import NewsController from "App/Controllers/Http/NewsController";
 import ConversationsController from "App/Controllers/Http/ConversationsController";
 import AdminsController from "App/Controllers/Http/AdminsController";
+// import AdminsController from "App/Controllers/Http/AdminsController";
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ import AdminsController from "App/Controllers/Http/AdminsController";
 // const  adminController = new AdminsController();
 // Route.get("api/newlist",adminController.index);
 // Route.get("api/newlist/:id",adminController.show);
+// Route.post("api/newlist/crete",AdminsController.create)
 // Route.post("api/newlist-save",adminController.save);
 // Route.get("api/newlist-soft-delete",adminController.delete);
 // Test Auth
