@@ -49,7 +49,7 @@ export default class Conversation extends BaseModel implements ConversationsInte
   }
 
   @belongsTo(() => User, {
-    foreignKey: "authorId",
+    foreignKey: "creatorID",
   })
   public creator: BelongsTo<typeof User>;
 
