@@ -10,7 +10,7 @@ import AuthController from "App/Controllers/Http/AuthController";
 import UsersController from "App/Controllers/Http/UsersController";
 import NewsController from "App/Controllers/Http/NewsController";
 import ConversationsController from "App/Controllers/Http/ConversationsController";
-import AdminsController from "App/Controllers/Http/AdminsController";
+// import AdminsController from "App/Controllers/Http/AdminsController";
 // import AdminsController from "App/Controllers/Http/AdminsController";
 
 /*

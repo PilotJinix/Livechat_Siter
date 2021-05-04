@@ -3,6 +3,7 @@ import { schema, rules, validator } from "@ioc:Adonis/Core/Validator";
 
 import User from "App/Models/User";
 
+
 export default class AuthController {
   // @ts-ignore
   public async register({ request, auth }: HttpContextContract) {
@@ -49,14 +50,16 @@ export default class AuthController {
       const token = await auth
         .use("api")
         .attempt(request.input("username"), request.input("password"), { expiresIn: "2 days" });
+      // console.log(token)
+      // console.log(token.token)
 
-        // console.log(auth.user?.id)
 
       return {
         ok: true,
         user: token.user,
         auth: token.toJSON(),
       };
+
     } catch (error) {
       // console.log(error)
       return {
@@ -69,11 +72,12 @@ export default class AuthController {
   // @ts-ignore
   public async authenticate({ auth }: HttpContextContract) {
     try {
-      await auth.authenticate();
-     
+      const data = await auth.authenticate()
+      console.log(data.username)
+
       return {
         ok: true,
-        auth: auth.toJSON(),
+        auth: data.toJSON(),
       };
     } catch (error) {
       return {

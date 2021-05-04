@@ -85,3 +85,5 @@ Di folder ./vscode ada settings untuk load SDK typescript di workspace jika meng
 Saran pakai extension formater di Text Editornya. Contoh extension [Prettier](https://prettier.io/).
 
 Jangan lupa setup buat DB nya di mysql. bisa pakai XAMPP
+
+Pastikan Sudah Mengintal **NodeJS**, **Ekstensi React Developer Tools  (Chrome)**, dan **Redux Devtools**
