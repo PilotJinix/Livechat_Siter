@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b1ca1a94-7341-45b8-ab6d-2f9364be2941" name="Default Changelist" comment="Konten">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_8.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/public/news_9.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database/seeders/2_News.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +74,8 @@
       <workItem from="1619941619162" duration="1642000" />
       <workItem from="1619949195649" duration="4324000" />
       <workItem from="1620004172555" duration="7955000" />
+      <workItem from="1620059192373" duration="2573000" />
+      <workItem from="1620089378149" duration="291000" />
     </task>
     <task id="LOCAL-00001" summary="make News Models">
       <created>1618115371147</created>
@@ -176,7 +182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620027825308</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Konten">
+      <created>1620059456617</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1620059456617</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
