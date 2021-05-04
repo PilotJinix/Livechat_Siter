@@ -54,16 +54,15 @@ Route.post("api/logout", authController.logout);
 
 // Test News
 const newsController = new NewsController();
-Route.get("api/news", newsController.index);
+Route.post("api/news", newsController.index);
 
 // test conversation
 const conversationsController = new ConversationsController();
-Route.get("api/conversations", conversationsController.index);
-Route.get("api/conv", conversationsController.conv);
+Route.post("api/conversations", conversationsController.index);
 
 // Test User
 const usersController = new UsersController();
-Route.get("api/users", usersController.index);
+Route.post("api/users", usersController.index);
 
 /*
 |--------------------------------------------------------------------------

@@ -3,12 +3,13 @@ import { Fragment, Component, createRef } from "react";
 import { Switch, Route, Redirect, Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
-import { AnimatePresence, AnimateSharedLayout } from "framer-motion";
+import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes, faThLarge, faComment, faUsers, faCog, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 // STORE
 import { RootState } from "__src/store";
 import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
+import { loadNewsAsync, loadConversationAsync, selectConversation } from "__src/store/home/actions";
 // SOCKET
 // import { main } from "__src/socket";
 // COMPONENTS
@@ -133,7 +134,7 @@ class Home extends Component<Props, State> {
     const { openNavbars, openLoginModal, openRegisterModal } = this.state;
     const {
       app: { user, loggedIn },
-      home: { news },
+      home: { news, users, conversations },
     } = this.props;
     return (
       <>
@@ -268,82 +269,179 @@ class Home extends Component<Props, State> {
                           const { slug } = match.params as any;
                           const selectedNews = news && news.data.find((n) => n.slug === slug);
                           return (
-                            <div className="flex-grow flex flex-row w-full h-full">
-                              <div className="flex-grow h-full relative">
-                                <div
-                                  ref={this.newListContainerRef}
-                                  className="w-full h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
-                                >
-                                  {news ? (
-                                    news.data.map((n) => {
-                                      return (
-                                        <div className="h-10">
-                                          <Link to={`/news/${n.slug}`}>{n.title}</Link>
-                                        </div>
-                                      );
-                                    })
-                                  ) : (
-                                    <div>Loading News Skeleton</div>
-                                  )}
-                                  {/* // <AnimatePresence>
-                              //   {news ? (
-                              //     <NewsList>
-                              //       {news.data.map((_news) => (
-                              //         <NewsItem key={_news.id} news={_news} />
-                              //       ))}
-                              //     </NewsList>
-                              //   ) : (
-                              //     <>
-                              //       <NewsSkeleton />
-                              //       <NewsSkeleton />
-                              //       <NewsSkeleton />
-                              //     </>
-                              //   )}
-                              // </AnimatePresence> */}
-                                </div>
-                                <AnimatePresence>
-                                  {slug && (
-                                    <>
-                                      {selectedNews ? (
-                                        <div
-                                          key="item"
-                                          className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50"
+                            <div className="w-full h-full relative">
+                              <div
+                                ref={this.newListContainerRef}
+                                className="w-full h-full overflow-x-hidden overflow-y-auto themed-scrollbar"
+                              >
+                                {news ? (
+                                  <NewsList>
+                                    {news.data.map((_news) => (
+                                      <NewsItem key={_news.id} news={_news} />
+                                    ))}
+                                    {this.props.home.news?.meta.next_page_url && (
+                                      <div className="flex justify-center items-center">
+                                        <button
+                                          className="bg-primary px-4 py-2 rounded-md"
+                                          onClick={() => {
+                                            this.props.loadNewsAsync();
+                                          }}
+                                        >
+                                          Load More
+                                        </button>
+                                      </div>
+                                    )}
+                                  </NewsList>
+                                ) : (
+                                  <>
+                                    <NewsSkeleton />
+                                    <NewsSkeleton />
+                                    <NewsSkeleton />
+                                  </>
+                                )}
+                              </div>
+                              <AnimatePresence>
+                                {slug && (
+                                  <motion.div
+                                    key="item"
+                                    initial={{
+                                      opacity: 0,
+                                    }}
+                                    animate={{
+                                      opacity: 1,
+                                      transition: {
+                                        duration: 0.1,
+                                      },
+                                    }}
+                                    exit={{
+                                      opacity: 0,
+                                    }}
+                                    className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50"
+                                  >
+                                    {selectedNews ? (
+                                      <motion.div
+                                        initial={{
+                                          opacity: 0,
+                                        }}
+                                        animate={{
+                                          opacity: 1,
+                                          transition: {
+                                            delay: 0.1,
+                                            duration: 0.1,
+                                          },
+                                        }}
+                                        exit={{
+                                          opacity: 0,
+                                        }}
+                                        className="relative w-full h-56 p-6 m-2 rounded-lg shadow-lg sm:h-auto bg-light sm:m-0 dark:bg-dark"
+                                      >
+                                        <button
+                                          className="absolute top-3 right-3"
                                           onClick={() => {
                                             history.goBack();
                                           }}
                                         >
-                                          <div className="text-light">{selectedNews.title}</div>
-                                          <div className="h-20 bg-secondary">Test</div>
-                                        </div>
-                                      ) : (
-                                        <div className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50">
-                                          <div>Loading With Slug Spinner</div>
-                                        </div>
-                                      )}
-                                    </>
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                              <div className="flex-grow-0 flex-shrink-0 hidden w-20 h-full pl-3 md:block lg:w-44">
-                                <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">Users</div>
-                              </div>
+                                          <FontAwesomeIcon
+                                            className="w-5 h-5 text-dark hover:text-gray-700 dark:text-light dark:hover:text-gray-200"
+                                            icon={faTimes}
+                                          />
+                                        </button>
+                                        <h1 className="mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
+                                          {selectedNews.title}
+                                        </h1>
+                                        <div className="text-3xl">Text</div>
+                                        <div className="text-xl">{selectedNews.content}</div>
+                                      </motion.div>
+                                    ) : (
+                                      <div>Loading With Slug Spinner</div>
+                                    )}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           );
                         }}
                       ></Route>
 
                       <Route path="/users">
-                        <div className="flex flex-row w-full h-full">
-                          <h1>Users</h1>
+                        <div className="w-full h-full relative">
+                          <div className="w-72 h-full overflow-x-hidden overflow-y-auto themed-scrollbar">
+                            {users ? (
+                              <div>
+                                {users.data.map((user) => {
+                                  return (
+                                    <div key={user.id} className="px-6 py-2 my-2 rounded-md bg-light">
+                                      {user.username}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <div>Loading User Data</div>
+                            )}
+                          </div>
                         </div>
                       </Route>
 
                       <Route
                         path="/conversations"
                         render={() => {
+                          if (!conversations) this.props.loadConversationAsync();
+
+                          const selectedConversation = conversations?.data.find((conv) => {
+                            return conv.id == conversations.selectedId;
+                          });
+
                           return loggedIn ? (
-                            <div className="flex flex-row w-full h-full">
-                              <h1>Conversations</h1>
+                            <div className="flex w-full h-full relative">
+                              <div className="w-72 h-full overflow-x-hidden overflow-y-auto themed-scrollbar">
+                                {conversations ? (
+                                  <div>
+                                    {conversations.data.map((conversation) => {
+                                      return (
+                                        <div
+                                          key={conversation.id}
+                                          className="px-6 py-2 my-2 rounded-md bg-light"
+                                          onClick={() => {
+                                            this.props.selectConversation(conversation.id);
+                                          }}
+                                        >
+                                          {conversation.title}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <div>Loading Conversation Data</div>
+                                )}
+                              </div>
+                              <div className="flex-grow w-full h-full ml-2">
+                                {selectedConversation ? (
+                                  <div className="p-2 bg-light w-full h-full rounded-lg">
+                                    <div className="border-b-2 border-primary px-2 py-4">{selectedConversation.title}</div>
+                                    <div>
+                                      {selectedConversation.messages?.map((message) => {
+                                        const isMe = message.sender_id == user?.id;
+                                        console.log(`message.senderId == user?.id`);
+                                        console.log(`${message.sender_id} == ${user?.id}`);
+
+                                        return (
+                                          <div
+                                            key={message.id}
+                                            className={`flex ${isMe ? "justify-end" : "justify-start"} my-2`}
+                                          >
+                                            <div className="px-3.5 py-1.5 bg-primary inline-block text-light">
+                                              {message.message}
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div>Start Chat with other</div>
+                                )}
+                              </div>
                             </div>
                           ) : (
                             <Redirect to="/" />
@@ -355,7 +453,7 @@ class Home extends Component<Props, State> {
                         path="/settings"
                         render={() => {
                           return loggedIn ? (
-                            <div className="flex flex-row w-full h-full">
+                            <div className="w-full h-full relative">
                               <h1>Settings</h1>
                             </div>
                           ) : (
@@ -445,6 +543,9 @@ const connector = connect(
     loginAsync,
     registerAsync,
     logoutAsync,
+    loadNewsAsync,
+    loadConversationAsync,
+    selectConversation,
   }
 );
 

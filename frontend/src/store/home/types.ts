@@ -7,6 +7,7 @@
 
 export const NEW_CONVERSATION = "NEW_CONVERSATION";
 export const LOAD_CONVERSATION = "LOAD_CONVERSATION";
+export const SELECT_CONVERSATION = "SELECT_CONVERSATION";
 
 export const NEW_MESSAGE = "NEW_MESSAGE";
 export const LOAD_MESSAGE = "LOAD_MESSAGE";
@@ -75,8 +76,8 @@ export type Participant = {
 
 export type Message = {
   id: number;
-  senderId: number;
-  conversationId: number;
+  sender_id: number;
+  conversation_id: number;
   message: string;
   createdAt: number;
   updatedAt: number;
@@ -84,7 +85,17 @@ export type Message = {
   sender?: User;
 };
 
-export type ConversationMeta = {};
+export type ConversationMeta = {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  first_page: number;
+  first_page_url: string | null;
+  last_page_url: string | null;
+  next_page_url: string | null;
+  previous_page_url: string | null;
+};
 
 export type Conversation = {
   id: number;
@@ -108,7 +119,7 @@ export type NewsState = {
 };
 
 export type ConversationState = {
-  meta: ConversationMeta;
+  // meta: ConversationMeta;
   data: Conversation[];
   selectedId?: number;
 };
@@ -139,6 +150,16 @@ export interface NewConversationAction {
 
 export interface LoadConversationAction {
   type: typeof LOAD_CONVERSATION;
+  payload: {
+    conversation: ConversationState;
+  };
+}
+
+export interface SelectConversationAction {
+  type: typeof SELECT_CONVERSATION;
+  payload: {
+    id: number;
+  };
 }
 
 export interface NewNewsAction {
@@ -166,4 +187,10 @@ export interface LoadUserAction {
 |
 */
 
-export type HomeActionTypes = NewConversationAction | LoadConversationAction | NewNewsAction | LoadNewsAction | LoadUserAction;
+export type HomeActionTypes =
+  | NewConversationAction
+  | LoadConversationAction
+  | SelectConversationAction
+  | NewNewsAction
+  | LoadNewsAction
+  | LoadUserAction;

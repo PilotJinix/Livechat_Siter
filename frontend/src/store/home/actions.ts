@@ -1,5 +1,15 @@
 import { ThunkResult } from "../index";
-import { HomeActionTypes, NEW_NEWS, LOAD_NEWS, LOAD_USER, NewsState, UserState } from "./types";
+import {
+  HomeActionTypes,
+  NEW_NEWS,
+  LOAD_NEWS,
+  LOAD_USER,
+  NewsState,
+  UserState,
+  ConversationState,
+  LOAD_CONVERSATION,
+  SELECT_CONVERSATION,
+} from "./types";
 
 import { api, AxiosResponse } from "__src/api";
 
@@ -36,7 +46,7 @@ export const loadNewsAsync = (): ThunkResult<void> => (dispatch, getState) => {
   const hasNext = home.news?.meta.next_page_url;
   if (!home.news || hasNext) {
     api
-      .get<any, AxiosResponse<NewsState>>(`/news${page}`)
+      .post<any, AxiosResponse<NewsState>>(`/news${page}`)
       .then((response) => {
         dispatch(loadNews(response.data));
       })
@@ -68,7 +78,7 @@ export const loadUserAsync = (): ThunkResult<void> => (dispatch, getState) => {
   // const hasNext = home.users?.meta.next_page_url;
   if (!home.users) {
     api
-      .get<any, AxiosResponse<UserState>>(`/users`)
+      .post<any, AxiosResponse<UserState>>(`/users`)
       .then((response) => {
         dispatch(loadUser({ data: response.data as any }));
       })
@@ -77,3 +87,59 @@ export const loadUserAsync = (): ThunkResult<void> => (dispatch, getState) => {
       });
   }
 };
+
+/*
+|---------------------------------------------------------------
+| Load Conversation
+|---------------------------------------------------------------
+|
+*/
+
+type LoadConversationProps = ConversationState;
+
+export const loadConversation = (conversationState: LoadConversationProps): HomeActionTypes => ({
+  type: LOAD_CONVERSATION,
+  payload: {
+    conversation: conversationState,
+  },
+});
+
+export const loadConversationAsync = (): ThunkResult<void> => (dispatch, getState) => {
+  const { app, home } = getState();
+  const token = app.auth?.token || "";
+  // const page = home.news?.meta.next_page_url || "";
+  // const hasNext = home.conversations?.meta.next_page_url;
+  if (!home.conversations /* || hasNext*/) {
+    api
+      .post<any, AxiosResponse<ConversationState>>(
+        `/conversations`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        dispatch(loadConversation({ data: response.data as any }));
+      })
+      .catch((errors) => {
+        console.error(errors);
+      });
+  }
+};
+
+/*
+|---------------------------------------------------------------
+| Select Conversation
+|---------------------------------------------------------------
+|
+*/
+
+export const selectConversation = (id: number): HomeActionTypes => ({
+  type: SELECT_CONVERSATION,
+  payload: {
+    id: id,
+  },
+});

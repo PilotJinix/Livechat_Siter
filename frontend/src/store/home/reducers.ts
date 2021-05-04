@@ -1,4 +1,13 @@
-import { HomeState, HomeActionTypes, NEW_NEWS, LOAD_NEWS, LOAD_USER } from "./types";
+import {
+  HomeState,
+  HomeActionTypes,
+  NEW_NEWS,
+  LOAD_NEWS,
+  LOAD_USER,
+  LOAD_CONVERSATION,
+  SELECT_CONVERSATION,
+  ConversationState,
+} from "./types";
 
 /*
 |---------------------------------------------------------------
@@ -47,6 +56,31 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
         users: {
           ...state.users,
           data: [...(state.users?.data || []), ...action.payload.user.data],
+        },
+      };
+    //
+    //
+    // Memuat data conversation
+    //
+    case LOAD_CONVERSATION:
+      return {
+        ...state,
+        conversations: {
+          ...state.conversations,
+          data: [...(state.conversations?.data || []), ...action.payload.conversation.data],
+          selectedId: action.payload.conversation.data[0].id,
+        },
+      };
+    //
+    //
+    // Pilih data conversation
+    //
+    case SELECT_CONVERSATION:
+      return {
+        ...state,
+        conversations: {
+          ...(state.conversations as ConversationState),
+          selectedId: action.payload.id,
         },
       };
     //
