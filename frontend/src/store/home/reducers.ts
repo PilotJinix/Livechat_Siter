@@ -7,6 +7,8 @@ import {
   LOAD_CONVERSATION,
   SELECT_CONVERSATION,
   ConversationState,
+  SELECT_USER,
+  UserState,
 } from "./types";
 
 /*
@@ -56,6 +58,14 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
         users: {
           ...state.users,
           data: [...(state.users?.data || []), ...action.payload.user.data],
+        },
+      };
+    case SELECT_USER:
+      return {
+        ...state,
+        users: {
+          ...(state.users as UserState),
+          selectedId: action.payload.id,
         },
       };
     //

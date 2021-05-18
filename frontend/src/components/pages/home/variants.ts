@@ -67,15 +67,15 @@ export const NewsListVariant: Variants = {
     opacity: 1,
     transition: {
       delayChildren: 0.1,
-      staggerChildren: 0.2,
+      staggerChildren: 0.03,
     },
   },
 };
 
 export const NewsItemVariant: Variants = {
   hidden: {
-    y: -40,
-    opacity: 0.8,
+    y: -30,
+    opacity: 0.5,
   },
   visible: {
     y: 0,

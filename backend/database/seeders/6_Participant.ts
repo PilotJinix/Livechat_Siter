@@ -5,27 +5,29 @@ import Participant from "App/Models/Participant";
 
 export default class ParticipantSeeder extends BaseSeeder {
   public async run() {
-    await Participant.createMany([
-      {
-        userId: 1,
-        conversationId: 1,
-      },
-      {
-        userId: 3,
-        conversationId: 1,
-      },
-      {
-        userId: 4,
-        conversationId: 2,
-      },
-      {
-        userId: 5,
-        conversationId: 2,
-      },
-      {
-        userId: 6,
-        conversationId: 2,
-      },
-    ]);
+    const personal = (conversationId: number, fromId: number, toId: number) => {
+      const result: Partial<Participant>[] = [
+        {
+          userId: fromId,
+          conversationId,
+        },
+        {
+          userId: toId,
+          conversationId,
+        },
+      ];
+      return result;
+    };
+
+    let data: Partial<Participant>[] = [];
+    let iconversation = 1;
+    let withUser = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+    for (let i = 1; i <= 10; i++) {
+      for (let j = 0; j < i; j++) {
+        data.push(...personal(iconversation, i, withUser[j]));
+        iconversation++;
+      }
+    }
+    await Participant.createMany([...data]);
   }
 }

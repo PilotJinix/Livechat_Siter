@@ -9,6 +9,7 @@ import {
   ConversationState,
   LOAD_CONVERSATION,
   SELECT_CONVERSATION,
+  SELECT_USER,
 } from "./types";
 
 import { api, AxiosResponse } from "__src/api";
@@ -87,6 +88,20 @@ export const loadUserAsync = (): ThunkResult<void> => (dispatch, getState) => {
       });
   }
 };
+
+/*
+|---------------------------------------------------------------
+| Select User
+|---------------------------------------------------------------
+|
+*/
+
+export const selectUser = (id: number): HomeActionTypes => ({
+  type: SELECT_USER,
+  payload: {
+    id: id,
+  },
+});
 
 /*
 |---------------------------------------------------------------

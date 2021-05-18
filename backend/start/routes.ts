@@ -55,6 +55,7 @@ Route.post("api/logout", authController.logout);
 // Test News
 const newsController = new NewsController();
 Route.post("api/news", newsController.index);
+Route.post("api/news/:slug", newsController.show);
 
 // test conversation
 const conversationsController = new ConversationsController();

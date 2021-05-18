@@ -23,6 +23,9 @@ export default class NewsController {
       return await News.findByOrFail("slug", request.param("slug"));
     } catch (error) {
       console.log(error);
+      return {
+        error,
+      };
     }
   }
 }

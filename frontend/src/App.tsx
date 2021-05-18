@@ -29,10 +29,7 @@ class App extends Component<Props, State> {
       connected(false);
     });
 
-    setTimeout(() => {
-      loadNewsAsync();
-    }, 1000);
-
+    loadNewsAsync();
     loadUserAsync();
   };
 

@@ -33,7 +33,18 @@ export default class UserSeeder extends BaseSeeder {
         key: `19--${props.key}`,
       });
 
-    const listAdmin = ["3012", "flamrdevs"];
+    const listAdmin: [string, string, string, string, string, string, string, string, string, string] = [
+      "rifalrizki12",
+      "rido154",
+      "Ferdydwikurniawan",
+      "Dyahtyas",
+      "meliatiya24",
+      "AzizahN",
+      "nauval123",
+      "dewangga-pk",
+      "PilotJinix",
+      "flamrdevs",
+    ];
     const list18 = [
       "3001",
       "3003",

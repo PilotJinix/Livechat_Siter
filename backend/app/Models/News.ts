@@ -26,7 +26,7 @@ export default class News extends BaseModel implements NewsInterface {
 
   @beforeSave()
   public static async generateSlug(news: News) {
-    news.slug = news.title.replace(/\s/g, "-");
+    news.slug = encodeURIComponent(news.title.trim().replace(/\s/g, "-"));
   }
 
   @column()

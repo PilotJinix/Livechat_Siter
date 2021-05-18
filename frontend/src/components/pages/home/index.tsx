@@ -9,9 +9,12 @@ import { faBars, faTimes, faThLarge, faComment, faUsers, faCog, faChevronDown } 
 // STORE
 import { RootState } from "__src/store";
 import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
-import { loadNewsAsync, loadConversationAsync, selectConversation } from "__src/store/home/actions";
+import { loadNewsAsync, loadConversationAsync, selectConversation, selectUser } from "__src/store/home/actions";
+import { News } from "__src/store/home/types";
 // SOCKET
 // import { main } from "__src/socket";
+// API
+import { api, AxiosResponse } from "__src/api";
 // COMPONENTS
 import ThemeTogglerButton from "__src/components/atoms/ThemeTogglerButton";
 import Modal from "__src/components/advanceds/Portal";
@@ -26,6 +29,10 @@ import NavLinkItem, { Nav } from "./NavLinkItem";
 import NewsSkeleton from "./NewsSkeleton";
 import NewsList from "./NewsList";
 import NewsItem from "./NewsItem";
+
+import UserList from "./UserList";
+import UserItem from "./UserItem";
+import UserCard from "./UserCard";
 
 const navs: Nav[] = [
   {
@@ -59,6 +66,7 @@ type State = {
   openNavbars: boolean;
   openLoginModal: boolean;
   openRegisterModal: boolean;
+  news?: News;
 };
 
 class Home extends Component<Props, State> {
@@ -135,6 +143,7 @@ class Home extends Component<Props, State> {
     const {
       app: { user, loggedIn },
       home: { news, users, conversations },
+      selectUser,
     } = this.props;
     return (
       <>
@@ -267,7 +276,29 @@ class Home extends Component<Props, State> {
                         path={["/news/:slug", "/"]}
                         render={({ history, match }) => {
                           const { slug } = match.params as any;
-                          const selectedNews = news && news.data.find((n) => n.slug === slug);
+
+                          let selectedNews: News | undefined;
+
+                          if (slug) {
+                            selectedNews = (news && news.data.find((n) => n.slug === slug)) || this.state.news;
+                            if (!selectedNews) {
+                              api
+                                .post<any, AxiosResponse<News>>(`/news/${slug}`)
+                                .then((response) => {
+                                  this.setState({
+                                    news: response.data,
+                                  });
+                                })
+                                .catch((errors) => {
+                                  console.error(errors);
+                                });
+                            }
+                          } else {
+                            // this.setState({
+                            //   news: undefined,
+                            // });
+                          }
+
                           return (
                             <div className="w-full h-full relative">
                               <div
@@ -316,7 +347,7 @@ class Home extends Component<Props, State> {
                                     exit={{
                                       opacity: 0,
                                     }}
-                                    className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50"
+                                    className="absolute p-10 top-0 left-0 w-full h-full bg-gray-800 bg-opacity-80"
                                   >
                                     {selectedNews ? (
                                       <motion.div
@@ -338,7 +369,7 @@ class Home extends Component<Props, State> {
                                         <button
                                           className="absolute top-3 right-3"
                                           onClick={() => {
-                                            history.goBack();
+                                            history.push("/");
                                           }}
                                         >
                                           <FontAwesomeIcon
@@ -349,11 +380,10 @@ class Home extends Component<Props, State> {
                                         <h1 className="mt-2 text-2xl font-bold text-center text-gray-800 dark:text-gray-100">
                                           {selectedNews.title}
                                         </h1>
-                                        <div className="text-3xl">Text</div>
                                         <div className="text-xl">{selectedNews.content}</div>
                                       </motion.div>
                                     ) : (
-                                      <div>Loading With Slug Spinner</div>
+                                      <div>Loading news with spinner</div>
                                     )}
                                   </motion.div>
                                 )}
@@ -364,22 +394,35 @@ class Home extends Component<Props, State> {
                       ></Route>
 
                       <Route path="/users">
-                        <div className="w-full h-full relative">
-                          <div className="w-72 h-full overflow-x-hidden overflow-y-auto themed-scrollbar">
-                            {users ? (
-                              <div>
-                                {users.data.map((user) => {
+                        <div className="flex w-full h-full relative">
+                          {users ? (
+                            <>
+                              <UserList>
+                                {users.data.map((user, index) => {
                                   return (
-                                    <div key={user.id} className="px-6 py-2 my-2 rounded-md bg-light">
-                                      {user.username}
-                                    </div>
+                                    <UserItem
+                                      key={user.id}
+                                      user={user}
+                                      onClick={() => {
+                                        selectUser(index);
+                                        console.log("useritem clicked");
+                                      }}
+                                      active={users.selectedId == index}
+                                    />
                                   );
                                 })}
+                              </UserList>
+                              <div className="flex-grow">
+                                {users.selectedId ? (
+                                  <UserCard user={users.data[users.selectedId]} />
+                                ) : (
+                                  <div>Select user please</div>
+                                )}
                               </div>
-                            ) : (
-                              <div>Loading User Data</div>
-                            )}
-                          </div>
+                            </>
+                          ) : (
+                            <div>Loading User Data</div>
+                          )}
                         </div>
                       </Route>
 
@@ -546,6 +589,7 @@ const connector = connect(
     loadNewsAsync,
     loadConversationAsync,
     selectConversation,
+    selectUser,
   }
 );
 

@@ -16,6 +16,7 @@ export const NEW_NEWS = "NEW_NEWS";
 export const LOAD_NEWS = "LOAD_NEWS";
 
 export const LOAD_USER = "LOAD_USER";
+export const SELECT_USER = "SELECT_USER";
 
 export const NEW_COMMENT = "NEW_COMMENT";
 export const LOAD_COMMENT = "LOAD_COMMENT";
@@ -110,6 +111,7 @@ export type Conversation = {
 
 export type UserState = {
   data: User[];
+  selectedId?: number;
 };
 
 export type NewsState = {
@@ -180,6 +182,13 @@ export interface LoadUserAction {
   };
 }
 
+export interface SelectUserAction {
+  type: typeof SELECT_USER;
+  payload: {
+    id: number;
+  };
+}
+
 /*
 |---------------------------------------------------------------
 | Type HomeAction
@@ -193,4 +202,5 @@ export type HomeActionTypes =
   | SelectConversationAction
   | NewNewsAction
   | LoadNewsAction
-  | LoadUserAction;
+  | LoadUserAction
+  | SelectUserAction;
