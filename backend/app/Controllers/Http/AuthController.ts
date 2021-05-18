@@ -3,7 +3,6 @@ import { schema, rules, validator } from "@ioc:Adonis/Core/Validator";
 
 import User from "App/Models/User";
 
-
 export default class AuthController {
   // @ts-ignore
   public async register({ request, auth }: HttpContextContract) {
@@ -53,13 +52,11 @@ export default class AuthController {
       // console.log(token)
       // console.log(token.token)
 
-
       return {
         ok: true,
         user: token.user,
         auth: token.toJSON(),
       };
-
     } catch (error) {
       // console.log(error)
       return {
@@ -72,12 +69,10 @@ export default class AuthController {
   // @ts-ignore
   public async authenticate({ auth }: HttpContextContract) {
     try {
-      const data = await auth.authenticate()
-      console.log(data.username)
-
+      await auth.authenticate();
       return {
         ok: true,
-        auth: data.toJSON(),
+        auth: auth.toJSON(),
       };
     } catch (error) {
       return {

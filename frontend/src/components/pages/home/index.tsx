@@ -145,6 +145,14 @@ class Home extends Component<Props, State> {
       home: { news, users, conversations },
       selectUser,
     } = this.props;
+    const normalizedConversations = conversations?.data.map((conv) => {
+      const part = conv.participants?.find((partc) => partc.user_id != user?.id);
+      const title = part?.user?.username;
+      return {
+        ...conv,
+        title,
+      };
+    });
     return (
       <>
         <div className="relative w-full h-screen m-auto overflow-hidden bg-gray-200 max-w-screen-2xl dark:bg-dark">
@@ -181,7 +189,7 @@ class Home extends Component<Props, State> {
                 <div className="w-full h-14">
                   <div className="w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                     <div className="flex items-center justify-between h-full px-4">
-                      <div className="">Search</div>
+                      <div className=""></div>
                       <div className="flex items-center">
                         {loggedIn ? (
                           <>
@@ -313,7 +321,7 @@ class Home extends Component<Props, State> {
                                     {this.props.home.news?.meta.next_page_url && (
                                       <div className="flex justify-center items-center">
                                         <button
-                                          className="bg-primary px-4 py-2 rounded-md"
+                                          className="bg-primary text-light px-4 py-2 rounded-md"
                                           onClick={() => {
                                             this.props.loadNewsAsync();
                                           }}
@@ -431,16 +439,16 @@ class Home extends Component<Props, State> {
                         render={() => {
                           if (!conversations) this.props.loadConversationAsync();
 
-                          const selectedConversation = conversations?.data.find((conv) => {
-                            return conv.id == conversations.selectedId;
-                          });
+                          const selectedConversation = normalizedConversations?.find(
+                            (conv) => conv.id == conversations?.selectedId
+                          );
 
                           return loggedIn ? (
                             <div className="flex w-full h-full relative">
                               <div className="w-72 h-full overflow-x-hidden overflow-y-auto themed-scrollbar">
-                                {conversations ? (
+                                {normalizedConversations ? (
                                   <div>
-                                    {conversations.data.map((conversation) => {
+                                    {normalizedConversations.map((conversation) => {
                                       return (
                                         <div
                                           key={conversation.id}

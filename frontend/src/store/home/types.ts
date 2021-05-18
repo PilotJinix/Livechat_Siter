@@ -106,7 +106,7 @@ export type Conversation = {
   updatedAt: number;
   deletedAt: number;
   messages?: Message[];
-  participant?: Participant[];
+  participants?: Participant[];
 };
 
 export type UserState = {
