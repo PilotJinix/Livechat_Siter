@@ -12,7 +12,7 @@ import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions"
 import { loadNewsAsync, loadConversationAsync, selectConversation, selectUser } from "__src/store/home/actions";
 import { News } from "__src/store/home/types";
 // SOCKET
-// import { main } from "__src/socket";
+import { main } from "__src/socket";
 // API
 import { api, AxiosResponse } from "__src/api";
 // COMPONENTS
@@ -29,6 +29,9 @@ import NavLinkItem, { Nav } from "./NavLinkItem";
 import NewsSkeleton from "./NewsSkeleton";
 import NewsList from "./NewsList";
 import NewsItem from "./NewsItem";
+
+import ConversationList from "./ConversationList";
+import ConversationItem from "./ConversationItem";
 
 import UserList from "./UserList";
 import UserItem from "./UserItem";
@@ -52,12 +55,12 @@ const navs: Nav[] = [
     path: "/users",
     icon: faUsers,
   },
-  {
-    title: "Settings",
-    path: "/settings",
-    icon: faCog,
-    auth: true,
-  },
+  // {
+  //   title: "Settings",
+  //   path: "/settings",
+  //   icon: faCog,
+  //   auth: true,
+  // },
 ];
 
 type Props = {} & ConnectorProps;
@@ -81,6 +84,7 @@ class Home extends Component<Props, State> {
   }
 
   newListContainerRef = createRef<HTMLDivElement>();
+  messageListContainerRef = createRef<HTMLDivElement>();
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevProps.home.news?.data) {
@@ -134,8 +138,16 @@ class Home extends Component<Props, State> {
   // Hand;e Logout Form Submit
   handleOnLogoutFormSubmit = async () => {
     const ok = await this.props.logoutAsync();
-    // if ok then reset conversations data
-    // if (ok) window.location.reload();
+    if (ok) window.location.reload();
+  };
+
+  messageListScrollToBottom = () => {
+    if (this.messageListContainerRef) {
+      this.messageListContainerRef.current?.scrollTo({
+        top: this.messageListContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   };
 
   render() {
@@ -150,7 +162,7 @@ class Home extends Component<Props, State> {
       const title = part?.user?.username;
       return {
         ...conv,
-        title,
+        title: title || conv.title,
       };
     });
     return (
@@ -162,7 +174,11 @@ class Home extends Component<Props, State> {
           */}
             <aside className="flex-grow-0 flex-shrink-0 hidden w-20 h-full py-3 pl-3 lg:w-52 md:block themed-scrollbar">
               <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
-                <div className="w-full h-20"></div>
+                <div className="w-full h-20">
+                  <div className="flex items-center justify-center w-full h-full">
+                    <span className="text-dark dark:text-light">AppName</span>
+                  </div>
+                </div>
                 <div className="flex-grow w-full h-auto my-3">
                   <NavLinkList>
                     {navs.map((nav) => {
@@ -197,7 +213,7 @@ class Home extends Component<Props, State> {
                               {({ open }) => (
                                 <>
                                   <div>
-                                    <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                                    <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-600 text-sm font-medium text-gray-700 dark:text-light hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-600 focus:ring-gray-400 dark:focus:ring-gray-500">
                                       {user && user.username}
                                       <FontAwesomeIcon
                                         className="-mr-1 ml-2 h-5 w-5 text-gray-300"
@@ -219,10 +235,10 @@ class Home extends Component<Props, State> {
                                   >
                                     <Menu.Items
                                       static
-                                      className="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                                      className="origin-top-right absolute right-0 mt-2 w-44 rounded-md shadow-lg bg-gray-50 dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                                     >
                                       <div className="py-1">
-                                        <Menu.Item>
+                                        {/* <Menu.Item>
                                           {({ active }) => (
                                             <Link
                                               to="/settings/account"
@@ -233,12 +249,16 @@ class Home extends Component<Props, State> {
                                               Account settings
                                             </Link>
                                           )}
-                                        </Menu.Item>
+                                        </Menu.Item> */}
                                         <Menu.Item>
                                           {({ active }) => (
                                             <button
                                               onClick={this.handleOnLogoutFormSubmit}
-                                              className={`${active ? "bg-gray-100 text-gray-900" : "text-gray-700"}
+                                              className={`${
+                                                active
+                                                  ? "bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-50"
+                                                  : "bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                                              }
                         block w-full text-left px-4 py-2 text-sm`}
                                             >
                                               Logout
@@ -413,7 +433,6 @@ class Home extends Component<Props, State> {
                                       user={user}
                                       onClick={() => {
                                         selectUser(index);
-                                        console.log("useritem clicked");
                                       }}
                                       active={users.selectedId == index}
                                     />
@@ -421,7 +440,7 @@ class Home extends Component<Props, State> {
                                 })}
                               </UserList>
                               <div className="flex-grow">
-                                {users.selectedId ? (
+                                {typeof users.selectedId === "number" ? (
                                   <UserCard user={users.data[users.selectedId]} />
                                 ) : (
                                   <div>Select user please</div>
@@ -437,70 +456,109 @@ class Home extends Component<Props, State> {
                       <Route
                         path="/conversations"
                         render={() => {
+                          // handle auth
+                          if (!loggedIn) {
+                            return <Redirect to="/" />;
+                          }
+
                           if (!conversations) this.props.loadConversationAsync();
 
                           const selectedConversation = normalizedConversations?.find(
                             (conv) => conv.id == conversations?.selectedId
                           );
 
-                          return loggedIn ? (
+                          return (
                             <div className="flex w-full h-full relative">
-                              <div className="w-72 h-full overflow-x-hidden overflow-y-auto themed-scrollbar">
+                              <ConversationList>
                                 {normalizedConversations ? (
                                   <div>
                                     {normalizedConversations.map((conversation) => {
                                       return (
-                                        <div
+                                        <ConversationItem
                                           key={conversation.id}
-                                          className="px-6 py-2 my-2 rounded-md bg-light"
+                                          conversation={conversation}
+                                          active={conversation.id == conversations?.selectedId}
                                           onClick={() => {
                                             this.props.selectConversation(conversation.id);
                                           }}
-                                        >
-                                          {conversation.title}
-                                        </div>
+                                        />
                                       );
                                     })}
                                   </div>
                                 ) : (
                                   <div>Loading Conversation Data</div>
                                 )}
-                              </div>
+                              </ConversationList>
                               <div className="flex-grow w-full h-full ml-2">
                                 {selectedConversation ? (
-                                  <div className="p-2 bg-light w-full h-full rounded-lg">
+                                  <div className="p-2 flex flex-col justify-between bg-light w-full h-full rounded-lg">
                                     <div className="border-b-2 border-primary px-2 py-4">{selectedConversation.title}</div>
-                                    <div>
+                                    <div
+                                      ref={this.messageListContainerRef}
+                                      className="p-2 flex-grow overflow-x-hidden overflow-y-auto themed-scrollbar"
+                                    >
                                       {selectedConversation.messages?.map((message) => {
                                         const isMe = message.sender_id == user?.id;
-                                        console.log(`message.senderId == user?.id`);
-                                        console.log(`${message.sender_id} == ${user?.id}`);
-
                                         return (
                                           <div
                                             key={message.id}
                                             className={`flex ${isMe ? "justify-end" : "justify-start"} my-2`}
                                           >
-                                            <div className="px-3.5 py-1.5 bg-primary inline-block text-light">
+                                            <div className="px-3.5 py-1.5 bg-primary rounded-md inline-block text-light">
                                               {message.message}
                                             </div>
                                           </div>
                                         );
                                       })}
                                     </div>
+                                    <div className="w-full">
+                                      <form
+                                        onSubmit={(e) => {
+                                          type MessageForm = {
+                                            message: {
+                                              value: string;
+                                            };
+                                            reset: () => void;
+                                          };
+                                          e.preventDefault();
+                                          if (user && conversations && conversations.selectedId) {
+                                            const data = (e.target as any) as MessageForm;
+                                            main.emit(
+                                              "message:new",
+                                              {
+                                                user_id: user.id,
+                                                conversation_id: conversations.selectedId,
+                                                message: data.message.value,
+                                              },
+                                              (res) => {
+                                                if (res.ok) {
+                                                  data.reset();
+                                                  this.messageListScrollToBottom();
+                                                }
+                                              }
+                                            );
+                                          }
+                                        }}
+                                      >
+                                        <div className="flex p-2 justify-between">
+                                          <textarea name="message" className="flex-grow" rows={2}></textarea>
+                                          <button type="submit" className="w-16 p-2">
+                                            Send
+                                          </button>
+                                        </div>
+                                      </form>
+                                    </div>
                                   </div>
                                 ) : (
-                                  <div>Start Chat with other</div>
+                                  <div>Tidak ada pesan</div>
                                 )}
                               </div>
                             </div>
-                          ) : (
-                            <Redirect to="/" />
                           );
                         }}
                       />
 
-                      <Route
+                      {/* <Route
                         path="/settings"
                         render={() => {
                           return loggedIn ? (
@@ -511,7 +569,7 @@ class Home extends Component<Props, State> {
                             <Redirect to="/" />
                           );
                         }}
-                      />
+                      /> */}
 
                       <Route path="*">
                         <Redirect to="/" />

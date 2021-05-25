@@ -70,8 +70,8 @@ export type Participant = {
   id: number;
   user_id: number;
   conversation_id: number;
-  createdAt: number;
-  updatedAt: number;
+  created_at: number;
+  updated_at: number;
   user?: User;
 };
 
@@ -80,9 +80,9 @@ export type Message = {
   sender_id: number;
   conversation_id: number;
   message: string;
-  createdAt: number;
-  updatedAt: number;
-  deletedAt: number;
+  created_at: number;
+  updated_at: number;
+  deleted_at: number | null;
   sender?: User;
 };
 
@@ -102,9 +102,9 @@ export type Conversation = {
   id: number;
   creatorId: number;
   title: string;
-  createdAt: number;
-  updatedAt: number;
-  deletedAt: number;
+  created_at: number;
+  updated_at: number;
+  deleted_at: number | null;
   messages?: Message[];
   participants?: Participant[];
 };
@@ -164,6 +164,33 @@ export interface SelectConversationAction {
   };
 }
 
+export interface NewConversationAction {
+  type: typeof NEW_CONVERSATION;
+  payload: {
+    id: number;
+    creatorId: number;
+    title: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number | null;
+    messages?: Message[];
+    participants?: Participant[];
+  };
+}
+
+export interface NewMessageAction {
+  type: typeof NEW_MESSAGE;
+  payload: {
+    id: number;
+    sender_id: number;
+    conversation_id: number;
+    message: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number;
+  };
+}
+
 export interface NewNewsAction {
   type: typeof NEW_NEWS;
 }
@@ -203,4 +230,6 @@ export type HomeActionTypes =
   | NewNewsAction
   | LoadNewsAction
   | LoadUserAction
-  | SelectUserAction;
+  | SelectUserAction
+  | NewConversationAction
+  | NewMessageAction;

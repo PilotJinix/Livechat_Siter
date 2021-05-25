@@ -2,6 +2,8 @@ declare module "@interfaces/socket/main" {
   import { Server, Socket } from "socket.io";
   import { Listener, Emiter } from "@interfaces/socket";
 
+  import Conversation from "App/Models/Conversation";
+
   /*
   |--------------------------------------------------------------------------
   | Daftar Type ListenEvents
@@ -10,50 +12,55 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
-  // first-load-content
+  // user:join
   // -----------------------------
   //
-  interface responseFirstLoadContent {
-    news: any;
+  interface dataListenerUserJoin {
+    user_id: number;
   }
-  type FirstLoadContentListener = Listener<any, responseFirstLoadContent>;
+  type UserJoinListener = Listener<dataListenerUserJoin>;
 
   // -----------------------------
-  // user:login
+  // conversation:new
   // -----------------------------
   //
-  interface dataUserLogin {
-    username: string;
-    password: string;
+  interface dataListenerConversationNew {
+    user_id: number;
+    title: string;
+    participants: number[];
+    message: string;
   }
-  interface responseUserLogin {
-    token: string;
-  }
-  type UserLoginListener = Listener<dataUserLogin, responseUserLogin>;
+  type ConversationNewListener = Listener<dataListenerConversationNew>;
 
   // -----------------------------
-  // user:register
+  // conversation:join
   // -----------------------------
   //
-  interface dataUserRegister {
-    username: string;
-    password: string;
-    retypePassword: string;
+  interface dataListenerConversationJoin {
+    conversations: number[];
   }
-  interface responseUserRegister {
-    token: string;
+  type ConversationJoinListener = Listener<dataListenerConversationJoin>;
+
+  // -----------------------------
+  // message:new
+  // -----------------------------
+  //
+  interface dataListenerMessageNew {
+    conversation_id: number;
+    user_id: number;
+    message: string;
   }
-  type UserRegisterListener = Listener<dataUserRegister, responseUserRegister>;
+  type MessageNewListener = Listener<dataListenerMessageNew>;
 
   // -----------------------------
   // Daftar semua ListenEvents
   // -----------------------------
   //
   interface ListenEvents {
-    "first-load-content": FirstLoadContentListener;
-
-    "user:login": UserLoginListener;
-    "user:register": UserRegisterListener;
+    "user:join": UserJoinListener;
+    "conversation:new": ConversationNewListener;
+    "conversation:join": ConversationJoinListener;
+    "message:new": MessageNewListener;
   }
 
   /*
@@ -64,21 +71,34 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
-  // update-online-users
+  // conversation:new
   // -----------------------------
   //
-  interface dataUpdateOnlineUser {
-    insert?: number;
-    remove?: number;
+  type dataEmiterConversationNew = Conversation;
+  type ConversationNewEmiter = Emiter<dataEmiterConversationNew>;
+
+  // -----------------------------
+  // message:new
+  // -----------------------------
+  //
+  interface dataEmiterMessageNew {
+    id: number;
+    sender_id: number;
+    conversation_id: number;
+    message: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number | null;
   }
-  type UpdateOnlineUserEmiter = Emiter<dataUpdateOnlineUser>;
+  type MessageNewEmiter = Emiter<dataEmiterMessageNew>;
 
   // -----------------------------
   // Daftar semua EmitEvents
   // -----------------------------
   //
   interface EmitEvents {
-    "update-online-users": UpdateOnlineUserEmiter;
+    "conversation:new": ConversationNewEmiter;
+    "message:new": MessageNewEmiter;
   }
 
   /*

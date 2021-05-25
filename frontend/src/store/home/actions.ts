@@ -10,6 +10,8 @@ import {
   LOAD_CONVERSATION,
   SELECT_CONVERSATION,
   SELECT_USER,
+  NEW_MESSAGE,
+  NEW_CONVERSATION,
 } from "./types";
 
 import { api, AxiosResponse } from "__src/api";
@@ -136,7 +138,6 @@ export const loadConversationAsync = (): ThunkResult<void> => (dispatch, getStat
         }
       )
       .then((response) => {
-        console.log(response.data);
         dispatch(loadConversation({ data: response.data as any }));
       })
       .catch((errors) => {
@@ -156,5 +157,68 @@ export const selectConversation = (id: number): HomeActionTypes => ({
   type: SELECT_CONVERSATION,
   payload: {
     id: id,
+  },
+});
+
+/*
+|---------------------------------------------------------------
+| New Conversation
+|---------------------------------------------------------------
+|
+*/
+
+type NewConversationProps = {
+  id: number;
+  creatorId: number;
+  title: string;
+  created_at: number;
+  updated_at: number;
+  deleted_at: number;
+  messages?: {
+    id: number;
+    sender_id: number;
+    conversation_id: number;
+    message: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number | null;
+  }[];
+  participants?: {
+    id: number;
+    user_id: number;
+    conversation_id: number;
+    created_at: number;
+    updated_at: number;
+  }[];
+};
+
+export const newConversation = (props: NewConversationProps): HomeActionTypes => ({
+  type: NEW_CONVERSATION,
+  payload: {
+    ...props,
+  },
+});
+
+/*
+|---------------------------------------------------------------
+| New Message
+|---------------------------------------------------------------
+|
+*/
+
+type NewMessageProps = {
+  id: number;
+  sender_id: number;
+  conversation_id: number;
+  message: string;
+  created_at: number;
+  updated_at: number;
+  deleted_at: number;
+};
+
+export const newMessage = (props: NewMessageProps): HomeActionTypes => ({
+  type: NEW_MESSAGE,
+  payload: {
+    ...props,
   },
 });

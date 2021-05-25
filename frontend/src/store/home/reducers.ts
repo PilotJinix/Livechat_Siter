@@ -9,6 +9,8 @@ import {
   ConversationState,
   SELECT_USER,
   UserState,
+  NEW_MESSAGE,
+  NEW_CONVERSATION,
 } from "./types";
 
 /*
@@ -91,6 +93,37 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
         conversations: {
           ...(state.conversations as ConversationState),
           selectedId: action.payload.id,
+        },
+      };
+    //
+    //
+    // Percakapan baru
+    //
+    case NEW_CONVERSATION:
+      return {
+        ...state,
+        conversations: {
+          ...(state.conversations as ConversationState),
+          data: [action.payload, ...(state.conversations?.data || [])],
+        },
+      };
+    //
+    //
+    // Pesan baru
+    //
+    case NEW_MESSAGE:
+      return {
+        ...state,
+        conversations: {
+          ...(state.conversations as ConversationState),
+          data:
+            state.conversations?.data.map((conv) => {
+              if (conv.id == action.payload.conversation_id) {
+                if (conv.messages) conv.messages.push({ ...action.payload });
+                return conv;
+              }
+              return conv;
+            }) || [],
         },
       };
     //

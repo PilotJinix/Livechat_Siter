@@ -29,9 +29,6 @@ export const appReducer = (state: AppState = initialState, action: AppActionType
       };
 
     case LOGIN:
-      console.log("action.payload.user");
-      console.log(action.payload.user);
-
       return {
         ...state,
         user: action.payload.user,
