@@ -25,26 +25,19 @@ Aplikasi Live Chat, Aplikasi yang kami kembangkan ialah aplikasi berbasis web ya
 // clone project
 git clone --branch Backend https://github.com/PilotJinix/Livechat_Siter.git
 
-// cd root folder
-cd Livechat_Siter/backend
+// install dependencies backend
+cd Livechat_Siter/backend && npm install
 
-// install dependencies
-// kalo di Laravel 'composer install'
-npm install
-
-// run
-// kalo di Laravel 'php artisan serve'
-node ace serve --watch
+// install dependencies backend
+cd Livechat_Siter/frontend && npm install
 
 // Migrasi file Database
 npm run ace:migration
 
 // run backend
-// kalo di Laravel 'php artisan serve'
 npm run dev
 
 // run frontend
-// kalo di Laravel 'php artisan serve'
 npm run start:dev
 ```
 
