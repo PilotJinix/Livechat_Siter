@@ -4,18 +4,18 @@
 
 Aplikasi Live Chat, Aplikasi yang kami kembangkan ialah aplikasi berbasis web yang mana basic dari aplikasi kami dibuat menggunakan NodeJs. Aplikasi kami dapat memberikan fitur chating kepada antar user secara realtime. Ajax diganti menggunakan web-socket.
 
-__Anggota Kelompok:__
-* 182410103005  Dewangga Putra Kuswanto
-* 182410103031	Dyah Ayuningtyas
-* 182410103037	Meliatiya Arifviyana
-* 182410103042	Azizah Nurul Firdausi Amijaya
-* 182410103081	Muhammad Agung Santoso
-* 182410103018	Muhammad Rizki Attoilah
-* 182410103078	Nauval Acmad Yusufa
-* 182410103012	Muhammad Faisal Amruddin
-* 182410103090	Ferdy Dwi Kurniawan
-* 182410103077	M. Nur Ridho Taufikurrahman
+**Anggota Kelompok:**
 
+- 182410103005 Dewangga Putra Kuswanto
+- 182410103031 Dyah Ayuningtyas
+- 182410103037 Meliatiya Arifviyana
+- 182410103042 Azizah Nurul Firdausi Amijaya
+- 182410103081 Muhammad Agung Santoso
+- 182410103018 Muhammad Rizki Attoilah
+- 182410103078 Nauval Acmad Yusufa
+- 182410103012 Muhammad Faisal Amruddin
+- 182410103090 Ferdy Dwi Kurniawan
+- 182410103077 M. Nur Ridho Taufikurrahman
 
 ## **Installation**
 
@@ -48,8 +48,6 @@ npm run dev
 npm run start:dev
 ```
 
-
-
 ## **Resource**
 
 - Dokumentasi Resmi
@@ -71,19 +69,3 @@ npm run start:dev
     - [Bicara Typescript](https://www.youtube.com/playlist?list=PLwvMCa_o2Latn_BAqFBMbj2IwlqgfgnG8)
   - Single Video
     - [Realtime Chat With Users & Rooms - Socket.io, Node & Express](https://www.youtube.com/watch?v=jD7FnbI76Hg)
-
-
-
-## **Catatan**
-
-Di folder backend sudah terinstal adonisjs, jadi gak perlu init aplikasi lagi pakai ```npm init adonis-ts-app```. Untuk jalankan development mode, run ```node ace serve --watch```.
-
-Sudah di install socket.io juga, untuk route eventnya ada di ```start/socket.ts```.
-
-Di folder ./vscode ada settings untuk load SDK typescript di workspace jika menggunakan Text Editor VSCode. kalo yang lain bisa menyesuaikan. jadi untuk root foldernya di folder backend.
-
-Saran pakai extension formater di Text Editornya. Contoh extension [Prettier](https://prettier.io/).
-
-Jangan lupa setup buat DB nya di mysql. bisa pakai XAMPP
-
-Pastikan Sudah Mengintal **NodeJS**, **Ekstensi React Developer Tools  (Chrome)**, dan **Redux Devtools**
