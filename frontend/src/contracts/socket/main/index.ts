@@ -10,21 +10,57 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
-  // update-online-users
+  // conversation:new
   // -----------------------------
   //
-  interface dataUpdateOnlineUser {
-    insert?: number;
-    remove?: number;
+  type dataListenerConversationNew = {
+    id: number;
+    creatorId: number;
+    title: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number;
+    messages?: {
+      id: number;
+      sender_id: number;
+      conversation_id: number;
+      message: string;
+      created_at: number;
+      updated_at: number;
+      deleted_at: number | null;
+    }[];
+    participants?: {
+      id: number;
+      user_id: number;
+      conversation_id: number;
+      created_at: number;
+      updated_at: number;
+    }[];
+  };
+  type ConversationNewListener = Listener<dataListenerConversationNew>;
+
+  // -----------------------------
+  // message:new
+  // -----------------------------
+  //
+  interface dataListenerMessageNew {
+    id: number;
+    sender_id: number;
+    conversation_id: number;
+    message: string;
+    created_at: number;
+    updated_at: number;
+    deleted_at: number;
   }
-  type UpdateOnlineUserListener = Listener<dataUpdateOnlineUser>;
+  type MessageNewListener = Listener<dataListenerMessageNew>;
 
   // -----------------------------
   // Daftar semua ListenEvents
   // -----------------------------
   //
   interface ListenEvents {
-    "update-online-users": UpdateOnlineUserListener;
+    "conversation:new": ConversationNewListener;
+    "message:new": MessageNewListener;
   }
 
   /*
@@ -35,50 +71,55 @@ declare module "@interfaces/socket/main" {
   */
 
   // -----------------------------
-  // first-load-content
+  // user:join
   // -----------------------------
   //
-  interface responseFirstLoadContent {
-    news: any;
+  interface dataEmiterUserJoin {
+    user_id: number;
   }
-  type FirstLoadContentEmiter = Emiter<any, responseFirstLoadContent>;
+  type UserJoinEmiter = Emiter<dataEmiterUserJoin>;
 
   // -----------------------------
-  // user:login
+  // conversation:new
   // -----------------------------
   //
-  interface dataUserLogin {
-    username: string;
-    password: string;
+  interface dataEmiterConversationNew {
+    user_id: number;
+    title: string;
+    participants: number[];
+    message: string;
   }
-  interface responseUserLogin {
-    token: string;
-  }
-  type UserLoginEmiter = Emiter<dataUserLogin, responseUserLogin>;
+  type ConversationNewEmiter = Emiter<dataEmiterConversationNew>;
 
   // -----------------------------
-  // user:register
+  // conversation:join
   // -----------------------------
   //
-  interface dataUserRegister {
-    username: string;
-    password: string;
-    retypePassword: string;
+  interface dataEmiterConversationJoin {
+    conversations: number[];
   }
-  interface responseUserRegister {
-    token: string;
+  type ConversationJoinEmiter = Emiter<dataEmiterConversationJoin>;
+
+  // -----------------------------
+  // message:new
+  // -----------------------------
+  //
+  interface dataEmiterMessageNew {
+    user_id: number;
+    conversation_id: number;
+    message: string;
   }
-  type UserRegisterEmiter = Emiter<dataUserRegister, responseUserRegister>;
+  type MessageNewEmiter = Emiter<dataEmiterMessageNew>;
 
   // -----------------------------
   // Daftar semua EmitEvents
   // -----------------------------
   //
   interface EmitEvents {
-    "first-load-content": FirstLoadContentEmiter;
-
-    "user:login": UserLoginEmiter;
-    "user:register": UserRegisterEmiter;
+    "user:join": UserJoinEmiter;
+    "conversation:new": ConversationNewEmiter;
+    "conversation:join": ConversationJoinEmiter;
+    "message:new": MessageNewEmiter;
   }
 
   /*

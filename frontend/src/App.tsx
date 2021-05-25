@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 // STORE
 import { RootState } from "__src/store";
 import { connected, authenticateAsync } from "__src/store/app/actions";
-import { loadNewsAsync, loadUserAsync } from "__src/store/home/actions";
+import { loadNewsAsync, loadUserAsync, newMessage, newConversation } from "__src/store/home/actions";
 // LOCAL
 import { main } from "__src/socket";
 // COMPONENTS
@@ -12,26 +12,115 @@ const Home = lazy(() => import("__src/components/pages/home"));
 
 type Props = {} & ConnectorProps;
 
-type State = {};
+type State = {
+  connected: boolean;
+  hasJoin: {
+    user: boolean;
+    conversation: boolean;
+  };
+};
 
 class App extends Component<Props, State> {
+  state: State = {
+    connected: false,
+    hasJoin: {
+      user: false,
+      conversation: false,
+    },
+  };
+
   componentDidMount = async () => {
-    const { connected, loadNewsAsync, loadUserAsync, authenticateAsync } = this.props;
+    const { connected, loadNewsAsync, loadUserAsync, authenticateAsync, home, newMessage, newConversation } = this.props;
 
     const ok = await authenticateAsync();
 
     main.on("connect", () => {
-      console.log("main namespace connected successfully");
-      connected();
+      this.setState({ connected: true });
+      // connected();
     });
 
     main.on("disconnect", () => {
-      connected(false);
+      this.setState({
+        connected: false,
+        hasJoin: {
+          user: false,
+          conversation: false,
+        },
+      });
+      // connected(false);
     });
 
     loadNewsAsync();
     loadUserAsync();
+
+    main.on("message:new", (data) => {
+      console.log("new message should received");
+      newMessage({ ...data });
+    });
+
+    const testNewConversation = () => {
+      main.on("conversation:new", (data) => {
+        console.log(data);
+        // newConversation({ ...data })
+      });
+
+      setTimeout(() => {
+        console.log("test to emit conv conversation:new");
+        main.emit(
+          "conversation:new",
+          {
+            user_id: 10,
+            title: "any",
+            // write di be
+            participants: [10, 9],
+            message: "Hallo conversation new",
+          },
+          (res) => {
+            if (res.ok) {
+              console.log("emit conv conversation:new ok");
+            }
+          }
+        );
+      }, 5000);
+    };
   };
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { app, home } = this.props;
+    const { connected, hasJoin } = this.state;
+
+    console.log(this.state);
+
+    const dataConversation = home.conversations?.data;
+    if (prevState.connected !== connected || dataConversation) {
+      if (!hasJoin.conversation && connected && dataConversation) {
+        const ids = dataConversation.map((conv) => conv.id);
+        main.emit(
+          "conversation:join",
+          {
+            conversations: ids,
+          },
+          (res) => {
+            if (res.ok) {
+              this.setState((state) => ({ hasJoin: { ...state.hasJoin, conversation: true } }));
+            } else {
+              console.log(res.err);
+            }
+          }
+        );
+      }
+      if (!hasJoin.user && app.loggedIn && connected && app.user?.id) {
+        main.emit("user:join", { user_id: 10 }, (res) => {
+          if (res.ok) {
+            console.log(`user join to room ${res.data}`);
+            this.setState((state) => ({ hasJoin: { ...state.hasJoin, user: true } }));
+          } else {
+            console.log(res.err);
+          }
+        });
+      }
+    }
+  }
 
   componentWillUnmount() {
     main.disconnect();
@@ -66,6 +155,8 @@ const connector = connect(
     loadNewsAsync,
     loadUserAsync,
     authenticateAsync,
+    newMessage,
+    newConversation,
   }
 );
 

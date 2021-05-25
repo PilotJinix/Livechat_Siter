@@ -1,10 +1,12 @@
 import Logger from "@ioc:Adonis/Core/Logger";
-// import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 
 import Ws from "App/Services/Ws";
 
-// import User from "App/Models/User";
-// import News from "App/Models/News";
+import Conversation from "App/Models/Conversation";
+import Message from "App/Models/Message";
+
+const genUserRoom = (id: number) => `userID|${id}`;
+const genConversationRoom = (id: number) => `conversationID|${id}`;
 
 // --------------------------------------------------------------------------
 // MainNamespace
@@ -15,62 +17,103 @@ Ws.start((socket) => {
   // LOGGER
   // --------------------------------------------------------------------------
   //
-  Logger.info(`User connected to main namespace with socket.id = ${socket.id}`);
+  Logger.info(`main: ${socket.id} connected`);
   socket.on("disconnect", () => {
-    Logger.info(`User disconnect from main namespace with socket.id = ${socket.id}`);
+    Logger.info(`main: ${socket.id} disconnect`);
+  });
+
+  socket.on("user:join", (data, cb) => {
+    try {
+      const room = genUserRoom(data.user_id);
+      socket.join(room);
+      cb({
+        ok: true,
+        data: room,
+      });
+    } catch (error) {
+      cb({
+        err: error,
+      });
+    }
+  });
+
+  socket.on("conversation:join", (data, cb) => {
+    try {
+      data.conversations.forEach((id) => {
+        const room = genConversationRoom(id);
+        socket.join(room);
+      });
+      cb({
+        ok: true,
+      });
+    } catch (error) {
+      cb({
+        err: error,
+      });
+    }
+  });
+
+  socket.on("conversation:new", async (data, cb) => {
+    try {
+      const conversation = await Conversation.create({
+        creatorId: data.user_id,
+        title: "Personal",
+      });
+
+      const participants = await conversation.related("participants").createMany([
+        ...data.participants.map((p) => {
+          return {
+            userId: p,
+            conversationId: conversation.id,
+          };
+        }),
+      ]);
+
+      console.log(participants);
+
+      const messages = await conversation.related("messages").create({
+        conversationId: conversation.id,
+        message: data.message,
+        senderId: data.user_id,
+      });
+
+      // send data conversation to client by user id room
+      const rooms = participants.map((p) => genUserRoom(p.userId));
+      Ws.io.to(rooms).emit("conversation:new", {
+        ...(conversation.serialize() as any),
+      });
+
+      cb({
+        ok: true,
+      });
+    } catch (error) {
+      cb({
+        err: error,
+      });
+    }
+  });
+
+  socket.on("message:new", async (data, cb) => {
+    try {
+      const message = await Message.create({
+        conversationId: data.conversation_id,
+        message: data.message,
+        senderId: data.user_id,
+      });
+
+      // send data message to client by conversation id room
+      const room = genConversationRoom(data.conversation_id);
+      Ws.io.to(room).emit("message:new", {
+        ...(message.serialize() as any),
+      });
+
+      cb({
+        ok: true,
+      });
+    } catch (error) {
+      cb({
+        err: error,
+      });
+    }
   });
 });
-
-// Ws.otherStart((socket) => {
-//   // --------------------------------------------------------------------------
-//   // LOGGER
-//   // --------------------------------------------------------------------------
-//   //
-//   Logger.info(`User connected to other namespace with socket.id = ${socket.id}`);
-//   socket.on("disconnect", () => {
-//     Logger.info(`User disconnect from other namespace with socket.id = ${socket.id}`);
-//   });
-// });
-
-// CHEATSHEET
-// sending to the client
-// socket.emit("disconnect", "can you hear me?", 1, 2, "abc");
-
-// // sending to all clients except sender
-// socket.broadcast.emit("broadcast", "hello friends!");
-
-// // sending to all clients in "game" room except sender
-// socket.to("game").emit("nice game", "let's play a game");
-
-// // sending to all clients in "game1" and/or in "game2" room, except sender
-// socket.to("game1").to("game2").emit("nice game", "let's play a game (too)");
-
-// // sending to all clients in "game" room, including sender
-// Ws.io.in("game").emit("big-announcement", "the game will start soon");
-
-// // sending to all clients in namespace "myNamespace", including sender
-// Ws.io.of("myNamespace").emit("bigger-announcement", "the tournament will start soon");
-
-// // sending to a specific room in a specific namespace, including sender
-// Ws.io.of("myNamespace").to("room").emit("event", "message");
-
-// // sending to individual socketid (private message)
-// Ws.io.to(socket.id).emit("hey", "I just met you");
-
-// // WARNING: `socket.to(socket.id).emit()` will NOT work, as it will send to everyone in the room
-// // named `socket.id` but the sender. Please use the classic `socket.emit()` instead.
-
-// // sending with acknowledgement
-// socket.emit("question", "do you think so?", (answer) => {});
-
-// // sending without compression
-// socket.compress(false).emit("uncompressed", "that's rough");
-
-// // sending a message that might be dropped if the client is not ready to receive messages
-// socket.volatile.emit("maybe", "do you really need it?");
-
-// // sending to all clients on this node (when using multiple nodes)
-// Ws.io.local.emit("hi", "my lovely babies");
-
-// // sending to all connected clients
-// Ws.io.emit("an event sent to all connected clients");

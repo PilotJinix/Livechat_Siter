@@ -231,7 +231,6 @@ export const authenticateAsync = (): ThunkResult<Promise<boolean>> => (dispatch,
       )
       .then((response) => {
         if (response.data.ok) {
-          console.log(response.data);
           dispatch(login({ user: response.data.auth?.guards.api.user, auth: app.auth }));
           resolve(true);
         } else {
