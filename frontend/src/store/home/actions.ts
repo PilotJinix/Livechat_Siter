@@ -121,7 +121,7 @@ export const loadConversation = (conversationState: LoadConversationProps): Home
   },
 });
 
-export const loadConversationAsync = (): ThunkResult<void> => (dispatch, getState) => {
+export const loadConversationAsync = (callback?: () => void): ThunkResult<void> => (dispatch, getState) => {
   const { app, home } = getState();
   const token = app.auth?.token || "";
   // const page = home.news?.meta.next_page_url || "";
@@ -142,6 +142,9 @@ export const loadConversationAsync = (): ThunkResult<void> => (dispatch, getStat
       })
       .catch((errors) => {
         console.error(errors);
+      })
+      .finally(() => {
+        callback && callback();
       });
   }
 };

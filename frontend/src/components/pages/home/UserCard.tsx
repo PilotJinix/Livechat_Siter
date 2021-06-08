@@ -46,27 +46,27 @@ class UserCard extends Component<Props, State> {
           <span className="ml-2">{_user.username}</span>
         </div>
         <div className="flex justify-end">
-          <FontAwesomeIcon
-            className="w-6 h-6"
-            icon={faEnvelope}
-            onClick={() => {
-              if (normalizedConversations && _user.id !== user?.id) {
-                const found = normalizedConversations.find((c) => {
-                  const a = c.participants?.find((p) => p.user_id == user?.id);
-                  const b = c.participants?.find((p) => p.user_id == _user.id);
-                  return a && b ? true : false;
-                });
-                console.log(found);
-                if (found) {
-                  this.props.selectConversation(found.id);
-                  history();
-                } else {
-                  this.setState({ newConversation: true });
-                  console.log("should emit new conversation");
+          {!newConversation && _user.id !== user?.id && (
+            <FontAwesomeIcon
+              className="w-6 h-6"
+              icon={faEnvelope}
+              onClick={() => {
+                if (normalizedConversations && _user.id !== user?.id) {
+                  const found = normalizedConversations.find((c) => {
+                    const a = c.participants?.find((p) => p.user_id == user?.id);
+                    const b = c.participants?.find((p) => p.user_id == _user.id);
+                    return a && b ? true : false;
+                  });
+                  if (found) {
+                    this.props.selectConversation(found.id);
+                    history();
+                  } else {
+                    this.setState({ newConversation: true });
+                  }
                 }
-              }
-            }}
-          />
+              }}
+            />
+          )}
         </div>
         <div>
           {newConversation && (

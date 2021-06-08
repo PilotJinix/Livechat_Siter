@@ -75,12 +75,14 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
     // Memuat data conversation
     //
     case LOAD_CONVERSATION:
+      const data = [...(state.conversations?.data || []), ...action.payload.conversation.data];
+      const selected = data.length > 0 ? data[0].id : undefined;
       return {
         ...state,
         conversations: {
           ...state.conversations,
-          data: [...(state.conversations?.data || []), ...action.payload.conversation.data],
-          selectedId: action.payload.conversation.data[0].id,
+          data: data,
+          selectedId: selected,
         },
       };
     //

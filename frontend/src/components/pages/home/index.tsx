@@ -88,6 +88,8 @@ class Home extends Component<Props, State> {
   messageListContainerRef = createRef<HTMLDivElement>();
 
   componentDidUpdate(prevProps: Props, prevState: State) {
+    const { app, home } = this.props;
+
     if (prevProps.home.news?.data) {
       if (prevProps.home.news.data.length !== this.props.home.news?.data.length) {
         this.newListContainerRef.current?.scrollBy({
@@ -177,7 +179,7 @@ class Home extends Component<Props, State> {
               <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                 <div className="w-full h-20">
                   <div className="flex items-center justify-center w-full h-full">
-                    <span className="text-dark dark:text-light">AppName</span>
+                    <span className="text-dark dark:text-light">LinkChat</span>
                   </div>
                 </div>
                 <div className="flex-grow w-full h-auto my-3">
@@ -473,7 +475,14 @@ class Home extends Component<Props, State> {
                             return <Redirect to="/" />;
                           }
 
-                          if (!conversations) this.props.loadConversationAsync();
+                          // Move To App.tsx
+                          // if (!isLoadingConversation && !conversations) {
+                          //   this.setState({ isLoadingConversation: true }, () => {
+                          //     this.props.loadConversationAsync(() => {
+                          //       this.setState({ isLoadingConversation: false });
+                          //     });
+                          //   });
+                          // }
 
                           const selectedConversation = normalizedConversations?.find(
                             (conv) => conv.id == conversations?.selectedId

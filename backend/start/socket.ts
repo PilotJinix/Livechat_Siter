@@ -45,12 +45,15 @@ Ws.start((socket) => {
 
   socket.on("conversation:join", (data, cb) => {
     try {
+      let rooms: string[] = [];
       data.conversations.forEach((id) => {
         const room = genConversationRoom(id);
+        rooms.push(room);
         socket.join(room);
       });
       cb({
         ok: true,
+        data: rooms,
       });
     } catch (error) {
       cb({
