@@ -54,35 +54,14 @@ class App extends Component<Props, State> {
     loadUserAsync();
 
     main.on("message:new", (data) => {
-      console.log("new message should received");
       newMessage({ ...data });
     });
 
-    const testNewConversation = () => {
-      main.on("conversation:new", (data) => {
-        console.log(data);
-        // newConversation({ ...data })
-      });
-
-      setTimeout(() => {
-        console.log("test to emit conv conversation:new");
-        main.emit(
-          "conversation:new",
-          {
-            user_id: 10,
-            title: "any",
-            // write di be
-            participants: [10, 9],
-            message: "Hallo conversation new",
-          },
-          (res) => {
-            if (res.ok) {
-              console.log("emit conv conversation:new ok");
-            }
-          }
-        );
-      }, 5000);
-    };
+    main.on("conversation:new", (data) => {
+      console.log(`on conversation:new`);
+      console.log(data);
+      newConversation({ ...data });
+    });
   };
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -92,7 +71,7 @@ class App extends Component<Props, State> {
     console.log(this.state);
 
     const dataConversation = home.conversations?.data;
-    if (prevState.connected !== connected || dataConversation) {
+    if (prevState.connected !== connected || prevProps.app.loggedIn !== app.loggedIn || dataConversation) {
       if (!hasJoin.conversation && connected && dataConversation) {
         const ids = dataConversation.map((conv) => conv.id);
         main.emit(
@@ -110,7 +89,7 @@ class App extends Component<Props, State> {
         );
       }
       if (!hasJoin.user && app.loggedIn && connected && app.user?.id) {
-        main.emit("user:join", { user_id: 10 }, (res) => {
+        main.emit("user:join", { user_id: app.user.id }, (res) => {
           if (res.ok) {
             console.log(`user join to room ${res.data}`);
             this.setState((state) => ({ hasJoin: { ...state.hasJoin, user: true } }));

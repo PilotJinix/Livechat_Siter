@@ -112,18 +112,22 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
     // Pesan baru
     //
     case NEW_MESSAGE:
+      let newData =
+        state.conversations?.data.map((conv) => {
+          if (conv.id == action.payload.conversation_id) {
+            if (conv.messages) conv.messages.push({ ...action.payload });
+            return conv;
+          }
+          return conv;
+        }) || [];
+
+      const found = newData.filter((c) => c.id == action.payload.conversation_id);
+
       return {
         ...state,
         conversations: {
           ...(state.conversations as ConversationState),
-          data:
-            state.conversations?.data.map((conv) => {
-              if (conv.id == action.payload.conversation_id) {
-                if (conv.messages) conv.messages.push({ ...action.payload });
-                return conv;
-              }
-              return conv;
-            }) || [],
+          data: [...found, ...newData.filter((c) => c.id !== action.payload.conversation_id)],
         },
       };
     //
