@@ -75,12 +75,14 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
     // Memuat data conversation
     //
     case LOAD_CONVERSATION:
+      const data = [...(state.conversations?.data || []), ...action.payload.conversation.data];
+      const selected = data.length > 0 ? data[0].id : undefined;
       return {
         ...state,
         conversations: {
           ...state.conversations,
-          data: [...(state.conversations?.data || []), ...action.payload.conversation.data],
-          selectedId: action.payload.conversation.data[0].id,
+          data: data,
+          selectedId: selected,
         },
       };
     //
@@ -112,18 +114,22 @@ export const homeReducer = (state: HomeState = initialState, action: HomeActionT
     // Pesan baru
     //
     case NEW_MESSAGE:
+      let newData =
+        state.conversations?.data.map((conv) => {
+          if (conv.id == action.payload.conversation_id) {
+            if (conv.messages) conv.messages.push({ ...action.payload });
+            return conv;
+          }
+          return conv;
+        }) || [];
+
+      const found = newData.filter((c) => c.id == action.payload.conversation_id);
+
       return {
         ...state,
         conversations: {
           ...(state.conversations as ConversationState),
-          data:
-            state.conversations?.data.map((conv) => {
-              if (conv.id == action.payload.conversation_id) {
-                if (conv.messages) conv.messages.push({ ...action.payload });
-                return conv;
-              }
-              return conv;
-            }) || [],
+          data: [...found, ...newData.filter((c) => c.id !== action.payload.conversation_id)],
         },
       };
     //

@@ -1,16 +1,16 @@
 // NODE_MODULES
 import { Fragment, Component, createRef } from "react";
-import { Switch, Route, Redirect, Link } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { Menu, Transition } from "@headlessui/react";
 import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes, faThLarge, faComment, faUsers, faCog, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faThLarge, faComment, faUsers, faChevronDown, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 // STORE
 import { RootState } from "__src/store";
 import { loginAsync, registerAsync, logoutAsync } from "__src/store/app/actions";
 import { loadNewsAsync, loadConversationAsync, selectConversation, selectUser } from "__src/store/home/actions";
-import { News } from "__src/store/home/types";
+import { News, Conversation } from "__src/store/home/types";
 // SOCKET
 import { main } from "__src/socket";
 // API
@@ -36,6 +36,7 @@ import ConversationItem from "./ConversationItem";
 import UserList from "./UserList";
 import UserItem from "./UserItem";
 import UserCard from "./UserCard";
+import dayjs from "dayjs";
 
 const navs: Nav[] = [
   {
@@ -87,6 +88,8 @@ class Home extends Component<Props, State> {
   messageListContainerRef = createRef<HTMLDivElement>();
 
   componentDidUpdate(prevProps: Props, prevState: State) {
+    const { app, home } = this.props;
+
     if (prevProps.home.news?.data) {
       if (prevProps.home.news.data.length !== this.props.home.news?.data.length) {
         this.newListContainerRef.current?.scrollBy({
@@ -157,7 +160,7 @@ class Home extends Component<Props, State> {
       home: { news, users, conversations },
       selectUser,
     } = this.props;
-    const normalizedConversations = conversations?.data.map((conv) => {
+    const normalizedConversations: Conversation[] | undefined = conversations?.data.map((conv) => {
       const part = conv.participants?.find((partc) => partc.user_id != user?.id);
       const title = part?.user?.username;
       return {
@@ -176,7 +179,7 @@ class Home extends Component<Props, State> {
               <div className="flex flex-col items-center w-full h-full rounded-lg shadow-sm bg-light dark:bg-gray-700">
                 <div className="w-full h-20">
                   <div className="flex items-center justify-center w-full h-full">
-                    <span className="text-dark dark:text-light">AppName</span>
+                    <span className="text-dark dark:text-light">LinkChat</span>
                   </div>
                 </div>
                 <div className="flex-grow w-full h-auto my-3">
@@ -421,37 +424,48 @@ class Home extends Component<Props, State> {
                         }}
                       ></Route>
 
-                      <Route path="/users">
-                        <div className="flex w-full h-full relative">
-                          {users ? (
-                            <>
-                              <UserList>
-                                {users.data.map((user, index) => {
-                                  return (
-                                    <UserItem
-                                      key={user.id}
-                                      user={user}
-                                      onClick={() => {
-                                        selectUser(index);
-                                      }}
-                                      active={users.selectedId == index}
-                                    />
-                                  );
-                                })}
-                              </UserList>
-                              <div className="flex-grow">
-                                {typeof users.selectedId === "number" ? (
-                                  <UserCard user={users.data[users.selectedId]} />
-                                ) : (
-                                  <div>Select user please</div>
-                                )}
-                              </div>
-                            </>
-                          ) : (
-                            <div>Loading User Data</div>
-                          )}
-                        </div>
-                      </Route>
+                      <Route
+                        path="/users"
+                        render={({ history }) => {
+                          return (
+                            <div className="flex w-full h-full relative">
+                              {users ? (
+                                <>
+                                  <UserList>
+                                    {users.data.map((_user, index) => {
+                                      return (
+                                        <UserItem
+                                          key={_user.id}
+                                          user={_user}
+                                          onClick={() => {
+                                            selectUser(index);
+                                          }}
+                                          active={users.selectedId == index}
+                                        />
+                                      );
+                                    })}
+                                  </UserList>
+                                  <div className="flex-grow">
+                                    {typeof users.selectedId === "number" ? (
+                                      <UserCard
+                                        normalizedConversations={normalizedConversations}
+                                        user={users.data[users.selectedId]}
+                                        history={() => {
+                                          history.push("/conversations");
+                                        }}
+                                      />
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </div>
+                                </>
+                              ) : (
+                                <div>Loading User Data</div>
+                              )}
+                            </div>
+                          );
+                        }}
+                      />
 
                       <Route
                         path="/conversations"
@@ -461,7 +475,14 @@ class Home extends Component<Props, State> {
                             return <Redirect to="/" />;
                           }
 
-                          if (!conversations) this.props.loadConversationAsync();
+                          // Move To App.tsx
+                          // if (!isLoadingConversation && !conversations) {
+                          //   this.setState({ isLoadingConversation: true }, () => {
+                          //     this.props.loadConversationAsync(() => {
+                          //       this.setState({ isLoadingConversation: false });
+                          //     });
+                          //   });
+                          // }
 
                           const selectedConversation = normalizedConversations?.find(
                             (conv) => conv.id == conversations?.selectedId
@@ -504,8 +525,11 @@ class Home extends Component<Props, State> {
                                             key={message.id}
                                             className={`flex ${isMe ? "justify-end" : "justify-start"} my-2`}
                                           >
-                                            <div className="px-3.5 py-1.5 bg-primary rounded-md inline-block text-light">
-                                              {message.message}
+                                            <div className="px-4 py-1.5 bg-primary rounded-md inline-block text-light">
+                                              <div className="text-base w-full">{message.message}</div>
+                                              <div className="text-xs w-full flex justify-end">
+                                                {dayjs(message.created_at).format("HH:mm")}
+                                              </div>
                                             </div>
                                           </div>
                                         );
@@ -523,27 +547,29 @@ class Home extends Component<Props, State> {
                                           e.preventDefault();
                                           if (user && conversations && conversations.selectedId) {
                                             const data = (e.target as any) as MessageForm;
-                                            main.emit(
-                                              "message:new",
-                                              {
-                                                user_id: user.id,
-                                                conversation_id: conversations.selectedId,
-                                                message: data.message.value,
-                                              },
-                                              (res) => {
-                                                if (res.ok) {
-                                                  data.reset();
-                                                  this.messageListScrollToBottom();
+                                            if (data.message.value && data.message.value !== "") {
+                                              main.emit(
+                                                "message:new",
+                                                {
+                                                  user_id: user.id,
+                                                  conversation_id: conversations.selectedId,
+                                                  message: data.message.value,
+                                                },
+                                                (res) => {
+                                                  if (res.ok) {
+                                                    data.reset();
+                                                    this.messageListScrollToBottom();
+                                                  }
                                                 }
-                                              }
-                                            );
+                                              );
+                                            }
                                           }
                                         }}
                                       >
                                         <div className="flex p-2 justify-between">
-                                          <textarea name="message" className="flex-grow" rows={2}></textarea>
+                                          <textarea name="message" className="flex-grow rounded-lg" rows={2}></textarea>
                                           <button type="submit" className="w-16 p-2">
-                                            Send
+                                            <FontAwesomeIcon className="w-6 h-6 text-primary" icon={faPaperPlane} />
                                           </button>
                                         </div>
                                       </form>

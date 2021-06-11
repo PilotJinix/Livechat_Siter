@@ -4,7 +4,14 @@ import { connect, ConnectedProps } from "react-redux";
 // STORE
 import { RootState } from "__src/store";
 import { connected, authenticateAsync } from "__src/store/app/actions";
-import { loadNewsAsync, loadUserAsync, newMessage, newConversation } from "__src/store/home/actions";
+import {
+  loadNewsAsync,
+  loadUserAsync,
+  newMessage,
+  newConversation,
+  selectConversation,
+  loadConversationAsync,
+} from "__src/store/home/actions";
 // LOCAL
 import { main } from "__src/socket";
 // COMPONENTS
@@ -30,7 +37,16 @@ class App extends Component<Props, State> {
   };
 
   componentDidMount = async () => {
-    const { connected, loadNewsAsync, loadUserAsync, authenticateAsync, home, newMessage, newConversation } = this.props;
+    const {
+      connected,
+      loadNewsAsync,
+      loadUserAsync,
+      authenticateAsync,
+      home,
+      newMessage,
+      newConversation,
+      selectConversation,
+    } = this.props;
 
     const ok = await authenticateAsync();
 
@@ -54,71 +70,75 @@ class App extends Component<Props, State> {
     loadUserAsync();
 
     main.on("message:new", (data) => {
-      console.log("new message should received");
       newMessage({ ...data });
     });
 
-    const testNewConversation = () => {
-      main.on("conversation:new", (data) => {
-        console.log(data);
-        // newConversation({ ...data })
-      });
-
-      setTimeout(() => {
-        console.log("test to emit conv conversation:new");
-        main.emit(
-          "conversation:new",
-          {
-            user_id: 10,
-            title: "any",
-            // write di be
-            participants: [10, 9],
-            message: "Hallo conversation new",
-          },
-          (res) => {
-            if (res.ok) {
-              console.log("emit conv conversation:new ok");
-            }
+    main.on("conversation:new", (data) => {
+      if (data.id) this.props.selectConversation(data.id);
+      newConversation({ ...data });
+      main.emit(
+        "conversation:join",
+        {
+          conversations: [data.id],
+        },
+        (res) => {
+          if (res.ok) {
+            console.log(`join to conversation rooms`, res.data);
+          } else {
+            console.log(res.err);
           }
-        );
-      }, 5000);
-    };
+        }
+      );
+    });
   };
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { app, home } = this.props;
     const { connected, hasJoin } = this.state;
 
-    console.log(this.state);
-
     const dataConversation = home.conversations?.data;
-    if (prevState.connected !== connected || dataConversation) {
-      if (!hasJoin.conversation && connected && dataConversation) {
-        const ids = dataConversation.map((conv) => conv.id);
-        main.emit(
-          "conversation:join",
-          {
-            conversations: ids,
-          },
-          (res) => {
-            if (res.ok) {
-              this.setState((state) => ({ hasJoin: { ...state.hasJoin, conversation: true } }));
-            } else {
-              console.log(res.err);
+    if (!hasJoin.conversation && dataConversation) {
+      this.setState(
+        (state) => ({ hasJoin: { ...state.hasJoin, conversation: true } }),
+        () => {
+          const ids = dataConversation.map((conv) => conv.id);
+          main.emit(
+            "conversation:join",
+            {
+              conversations: ids,
+            },
+            (res) => {
+              if (res.ok) {
+                console.log(`join to conversation rooms`, res.data);
+              } else {
+                this.setState((state) => ({ hasJoin: { ...state.hasJoin, conversation: false } }));
+                console.log(res.err);
+              }
+            }
+          );
+        }
+      );
+    }
+
+    if (prevProps.app.loggedIn !== app.loggedIn && app.loggedIn) {
+      if (!hasJoin.user) {
+        this.setState(
+          (state) => ({ hasJoin: { ...state.hasJoin, user: true } }),
+          () => {
+            if (app.user) {
+              main.emit("user:join", { user_id: app.user.id }, (res) => {
+                if (res.ok) {
+                  console.log(`join to user room ${res.data}`);
+                } else {
+                  this.setState((state) => ({ hasJoin: { ...state.hasJoin, user: false } }));
+                  console.log(res.err);
+                }
+              });
             }
           }
         );
       }
-      if (!hasJoin.user && app.loggedIn && connected && app.user?.id) {
-        main.emit("user:join", { user_id: 10 }, (res) => {
-          if (res.ok) {
-            console.log(`user join to room ${res.data}`);
-            this.setState((state) => ({ hasJoin: { ...state.hasJoin, user: true } }));
-          } else {
-            console.log(res.err);
-          }
-        });
-      }
+      if (!home.conversations) this.props.loadConversationAsync();
     }
   }
 
@@ -157,6 +177,8 @@ const connector = connect(
     authenticateAsync,
     newMessage,
     newConversation,
+    selectConversation,
+    loadConversationAsync,
   }
 );
 

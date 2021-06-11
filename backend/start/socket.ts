@@ -8,6 +8,12 @@ import Message from "App/Models/Message";
 const genUserRoom = (id: number) => `userID|${id}`;
 const genConversationRoom = (id: number) => `conversationID|${id}`;
 
+async function asyncForEach<A>(array: A[], callback: (_array: A, index?: number, array?: A[]) => Promise<void>) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 // --------------------------------------------------------------------------
 // MainNamespace
 // --------------------------------------------------------------------------
@@ -39,12 +45,15 @@ Ws.start((socket) => {
 
   socket.on("conversation:join", (data, cb) => {
     try {
+      let rooms: string[] = [];
       data.conversations.forEach((id) => {
         const room = genConversationRoom(id);
+        rooms.push(room);
         socket.join(room);
       });
       cb({
         ok: true,
+        data: rooms,
       });
     } catch (error) {
       cb({
@@ -57,7 +66,7 @@ Ws.start((socket) => {
     try {
       const conversation = await Conversation.create({
         creatorId: data.user_id,
-        title: "Personal",
+        title: data.title,
       });
 
       const participants = await conversation.related("participants").createMany([
@@ -69,7 +78,13 @@ Ws.start((socket) => {
         }),
       ]);
 
-      console.log(participants);
+      const loadUser = async () => {
+        await asyncForEach(participants, async (p) => {
+          await p.load("user");
+        });
+      };
+
+      await loadUser();
 
       const messages = await conversation.related("messages").create({
         conversationId: conversation.id,
@@ -79,8 +94,11 @@ Ws.start((socket) => {
 
       // send data conversation to client by user id room
       const rooms = participants.map((p) => genUserRoom(p.userId));
+      console.log("new conversation fired with room", rooms);
       Ws.io.to(rooms).emit("conversation:new", {
         ...(conversation.serialize() as any),
+        participants: participants.map((p) => p.serialize() as any),
+        messages: [messages.serialize() as any],
       });
 
       cb({
